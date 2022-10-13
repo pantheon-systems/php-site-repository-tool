@@ -35,6 +35,6 @@ class UpstreamCommands extends \Robo\Tasks
         $model = new UpstreamManager(2);
         $result = $model->multiply(4);
 
-        $io->text("2 times 4 is $result");
+        $io->text('Done.');
     }
 }

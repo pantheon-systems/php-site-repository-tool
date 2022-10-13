@@ -41,9 +41,9 @@ class UpstreamCommandsTest extends TestCase implements CommandTesterInterface
         return [
 
             [
-                '2 times 4 is 8',
+                'Done.',
                 self::STATUS_OK,
-                'multiply', 2, 2,
+                'apply_upstream'
             ],
 
             [
