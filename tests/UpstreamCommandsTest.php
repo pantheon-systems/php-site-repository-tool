@@ -47,7 +47,7 @@ class UpstreamCommandsTest extends TestCase implements CommandTesterInterface
             ],
 
             [
-                'Apply upstream command scaffolding',
+                'Apply upstream command',
                 self::STATUS_OK,
                 'list',
             ]
