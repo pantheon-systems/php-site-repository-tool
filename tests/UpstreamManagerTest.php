@@ -15,10 +15,9 @@ class UpstreamManagerTest extends TestCase
     public function exampleTestValues()
     {
         return [
-            // Result is hardcoded in the example class.
-            [8, 2, 2,],
-            [8, 3, 3,],
-            [8, 7, 8,],
+            [4, 2, 2,],
+            [9, 3, 3,],
+            [56, 7, 8,],
         ];
     }
 
