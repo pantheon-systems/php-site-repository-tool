@@ -8,7 +8,7 @@ use PhpSiteRepositoryTool\UpstreamManager;
 class UpstreamCommands extends \Robo\Tasks
 {
     /**
-     * Apply upstream command scaffolding
+     * Apply upstream command.
      *
      * @command apply_upstream
      *

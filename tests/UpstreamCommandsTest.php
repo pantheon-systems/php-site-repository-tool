@@ -47,7 +47,7 @@ class UpstreamCommandsTest extends TestCase implements CommandTesterInterface
             ],
 
             [
-                'Multiply two numbers together',
+                'Apply upstream command scaffolding',
                 self::STATUS_OK,
                 'list',
             ]
