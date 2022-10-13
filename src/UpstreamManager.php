@@ -2,7 +2,7 @@
 
 namespace PhpSiteRepositoryTool;
 
-class Example
+class UpstreamManager
 {
     protected $parameter;
 
