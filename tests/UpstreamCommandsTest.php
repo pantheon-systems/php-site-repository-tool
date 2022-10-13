@@ -5,7 +5,7 @@ namespace PhpSiteRepositoryTool;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\BufferedOutput;
 
-class ExampleCommandsTest extends TestCase implements CommandTesterInterface
+class UpstreamCommandsTest extends TestCase implements CommandTesterInterface
 {
     use CommandTesterTrait;
 
@@ -18,7 +18,7 @@ class ExampleCommandsTest extends TestCase implements CommandTesterInterface
     public function setUp(): void
     {
         // Store the command classes we are going to test
-        $this->commandClasses = [ \PhpSiteRepositoryTool\Cli\ExampleCommands::class ];
+        $this->commandClasses = [ \PhpSiteRepositoryTool\Cli\UpstreamCommands::class ];
         $this->setupCommandTester('TestFixtureApp', '1.0.1');
     }
 
@@ -41,7 +41,7 @@ class ExampleCommandsTest extends TestCase implements CommandTesterInterface
         return [
 
             [
-                '2 times 2 is 4',
+                '2 times 4 is 8',
                 self::STATUS_OK,
                 'multiply', 2, 2,
             ],
@@ -50,13 +50,7 @@ class ExampleCommandsTest extends TestCase implements CommandTesterInterface
                 'Multiply two numbers together',
                 self::STATUS_OK,
                 'list',
-            ],
-
-            [
-                'Not enough arguments (missing: "b").',
-                self::STATUS_ERROR,
-                'multiply', 7,
-            ],
+            ]
         ];
     }
 

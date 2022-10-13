@@ -4,7 +4,7 @@ namespace PhpSiteRepositoryTool;
 
 use PHPUnit\Framework\TestCase;
 
-class ExampleTest extends TestCase
+class UpstreamManagerTest extends TestCase
 {
     /**
      * Data provider for testExample.
@@ -15,9 +15,10 @@ class ExampleTest extends TestCase
     public function exampleTestValues()
     {
         return [
-            [4, 2, 2,],
-            [9, 3, 3,],
-            [56, 7, 8,],
+            // Result is hardcoded in the example class.
+            [8, 2, 2,],
+            [8, 3, 3,],
+            [8, 7, 8,],
         ];
     }
 
@@ -30,7 +31,7 @@ class ExampleTest extends TestCase
      */
     public function testExample($expected, $constructor_parameter, $value)
     {
-        $example = new Example($constructor_parameter);
+        $example = new UpstreamManager($constructor_parameter);
         $this->assertEquals($expected, $example->multiply($value));
     }
 }
