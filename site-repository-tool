@@ -2,7 +2,7 @@
 <?php
 
 /**
- * Example commandline front controller
+ * Site-repository-tool commandline front controller
  *
  * The commandline tool is useful for providing ad-hoc access to our class implementations
  */
@@ -28,7 +28,7 @@ $argv = $_SERVER['argv'];
 $appName = "PhpSiteRepositoryTool";
 $appVersion = trim(file_get_contents(__DIR__ . '/VERSION'));
 $commandClasses = [ \PhpSiteRepositoryTool\Cli\ExampleCommands::class ];
-$selfUpdateRepository = 'kporras07/php-site-repository-tool';
+$selfUpdateRepository = 'pantheon-systems/php-site-repository-tool';
 $configPrefix = 'PHPSITEREPOSITORYTOOL';
 $configFilePath = getenv($configPrefix . '_CONFIG') ?: getenv('HOME') . '/.php-site-repository-tool/php-site-repository-tool.yml';
 
