@@ -4,7 +4,7 @@ namespace PhpSiteRepositoryTool;
 
 use PHPUnit\Framework\TestCase;
 
-class ExampleTest extends TestCase
+class UpstreamManagerTest extends TestCase
 {
     /**
      * Data provider for testExample.
@@ -30,7 +30,7 @@ class ExampleTest extends TestCase
      */
     public function testExample($expected, $constructor_parameter, $value)
     {
-        $example = new Example($constructor_parameter);
+        $example = new UpstreamManager($constructor_parameter);
         $this->assertEquals($expected, $example->multiply($value));
     }
 }
