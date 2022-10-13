@@ -1,6 +1,6 @@
 <?php
 
-namespace ExampleProject;
+namespace PhpSiteRepositoryTool;
 
 use PHPUnit\Framework\TestCase;
 

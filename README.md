@@ -1,156 +1,160 @@
-# Starter
+# PhpSiteRepositoryTool
 
-A starter PHP project with many services and features pre-configured.
+Put a one-line description of your project here.
 
 [![License](https://img.shields.io/badge/license-MIT-408677.svg)](LICENSE)
 
-## Features
+<!-- 
+There are two choices for LICENSE badges:
 
-The things this project provides or does includes:
+1. License using shields.io (above): Can contain any text you want, and has no prerequisites, but must be manually updated if you change the license.
+2. License using poser.pugx.org (below): shows the license that Packagist.org read from your composer.json file. Must register with Packagist to use Poser.
 
-<table>
-  <tr>
-    <td><a href="#github-project">Creates GitHub project</a></td>
-    <td><a href="#readme-template">README with customization instructions</a></td>
-  </tr>
+[![License](https://poser.pugx.org/kporras07/php-site-repository-tool/license)](https://github.com/kporras07/php-site-repository-tool//master/LICENSE)
+-->
 
-  <tr>
-    <td><a href="#optimized-composerjson">Optimized composer.json</a></td>
-    <td><a href="#github-contributing-and-issue-templates">GitHub contributing and issue templates</a></td>
-  </tr>
-    
-  <tr>
-    <td><a href="#commandline-tool">Commandline tool with phar builder</a></td>
-    <td><a href="#data-driven-unit-test-examples">Data-driven unit test examples</a></td>
-  </tr>
-  
-  <tr>
-    <td><a href="#coveralls-code-coverage">Links to Coveralls code coverage setup</a></td>
-    <td><a href="#test-matrix-for-php-80---81">Test matrix for PHP 8.0 - 8.1</a></td>
-  </tr>
-  
-  <tr>
-    <td><a href="#packagist-code-distribution">Links to Packagist setup</a></td>
-    <td><a href="#psr-2-checks-and-php-linting">PSR-2 checks and PHP linting</a></td>
-  </tr>
-      
-  <tr>
-    <td><a href="#phar-selfupdate-command">Phar self:update command</a></td>
-    <td><a href="#configuration-files">Configuration files</a></td>
-  </tr>
+## FINISH CUSTOMIZATION
 
-</table>
+Follow the steps in this section to complete the customization of your new project.
 
-For more details, see the section [Explanation of Features](#explanation-of-features), below.
+### Services
 
-## Usage
+Enable those services shown below that have not already been configured:
 
-To get started, export your [GitHub personal access token](https://help.github.com/articles/creating-an-access-token-for-command-line-use/) and then create a new project.
-```
-$ export GITHUB_TOKEN='...'
-$ composer create-project g1a/starter my-new-project
-```
-The new project will be owned by the currently-authenticated user. If you would like to create a new project in an organization instead, then set the `GITHUB_ORG` environment variable.
-```
-$ export GITHUB_ORG='my-github-username-or-org'
-```
-The new project will work only with php 8.0 and later. If you need to use an earlier version of php (as far back as php 7.1), then instead run:
-```
-$ composer create-project g1a/starter my-new-project:^2
-```
-
-Once the new project is created, automated scripts will customize it and set up a number of serivces. See the section [Description of Features](#description-of-features) below for more information. Once the scripts have finished running, you may customize your README file and start coding!
-
-### Access Token Generation
-
-Generating and exporting a personal access token for the services below is recommended, as doing this will allow the post-create-project scripts to configure and enable these services automatically.
-
-| Export                         | Token Generation URL       
-| ------------------------------ | -------------------------- 
-| exoirt GITHUB_TOKEN='...'      | [Generate GitHub token](https://github.com/settings/tokens)
-
-### Manual Service Configuration
-
-If the personal access token for these services is not set up, then the service may be manually configured later. In addition, this project is also configured for use with Packagist, this service only needs to be manually authorized through their web interface to enable them for projects created with this template.
-
-Follow the links in the table below to configure the services you would like to use.
-
-| Feature                   | Manual Setup URL
+| Feature                   | Setup
 | ------------------------- | ----------------
-| Collaborative repository  | [Create GitHub project](https://github.com/new)
+| Collaborative repository  | [DONE](https://github.com/kporras07/php-site-repository-tool)
 | Package manager           | [Register with Packagist](https://packagist.org/packages/submit)
 
-## Explanation of Features ###
+### Commandline Tool
 
-### GitHub project ###
+To customize the name of your commandline tool:
 
-After the `composer create-project` command runs to create your new project from the templates provided, a GitHub project will automatically be created, and your code will automatically be pushed up.
+- Rename the file `example` (the executable / front controller)
+- Replace any `example` or `example.phar` in [box.json.dist](/box.json.dist) and [.gitignore](/.gitignore) with the desired name for your phar
 
-In order for this to work, you must define a `GITHUB_TOKEN` environment variable as described in the [usage](#usage) section.
+### Release Script
 
-### README template ###
+To automatically attach a .phar (or some other build result) to every GitHub release:
 
-Your new project will be set up with the outline for a project README, complete with status badges, ready to be customized. Follow the instructions provided in your new project to complete the customization steps.
+- Run `travis setup releases` and answer the prompts. Answer "yes" to all yes/no questions.
+- Edit resulting `.travis.yml` file to include the missing `skip_cleanup:` and `tags:` directives.
 
-### GitHub Actions Testing ###
+When you are done, the `deploy:` section should look something like this:
 
-GitHub actions will automatically run your unit tests every time a commit is pushed up to GitHub.
+```
+deploy:
+  provider: releases
+  api_key:
+    secure: KmKwmt...[REDACTED]...LlE=
+  file: example.phar
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: kporras07/php-site-repository-tool
+```
 
-### Packagist code distribution ###
+The `secure:` line should be filled in by `travis setup releases`.
 
-[Packagist](https://packagist.org/) is the main repository for Composer projects. The customization instructions for your project includes a link you may follow to register your project in this repository.
+### Documentation
 
-### Data-driven unit test examples ###
+Once you have finished setting up your project, delete this section and fill out the other sections of this README.
 
-Your new project comes with a trivial `Example` class with tests that demonstrate the phpunit [@dataProvider](https://github.com/g1a/starter/blob/master/tests/ExampleTest.php#L29) feature.
+Also look over:
 
-### Test matrix for PHP 8.0 - 8.1 ###
+- [GitHub issue templates](https://github.com/kporras07/php-site-repository-tool/issues/templates/edit)
+- [GitHub pull request template](/.github/pull_request_template.md)
+- [Contributing guide](/CONTRIBUTING) (Decide about your code of conduct)
 
-The included test suite demonstrates testing on multiple platforms and PHP versions.
+## Getting Started
 
-### PSR-2 checks and PHP linting ###
+Explain how to get a copy of this project up and running on a new user's local machine.
 
-In addition to providing unit tests with phpunit, your new project will also automatically contain style checks for PSR-2 coding convnetions, and will lint your code for syntax errors and other problems.
+See deployment for notes on how to deploy the project on a live system.
 
-These features may be accessed via `composer cs` and `composer lint` commands, respectively. A [.editorconfig](/.editorconfig) file is provided pre-configured to maintain PSR-2 coventions in editors that support this feature.
+### Prerequisites
 
-### GitHub contributing and issue templates ###
+List the things that are needed to install the software and how to install them. For most PHP projects, it should usually be sufficient to run:
 
-GitHub has a feature that allows projects to define [pull request and issue templates](https://help.github.com/articles/about-issue-and-pull-request-templates/) which will be presented to users when a new issue or pull request is opened. Also, a [contributing document](https://help.github.com/articles/setting-guidelines-for-repository-contributors/) can be provided to explain project conventions to new users.
+```
+composer install
+```
 
-Starter versions for all of these files are automatically added to your new project, and may be customized as needed. By default, the [CONTRIBUTING.md](CONTRIBUTING.md) file is added to the project root for better visiblity, but you may move it to the [.github](.github) directory if you prefer.
+If you wish to build the phar for this project, install the `box` phar builder via:
 
-### Commandline tool ###
+```
+composer phar:install-tools
+```
 
-Your project will be set up to build a commandline tool, and also includes commands to package it as a phar using the [humbug/box](https://github.com/humbug/box) project. If your project is a library, you might still wish to include a commandline tool to provide ad-hoc usage to your library functions, either for testing purposes, or perhaps to directly edit any data stores managed by your library. The commandline tool dependencies are declared in the `require-dev` section, so they will not be pulled in when your project is included as the dependency of some other project.
+### Installing
 
-If you do not want the commandline tool, simply delete the directories `src/Cli` and `tests/ExampleCommandsTest.php`, and also remove the `phar:*` commands in your composer.json file, and the files `example` and `box.json.dist`.
+Provide a step by step series of examples that show how to install this project.
 
-### Optimized composer.json ###
+Say what the step will be. If the phar for this project is the primary output, and not a mere development utility, then perhaps the first step will be to build the phar:
 
-The `composer.json` file included in the project pre-configures a few settings for convenience:
+```
+composer phar:build
+```
 
-- `optimize-autoloader`: Creates larger autoload files that find classes more quickly
-- `sort-packages`: Keeps the list of packages in alphabetic order
-- `platform:php`: Ensures that Composer will only select packages that are compatible with the stated minimum PHP version.
+It may then be sufficient to install via:
 
-### Optimized Composer dist releases ###
+```
+cp example.phar /usr/local/bin
+```
 
-Your project's [.gitattributes](/.gitattributes) file comes pre-configured to exclude unnecessary files in Composer `dist` releases.
+End with an example of getting some data out of the system or using it for a little demo.
 
-### Configuration files ###
+## Running the tests
 
-Your project will automatically read in a configuration file in yaml format that you may use for providing command option default values and storing other user-overridable settings. See [consolidation/config](https://github.com/consolidation/config) for more information.
+The test suite may be run locally by way of some simple composer scripts:
+
+| Test             | Command
+| ---------------- | ---
+| Run all tests    | `composer test`
+| PHPUnit tests    | `composer unit`
+| PHP linter       | `composer lint`
+| Code style       | `composer cs`     
+| Fix style errors | `composer cbf`
+
+
+## Deployment
+
+Add additional notes about how to deploy this on a live system.
+
+If your project has been set up to automatically deploy its .phar with every GitHub release, then you will be able to deploy by the following procedure:
+
+- Edit the `VERSION` file to contain the version to release, and commit the change.
+- Run `composer release`
+
+## Built With
+
+List significant dependencies that developers of this project will interact with.
+
+* [Composer](https://getcomposer.org/) - Dependency Management
+* [Robo](https://robo.li/) - PHP Task Runner
+* [Symfony](https://symfony.com/) - PHP Framework
 
 ## Contributing
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on the process for submitting pull requests to us.
 
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [releases](https://github.com/kporras07/php-site-repository-tool/releases) page.
+
+## Authors
+
+* **Kevin Porras** - created project from template.
+
+See also the list of [contributors](https://github.com/kporras07/php-site-repository-tool/contributors) who participated in this project.
+
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
 ## Acknowledgments
 
-- This project makes heavy use of configuration techniques and code from [Drush](https://drush.org), [Robo PHP](https://robo.li) and other [Consolidation projects](https://github.com/consolidation).
-- The [KnpLabs github-api](https://github.com/KnpLabs/php-github-api) and [guzzle](http://docs.guzzlephp.org/en/stable/) made the API calls done by this project very easy.
+* Hat tip to anyone who's code was used
+* Inspiration
+* etc
+* Thanks to PurpleBooth for the [example README template](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)

@@ -1,22 +1,21 @@
 {
-    "name": "g1a/starter",
+    "name": "kporras07/php-site-repository-tool",
     "description": "Template project for PHP libraries.",
     "license": "MIT",
     "authors": [
         {
-            "name": "Greg Anderson",
-            "email": "greg.1.anderson@greenknowe.org"
+            "name": "Kevin Porras",
+            "email": "kporras07@gmail.com"
         }
     ],
-    "autoload":{
-        "psr-4":{
-            "CustomizeProject\\": "customize",
-            "ExampleProject\\": "src"
+    "autoload": {
+        "psr-4": {
+            "PhpSiteRepositoryTool\\": "src"
         }
     },
-    "autoload-dev":{
-        "psr-4":{
-            "ExampleProject\\": "tests/src"
+    "autoload-dev": {
+        "psr-4": {
+            "PhpSiteRepositoryTool\\": "tests/src"
         }
     },
     "require": {
@@ -31,9 +30,6 @@
         "squizlabs/php_codesniffer": "^3"
     },
     "scripts": {
-        "customize": [
-            "CustomizeProject\\Customizer::customize"
-        ],
         "phar:install-tools": [
             "mkdir -p tools",
             "curl -L https://github.com/humbug/box/releases/download/3.0.0/box.phar -o tools/box",
@@ -54,9 +50,6 @@
         ],
         "release": [
             "release VERSION"
-        ],
-        "post-create-project-cmd": [
-            "@customize"
         ]
     },
     "config": {

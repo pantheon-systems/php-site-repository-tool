@@ -1,6 +1,6 @@
 <?php
 
-namespace ExampleProject;
+namespace PhpSiteRepositoryTool;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -18,7 +18,7 @@ class ExampleCommandsTest extends TestCase implements CommandTesterInterface
     public function setUp(): void
     {
         // Store the command classes we are going to test
-        $this->commandClasses = [ \ExampleProject\Cli\ExampleCommands::class ];
+        $this->commandClasses = [ \PhpSiteRepositoryTool\Cli\ExampleCommands::class ];
         $this->setupCommandTester('TestFixtureApp', '1.0.1');
     }
 
