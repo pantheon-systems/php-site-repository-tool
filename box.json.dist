@@ -1,5 +1,5 @@
 {
-  "main": "example",
-  "output": "example.phar",
-  "files": ["example", "VERSION"]
+  "main": "site-repository-tool",
+  "output": "site-repository-tool.phar",
+  "files": ["site-repository-tool", "VERSION"]
 }
