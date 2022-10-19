@@ -20,6 +20,7 @@ class UpstreamCommands extends \Robo\Tasks
      * @option upstream-repo-url upstream repository url
      * @option upstream-repo-branch upstream repository branch
      * @option ff do not use fast-forward
+     * @option strategy-option strategy top use for this command
      */
     public function applyUpstream(ConsoleIO $io, array $options = [
         'clone' => true,
@@ -30,6 +31,7 @@ class UpstreamCommands extends \Robo\Tasks
         'upstream-repo-url' => null,
         'upstream-repo-branch' => null,
         'ff' => true,
+        'strategy-option' => 'default',
     ])
     {
         $model = new UpstreamManager(2);
