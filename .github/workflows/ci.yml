@@ -11,12 +11,15 @@ name: CI
 jobs:
   checkout_build:
     runs-on: ubuntu-latest
-    container:
-      image: quay.io/pantheon-public/build-tools-ci:8.x-php8.1
     name: Checkout & build Phar
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          coverage: none
       - name: Full Composer Install
         run: composer install
       - name: Phar Build
