@@ -9,6 +9,27 @@ on:
 name: CI
 
 jobs:
+  checkout_build:
+    runs-on: ubuntu-latest
+    container:
+      image: quay.io/pantheon-public/build-tools-ci:8.x-php8.1
+    name: Checkout & build Phar
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Full Composer Install
+        run: composer install
+      - name: Phar Build
+        run: |
+          composer phar:install-tools
+          composer phar:build
+      - name: Save site-repository-tool.phar as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: site-repository-tool.phar
+          path: site-repository-tool.phar
+          if-no-files-found: error
+
   coding-guidelines:
     name: Coding Guidelines
 
@@ -154,3 +175,22 @@ jobs:
       - name: Publish code coverage to Codecov
         if: matrix.os == 'ubuntu-latest' && matrix.php-version == '8.0'
         run: bash <(curl -s https://codecov.io/bash)
+
+  release:
+    runs-on: ubuntu-latest
+    name: Release
+    container:
+      image: quay.io/pantheon-public/php-ci:1.x
+    needs: [ tests ]
+    if: ${{ startsWith(github.ref, 'refs/tags/')  && github.repository == 'pantheon-systems/php-site-repository-tool' }}
+    steps:
+      - name: Download terminus.phar as artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: site-repository-tool.phar
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: site-repository-tool.phar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
