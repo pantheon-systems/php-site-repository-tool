@@ -13,10 +13,10 @@ jobs:
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.1
+          php-version: 7.4
           coverage: none
-      - name: Full Composer Install
-        run: composer install
+      - name: Install composer using highest
+        run: composer config --unset platform.php && composer update --no-ansi --no-interaction --no-progress
       - name: Phar Build
         run: |
           composer phar:install-tools
