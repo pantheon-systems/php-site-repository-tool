@@ -38,7 +38,7 @@ class Git
      *
      * @throws \Pantheon\Terminus\Exceptions\TerminusException
      */
-    public function __construct(string $committer_name = '', string $committer_email = '', string $workdir = '', bool $verbose = false, string $siteUuid = '', string $binding = '', bool $bypass_sync_code = false)
+    public function __construct(string $commiterName = '', string $committerEmail = '', string $workdir = '', bool $verbose = false, string $siteUuid = '', string $binding = '', bool $bypassSyncCode = false)
     {
         $this->workdirCreated = false;
 
@@ -51,14 +51,14 @@ class Git
         $this->env = [];
         $this->verbose = $verbose;
 
-        if ($committer_name) {
-            $this->env['GIT_AUTHOR_NAME'] = $committer_name;
-            $this->env['GIT_COMMITTER_NAME'] = $committer_name;
+        if ($commiterName) {
+            $this->env['GIT_AUTHOR_NAME'] = $commiterName;
+            $this->env['GIT_COMMITTER_NAME'] = $commiterName;
         }
 
-        if ($committer_email) {
-            $this->env['GIT_AUTHOR_EMAIL'] = $committer_email;
-            $this->env['GIT_COMMITTER_EMAIL'] = $committer_email;
+        if ($committerEmail) {
+            $this->env['GIT_AUTHOR_EMAIL'] = $committerEmail;
+            $this->env['GIT_COMMITTER_EMAIL'] = $committerEmail;
         }
 
         if ($siteUuid) {
@@ -70,7 +70,7 @@ class Git
             $this->env['USER'] = $binding;
         }
 
-        if ($bypass_sync_code) {
+        if ($bypassSyncCode) {
             $this->env['BYPASS_SYNC_CODE'] = '1';
         }
 
@@ -163,7 +163,19 @@ class Git
     public function listUnmergedFiles(): array
     {
         $output = $this->execute(['ls-files', '--unmerged']);
-        return explode("\n", $output);
+        $lines = explode("\n", $output);
+        $files = [];
+        foreach ($lines as $line) {
+            // Skip blank lines.
+            if (!$line) {
+                continue;
+            }
+            // Lines are like this:
+            // 100644 8026076649ceccbe96a6292f2432652f08483035 1 wp-content/themes/twentytwentytwo/assets/fonts/source-serif-pro/LICENSE.md
+            $components = explode("\t", $line);
+            $files[] = end($components);
+        }
+        return array_unique($files);
     }
 
     /**
