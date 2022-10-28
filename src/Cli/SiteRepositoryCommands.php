@@ -5,7 +5,7 @@ namespace PhpSiteRepositoryTool\Cli;
 use Robo\Symfony\ConsoleIO;
 use PhpSiteRepositoryTool\UpstreamManager;
 
-class UpstreamCommands extends \Robo\Tasks
+class SiteRepositoryCommands extends \Robo\Tasks
 {
     /**
      * Apply upstream command.
