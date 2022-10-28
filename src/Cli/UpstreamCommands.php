@@ -26,24 +26,22 @@ class UpstreamCommands extends \Robo\Tasks
      * @option ff use fast-forward (also supported: --no-ff)
      * @option clone clone the upstream repository (also supported: --no-clone)
      * @option push push the changes to the remote repository (also supported: --no-push)
-     * @option verbose verbose output
      */
     public function applyUpstream(ConsoleIO $io, array $options = [
-        'site-repo-url' => null,
-        'site-repo-branch' => null,
-        'upstream-repo-url' => null,
-        'upstream-repo-branch' => null,
+        'site-repo-url' => '',
+        'site-repo-branch' => '',
+        'upstream-repo-url' => '',
+        'upstream-repo-branch' => '',
         'strategy-option' => 'default',
-        'work-dir' => null,
-        'committer-name' => null,
-        'committer-email' => null,
-        'site' => null,
-        'binding' => null,
+        'work-dir' => '',
+        'committer-name' => '',
+        'committer-email' => '',
+        'site' => '',
+        'binding' => '',
         'bypass-sync-code' => false,
         'ff' => true,
         'clone' => true,
-        'push' => true,
-        'verbose' => false,
+        'push' => true
     ])
     {
         $model = new UpstreamManager();
@@ -65,6 +63,6 @@ class UpstreamCommands extends \Robo\Tasks
             $options['verbose']
         );
 
-        $io->text('Done.');
+        $io->write(json_encode($result));
     }
 }
