@@ -27,8 +27,7 @@ class EnvironmentMergeManager
         bool $bypassSyncCode,
         bool $ff,
         bool $verbose
-    )
-    {
+    ) {
         $repository = new Git(
             $committerName,
             $committerEmail,
@@ -122,5 +121,4 @@ class EnvironmentMergeManager
         }
         return true;
     }
-
 }

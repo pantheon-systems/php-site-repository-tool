@@ -29,8 +29,7 @@ class UpstreamManager
         bool $clone,
         bool $push,
         bool $verbose
-    )
-    {
+    ) {
         $repository = new Git(
             $committerName,
             $committerEmail,
@@ -149,5 +148,4 @@ class UpstreamManager
         }
         return true;
     }
-
 }
