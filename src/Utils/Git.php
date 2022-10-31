@@ -25,9 +25,6 @@ class Git
 
     private bool $workdirCreated;
 
-    public const DEFAULT_REMOTE = 'origin';
-    public const DEFAULT_BRANCH = 'master';
-
     /**
      * Git constructor.
      *
@@ -139,7 +136,7 @@ class Git
         if ($noFf) {
             $options += ['--no-ff'];
         }
-        $process = $this->executeAndReturnProcess(['merge', '--no-commit', '--quiet'] + options + [sprintf('%s/%s', $remoteName, $branchName)]);
+        $process = $this->executeAndReturnProcess(array_merge(['merge', '--no-commit', '--quiet'], $options, [sprintf('%s/%s', $remoteName, $branchName)]));
         if ($process->getExitCode()) {
             $output = $process->getOutput();
             $outputLines = explode("\n", $output);
@@ -200,8 +197,8 @@ class Git
      */
     public function getRemoteMessage(string $branchName, string $remoteName = 'upstream'): string
     {
-        $commitHash = $this->execute(['rev-parse', sprintf('refs/remotes/%s/%s', $remoteName, $branchName)]);
-        return $this->execute(['log', '--format=%B', '-n', '1', $commitHash]);
+        $commitHash = trim($this->execute(['rev-parse', sprintf('refs/remotes/%s/%s', $remoteName, $branchName)]));
+        return trim($this->execute(['log', '--format="%B"', '-n', '1', $commitHash]), "\n\"");
     }
 
     /**
