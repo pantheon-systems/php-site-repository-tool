@@ -80,6 +80,7 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
             '--upstream-repo-url=' . $upstreamRepoUrl,
             '--upstream-repo-branch=' . $upstreamRepoBranch,
             '--work-dir=' . $workdir,
+            '--update-behavior=heirloom',
             // Do not push to avoid altering the fixture repository.
             '--no-push',
             '--verbose',

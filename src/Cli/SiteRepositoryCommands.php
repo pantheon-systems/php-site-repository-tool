@@ -23,6 +23,7 @@ class SiteRepositoryCommands extends \Robo\Tasks
      * @option committer-email committer email
      * @option site site uuid
      * @option binding binding uuid
+     * @option update-behavior Either heirloom or procedural
      * @option bypass-sync-code bypass sync code
      * @option ff use fast-forward (also supported: --no-ff)
      * @option clone clone the upstream repository (also supported: --no-clone)
@@ -39,6 +40,7 @@ class SiteRepositoryCommands extends \Robo\Tasks
         'committer-email' => '',
         'site' => '',
         'binding' => '',
+        'update-behavior' => 'heirloom',
         'bypass-sync-code' => false,
         'ff' => true,
         'clone' => true,
@@ -57,6 +59,7 @@ class SiteRepositoryCommands extends \Robo\Tasks
             $options['committer-email'],
             $options['site'],
             $options['binding'],
+            $options['update-behavior'],
             $options['bypass-sync-code'],
             $options['ff'],
             $options['clone'],

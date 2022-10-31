@@ -24,6 +24,7 @@ class UpstreamManager
         string $committerEmail,
         string $siteUuid,
         string $binding,
+        string $updateBehavior,
         bool $bypassSyncCode,
         bool $ff,
         bool $clone,
