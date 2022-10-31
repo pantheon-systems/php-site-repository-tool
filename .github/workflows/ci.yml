@@ -124,9 +124,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-
       - name: Install PHP with extensions
         uses: shivammathur/setup-php@v2
         with:
@@ -170,6 +167,9 @@ jobs:
       - name: Install highest dependencies with composer
         if: matrix.dependencies == 'highest'
         run: composer config --unset platform.php && composer update --no-ansi --no-interaction --no-progress
+
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
 
       - name: Run tests with phpunit
         run: composer unit
