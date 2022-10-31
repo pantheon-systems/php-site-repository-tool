@@ -33,7 +33,7 @@ class SiteRepositoryCommands extends \Robo\Tasks
         'site-repo-branch' => '',
         'upstream-repo-url' => '',
         'upstream-repo-branch' => '',
-        'strategy-option' => 'default',
+        'strategy-option' => '',
         'work-dir' => '',
         'committer-name' => '',
         'committer-email' => '',

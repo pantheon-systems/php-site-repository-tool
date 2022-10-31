@@ -148,6 +148,8 @@ class Git
             }
             if ($conflicts) {
                 throw new GitMergeConflictException(sprintf("Merge conflict detected:\n%s", implode("\n", $conflicts)));
+            } else {
+                throw new GitException(sprintf("Merge failed:\n%s", $process->getErrorOutput()));
             }
         }
     }
@@ -215,14 +217,14 @@ class Git
     {
         $options = [];
         foreach ($commitMessages as $message) {
-            $options += ['-m', $message];
+            $options = array_merge($options, ['-m', $message]);
         }
 
         if ($author) {
-            $options += ['--author', $author];
+            $options = array_merge($options, ['--author', $author]);
         }
 
-        $this->execute(['commit'] + $options);
+        $this->execute(array_merge(['commit'], $options));
     }
 
     /**

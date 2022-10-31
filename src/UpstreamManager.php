@@ -65,7 +65,7 @@ class UpstreamManager
         }
 
         try {
-            $repository->addRemote('upstream', $upstreamRepoUrl);
+            $repository->remoteAdd('upstream', $upstreamRepoUrl);
             $repository->fetch('upstream');
         } catch (GitException $e) {
             $result['errormessage'] = sprintf("Could not fetch upstream. Check that your upstream's git repository is accessible and that Pantheon has any required access tokens: %s", $e->getMessage());
@@ -78,7 +78,7 @@ class UpstreamManager
         ];
 
         try {
-            $repository->merge('upstream', $upstreamRepoBranch, $strategyOption, !$ff);
+            $repository->merge($upstreamRepoBranch, 'upstream', $strategyOption, !$ff);
         } catch (GitMergeConflictException $e) {
             // WordPress License handling stuff.
             $unmergedFiles = $repository->listUnmergedFiles();
