@@ -91,6 +91,7 @@ jobs:
 
     env:
       PHP_EXTENSIONS: dom, json, libxml, mbstring, pdo_sqlite, soap, xml, xmlwriter
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     strategy:
       matrix:

@@ -27,7 +27,7 @@ class GitTest extends TestCase
         $verbose = true;
         $siteUuid = getenv('SITE_UUID');
         self::$git = new Git('', '', $workdir, $verbose, $siteUuid);
-        self::$upstreamUrl = 'git@github.com:pantheon-fixtures/php-srt-upstream-fixture.git';
+        self::$upstreamUrl = 'https://'. getenv('GITHUB_TOKEN') . '@github.com/pantheon-fixtures/php-srt-upstream-fixture.git';
     }
 
     /**
