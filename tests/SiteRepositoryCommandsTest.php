@@ -23,38 +23,30 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
     }
 
     /**
-     * Data provider for testExampleCommands.
-     *
-     * Return an array of arrays, each of which contains the data for one test.
-     * The parameters in each array should be:
-     *
-     *   - Expected output (actual output must CONTAIN this string)
-     *   - Expected function status code
-     *   - argv
-     *
-     * All of the remaining parameters after the first two are interpreted
-     * to be the argv value to pass to the command. The application name
-     * is automatically unshifted into argv[0] first.
+     * Data provider for testCommandsExistence.
      */
-    public function exampleTestCommandParameters()
+    public function commandsExistenceParameters()
     {
         return [
             [
                 'Apply upstream command',
                 self::STATUS_OK,
                 'list',
-            ]
+            ],
+            [
+                'Apply upstream command',
+                self::STATUS_OK,
+                'list',
+            ],
         ];
     }
 
     /**
-     * Test our example commandfile class. Each time this function is called,
-     * it will be passed the expected output and expected status code; the
-     * remainder of the arguments passed will be used as $argv.
+     * Test that the given commands actually exist.
      *
-     * @dataProvider exampleTestCommandParameters
+     * @dataProvider commandsExistenceParameters
      */
-    public function testExampleCommands($expectedOutput, $expectedStatus, $variable_args)
+    public function testCommandsExistence($expectedOutput, $expectedStatus, $variable_args)
     {
         // Set this to the path to a fixture configuration file if you'd like to use one.
         $configurationFile = false;
