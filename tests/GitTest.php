@@ -43,7 +43,7 @@ class GitTest extends TestCase
      * Test adding a remote.
      */
     public function testRemoteAdd()
-    {   
+    {
         self::$git->remoteAdd('upstream', self::$upstreamUrl);
         $output = $this->callMethod(self::$git, 'execute', [['remote', 'show', 'upstream']]);
         $this->assertStringContainsString('Fetch URL: ' . self::$upstreamUrl, $output);
