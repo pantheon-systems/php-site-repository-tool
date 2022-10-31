@@ -173,9 +173,6 @@ jobs:
           git config --global user.email "ci@pantheon.io"
           git config --global user.name "Pantheon CI"
 
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-
       - name: Run tests with phpunit
         run: composer unit
 
