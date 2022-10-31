@@ -26,6 +26,7 @@ class EnvironmentMergeManager
         string $binding,
         bool $bypassSyncCode,
         bool $ff,
+        bool $push,
         bool $verbose
     ) {
         $repository = new Git(
@@ -60,7 +61,7 @@ class EnvironmentMergeManager
         }
 
         try {
-            $repository->merge('origin', $fromBranch, $strategyOption, !$ff);
+            $repository->merge($fromBranch, 'origin', $strategyOption, !$ff);
         } catch (GitMergeConflictException $e) {
             $result['conflicts'] = $repository->listUnmergedFiles();
             $result['errormessage'] = sprintf("Merge conflict: %s", $e->getMessage());
@@ -70,7 +71,7 @@ class EnvironmentMergeManager
 
 
         $commitMessages = [
-            $repository->getRemoteMessage($upstreamRepoBranch),
+            $repository->getRemoteMessage($fromBranch, 'origin'),
             sprintf("Merged '%s' into '%s'", $fromBranch, $toBranch),
         ];
 

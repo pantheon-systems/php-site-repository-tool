@@ -83,20 +83,22 @@ class SiteRepositoryCommands extends \Robo\Tasks
      * @option binding binding uuid
      * @option bypass-sync-code bypass sync code
      * @option ff use fast-forward (also supported: --no-ff)
+     * @option push push the changes to the remote repository (also supported: --no-push)
      */
     public function mergeEnvironment(ConsoleIO $io, array $options = [
         'site-repo-url' => '',
         'site-repo-branch' => '',
         'from-branch' => '',
         'to-branch' => '',
-        'strategy-option' => 'default',
+        'strategy-option' => '',
         'work-dir' => '',
         'committer-name' => '',
         'committer-email' => '',
         'site' => '',
         'binding' => '',
         'bypass-sync-code' => false,
-        'ff' => true
+        'ff' => true,
+        'push' => true
     ])
     {
         $environmentMergeManager = new EnvironmentMergeManager();
@@ -113,6 +115,7 @@ class SiteRepositoryCommands extends \Robo\Tasks
             $options['binding'],
             $options['bypass-sync-code'],
             $options['ff'],
+            $options['push'],
             $options['verbose']
         );
 

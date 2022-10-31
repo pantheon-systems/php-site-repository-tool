@@ -95,4 +95,40 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
             'errormessage' => '',
         ], $jsonOutput);
     }
+
+    /**
+     * Test merge_environment command.
+     */
+    public function testMergeEnvironment()
+    {
+        $workdir = sys_get_temp_dir() . '/php-site-repository-tool-test-' . uniqid();
+        mkdir($workdir);
+
+        $siteRepoUrl = 'https://' . getenv('GITHUB_TOKEN') . '@github.com/pantheon-fixtures/php-srt-site-fixture.git';
+        $siteRepoBranch = 'master';
+        $upstreamRepoUrl = 'https://'. getenv('GITHUB_TOKEN') . '@github.com/pantheon-fixtures/php-srt-upstream-fixture.git';
+        $upstreamRepoBranch = 'main';
+ 
+        $argv = $this->argv([
+            'merge_environment',
+            '--site-repo-url=' . $siteRepoUrl,
+            '--site-repo-branch=' . $siteRepoBranch,
+            '--from-branch=' . 'featureX',
+            '--to-branch=' . $siteRepoBranch,
+            '--work-dir=' . $workdir,
+            // Do not push to avoid altering the fixture repository.
+            '--no-push',
+            '--verbose',
+        ], 0);
+        list($actualOutput, $statusCode) = $this->execute($argv, $this->commandClasses, false);
+        $jsonOutput = json_decode($actualOutput, true);
+        $this->assertEquals(self::STATUS_OK, $statusCode);
+        $this->assertEquals([
+            'clone' => true,
+            'pull' => true,
+            'push' => false,
+            'conflicts' => '',
+            'errormessage' => '',
+        ], $jsonOutput);
+    }
 }
