@@ -20,7 +20,6 @@
       -->
   </logging>
   <php>
-    <server name="SITE_UUID" value="${SITE_UUID}"/>
     <server name="GITHUB_TOKEN" value="${GITHUB_TOKEN}"/>
   </php>
 </phpunit>

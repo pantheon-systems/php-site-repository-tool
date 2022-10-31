@@ -68,9 +68,9 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
         $workdir = sys_get_temp_dir() . '/php-site-repository-tool-test-' . uniqid();
         mkdir($workdir);
 
-        $siteRepoUrl = 'https://' . getenv('GITHUB_TOKEN') . '@github.com/pantheon-fixtures/php-srt-site-fixture.git';
+        $siteRepoUrl = 'https://' . $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-site-fixture.git';
         $siteRepoBranch = 'master';
-        $upstreamRepoUrl = 'https://'. getenv('GITHUB_TOKEN') . '@github.com/pantheon-fixtures/php-srt-upstream-fixture.git';
+        $upstreamRepoUrl = 'https://'. $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-upstream-fixture.git';
         $upstreamRepoBranch = 'main';
  
         $argv = $this->argv([
@@ -104,9 +104,9 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
         $workdir = sys_get_temp_dir() . '/php-site-repository-tool-test-' . uniqid();
         mkdir($workdir);
 
-        $siteRepoUrl = 'https://' . getenv('GITHUB_TOKEN') . '@github.com/pantheon-fixtures/php-srt-site-fixture.git';
+        $siteRepoUrl = 'https://' . $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-site-fixture.git';
         $siteRepoBranch = 'master';
-        $upstreamRepoUrl = 'https://'. getenv('GITHUB_TOKEN') . '@github.com/pantheon-fixtures/php-srt-upstream-fixture.git';
+        $upstreamRepoUrl = 'https://'. $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-upstream-fixture.git';
         $upstreamRepoBranch = 'main';
  
         $argv = $this->argv([

@@ -61,4 +61,12 @@ trait CommandTesterTrait
         // Return the output and status code.
         return [trim($output->fetch()), $statusCode];
     }
+
+    /**
+     * Return github token.
+     */
+    protected function getGithubToken()
+    {
+        return getenv('GITHUB_TOKEN');
+    }
 }
