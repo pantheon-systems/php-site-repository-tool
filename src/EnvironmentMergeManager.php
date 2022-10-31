@@ -97,28 +97,4 @@ class EnvironmentMergeManager
         return $result;
     }
 
-    /**
-     * Checks if all unmerged files are in the allow list.
-     *
-     * @param array $unmergedFiles
-     *   The list of unmerged files.
-     *
-     * @return bool
-     *   TRUE if all unmerged files are in the allow list, FALSE otherwise.
-     */
-    private function allUnmergedFilesInAllowList(array $unmergedFiles): bool
-    {
-        $allowPattern = '/wp-content\/themes\/.*\/LICENSE\.md/';
-
-        if (empty($unmergedFiles)) {
-            return false;
-        }
-
-        foreach ($unmergedFiles as $file) {
-            if (!preg_match($allowPattern, $file)) {
-                return false;
-            }
-        }
-        return true;
-    }
 }

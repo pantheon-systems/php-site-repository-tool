@@ -5,7 +5,7 @@ namespace PhpSiteRepositoryTool;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\BufferedOutput;
 
-class UpstreamCommandsTest extends TestCase implements CommandTesterInterface
+class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterface
 {
     use CommandTesterTrait;
 
@@ -18,7 +18,7 @@ class UpstreamCommandsTest extends TestCase implements CommandTesterInterface
     public function setUp(): void
     {
         // Store the command classes we are going to test
-        $this->commandClasses = [ \PhpSiteRepositoryTool\Cli\UpstreamCommands::class ];
+        $this->commandClasses = [ \PhpSiteRepositoryTool\Cli\SiteRepositoryCommands::class ];
         $this->setupCommandTester('TestFixtureApp', '1.0.1');
     }
 
@@ -39,13 +39,6 @@ class UpstreamCommandsTest extends TestCase implements CommandTesterInterface
     public function exampleTestCommandParameters()
     {
         return [
-
-            [
-                'Done.',
-                self::STATUS_OK,
-                'apply_upstream'
-            ],
-
             [
                 'Apply upstream command',
                 self::STATUS_OK,
