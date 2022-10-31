@@ -96,5 +96,4 @@ class EnvironmentMergeManager
 
         return $result;
     }
-
 }
