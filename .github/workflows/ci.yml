@@ -91,6 +91,7 @@ jobs:
 
     env:
       PHP_EXTENSIONS: dom, json, libxml, mbstring, pdo_sqlite, soap, xml, xmlwriter
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     strategy:
       matrix:
@@ -166,6 +167,11 @@ jobs:
       - name: Install highest dependencies with composer
         if: matrix.dependencies == 'highest'
         run: composer config --unset platform.php && composer update --no-ansi --no-interaction --no-progress
+
+      - name: Setup git on current runner
+        run: |
+          git config --global user.email "ci@pantheon.io"
+          git config --global user.name "Pantheon CI"
 
       - name: Run tests with phpunit
         run: composer unit

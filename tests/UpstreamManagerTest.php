@@ -6,31 +6,54 @@ use PHPUnit\Framework\TestCase;
 
 class UpstreamManagerTest extends TestCase
 {
+
+    use SiteRepositoryToolTesterTrait;
+
     /**
      * Data provider for testExample.
      *
      * Return an array of arrays, each of which contains the parameter
      * values to be used in one invocation of the testExample test function.
      */
-    public function exampleTestValues()
+    public function allUnmergedFilesInAllowListTestValues()
     {
         return [
-            [4, 2, 2,],
-            [9, 3, 3,],
-            [56, 7, 8,],
+            [
+                [
+                'wp-content/themes/2020/LICENSE.md',
+                'wp-content/themes/2021/LICENSE.md',
+                'wp-content/themes/2022/LICENSE.md',
+                ],
+                true
+            ],
+            [
+                [
+                'wp-content/themes/2020/LICENSE.md',
+                'wp-content/themes/2021/README.md',
+                'wp-content/themes/2022/LICENSE.md',
+                ],
+                false
+            ],
+            [
+                [
+                'wp-content/themes/2020/README.md',
+                'wp-content/themes/2021/README.md',
+                'wp-content/themes/2022/README.md',
+                ],
+                false
+            ],
         ];
     }
 
     /**
-     * Test our example class. Each time this function is called, it will
-     * be passed data from the data provider function idendified by the
-     * dataProvider annotation.
+     * Test allUnmergedFilesInAllowListTestValues function.
      *
-     * @dataProvider exampleTestValues
+     * @dataProvider allUnmergedFilesInAllowListTestValues
      */
-    public function testExample($expected, $constructor_parameter, $value)
+    public function testAllUnmergedFilesInAllowList($value, $expected)
     {
-        $example = new UpstreamManager($constructor_parameter);
-        $this->assertEquals($expected, $example->multiply($value));
+        $upstreamManager = new UpstreamManager();
+        $return = $this->callMethod($upstreamManager, 'allUnmergedFilesInAllowList', [$value]);
+        $this->assertEquals($expected, $return);
     }
 }
