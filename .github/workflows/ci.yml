@@ -166,7 +166,7 @@ jobs:
 
       - name: Install highest dependencies with composer
         if: matrix.dependencies == 'highest'
-        run: composer config --unset platform.php && composer update --no-ansi --no-interaction --no-
+        run: composer config --unset platform.php && composer update --no-ansi --no-interaction --no-progress
 
       - name: Setup git on current runner
         run: |
