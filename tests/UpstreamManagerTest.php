@@ -40,7 +40,7 @@ class UpstreamManagerTest extends TestCase
                 'wp-content/themes/2021/README.md',
                 'wp-content/themes/2022/README.md',
                 ],
-                true
+                false
             ],
         ];
     }
