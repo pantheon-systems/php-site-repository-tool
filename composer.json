@@ -20,7 +20,7 @@
     },
     "require": {
         "php": ">=7.4",
-        "consolidation/robo": "^3 || ^4",
+        "consolidation/robo": "^1.5.0 || ^2.2.2 || ^3.0.10 || ^4",
         "symfony/process": "^5.4"
     },
     "require-dev": {
