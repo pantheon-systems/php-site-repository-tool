@@ -2,8 +2,8 @@
 
 namespace PhpSiteRepositoryTool;
 
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\BufferedOutput;
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterface
 {

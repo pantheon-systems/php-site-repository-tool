@@ -2,9 +2,9 @@
 
 namespace PhpSiteRepositoryTool;
 
-use PHPUnit\Framework\TestCase;
 use PhpSiteRepositoryTool\Utils\Git;
 use PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException;
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 class GitTest extends TestCase
 {
