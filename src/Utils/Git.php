@@ -19,7 +19,7 @@ class Git
      */
     private $workdir;
 
-    private array $env;
+    private $env;
 
     private $verbose;
 
