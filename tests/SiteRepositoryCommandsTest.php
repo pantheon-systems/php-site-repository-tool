@@ -15,8 +15,10 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
     /**
      * Prepare to test our commandfile
      */
-    public function setUp(): void
+    public function set_up()
     {
+        parent::set_up();
+
         // Store the command classes we are going to test
         $this->commandClasses = [ \PhpSiteRepositoryTool\Cli\SiteRepositoryCommands::class ];
         $this->setupCommandTester('TestFixtureApp', '1.0.1');

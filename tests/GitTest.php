@@ -20,8 +20,10 @@ class GitTest extends TestCase
     /**
      * Prepare to test our class.
      */
-    public static function setUpBeforeClass(): void
+    public static function set_up_before_class()
     {
+        parent::set_up_before_class();
+
         $workdir = sys_get_temp_dir() . '/php-site-repository-tool-test-' . uniqid();
         mkdir($workdir);
         self::$git = new Git('', '', $workdir, true);
