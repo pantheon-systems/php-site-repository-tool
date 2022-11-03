@@ -17,13 +17,13 @@ class Git
     /**
      * @var string
      */
-    private string $workdir;
+    private $workdir;
 
     private array $env;
 
-    private bool $verbose;
+    private $verbose;
 
-    private bool $workdirCreated;
+    private $workdirCreated;
 
     /**
      * Git constructor.
@@ -35,7 +35,7 @@ class Git
      *
      * @throws \Pantheon\Terminus\Exceptions\TerminusException
      */
-    public function __construct(string $commiterName = '', string $committerEmail = '', string $workdir = '', bool $verbose = false, string $siteUuid = '', string $binding = '', bool $bypassSyncCode = false)
+    public function __construct($commiterName = '', $committerEmail = '', $workdir = '', $verbose = false, $siteUuid = '', $binding = '', $bypassSyncCode = false)
     {
         $this->workdirCreated = false;
 
@@ -85,7 +85,7 @@ class Git
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      * @throws \PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException
      */
-    public function clone(string $repoUrl, string $branchName): void
+    public function clone($repoUrl, $branchName)
     {
         // Use 2 here because: "." and "..".
         if (count(scandir($this->workdir)) > 2) {
@@ -103,7 +103,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    public function remoteAdd(string $name, string $remoteUrl)
+    public function remoteAdd($name, $remoteUrl)
     {
         $this->execute(['remote', 'add', $name, $remoteUrl]);
     }
@@ -115,7 +115,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    public function fetch(string $remoteName)
+    public function fetch($remoteName)
     {
         $this->execute(['fetch', $remoteName]);
     }
@@ -127,7 +127,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException
      */
-    public function merge(string $branchName, string $remoteName = 'origin', string $strategyOption = '', bool $noFf = false): void
+    public function merge($branchName, $remoteName = 'origin', $strategyOption = '', $noFf = false)
     {
         $options = [];
         if ($strategyOption) {
@@ -159,7 +159,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    public function listUnmergedFiles(): array
+    public function listUnmergedFiles()
     {
         $output = $this->execute(['ls-files', '--unmerged']);
         $lines = explode("\n", $output);
@@ -197,7 +197,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    public function getRemoteMessage(string $branchName, string $remoteName = 'upstream'): string
+    public function getRemoteMessage(string $branchName, string $remoteName = 'upstream')
     {
         $commitHash = trim($this->execute(['rev-parse', sprintf('refs/remotes/%s/%s', $remoteName, $branchName)]));
         return trim($this->execute(['log', '--format="%B"', '-n', '1', $commitHash]), "\n\"");
@@ -232,7 +232,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    public function pushAll(): void
+    public function pushAll()
     {
         $this->execute(['push', '--all']);
     }
@@ -240,7 +240,7 @@ class Git
     /**
      * Return workdir path.
      */
-    public function getWorkdir(): string
+    public function getWorkdir()
     {
         if (!$this->workdirCreated) {
             $this->createWorkdir();
@@ -251,7 +251,7 @@ class Git
     /**
      * Creates workdir.
      */
-    protected function createWorkdir(): void
+    protected function createWorkdir()
     {
         if (!is_dir($this->workdir)) {
             if ($this->verbose) {
@@ -272,7 +272,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    private function execute($command, ?string $input = null): string
+    private function execute($command, $input = null)
     {
         try {
             $process = $this->executeAndReturnProcess($command, $input);
@@ -307,7 +307,7 @@ class Git
      *
      * @return \Symfony\Component\Process\Process
      */
-    private function executeAndReturnProcess($command, ?string $input = null): Process
+    private function executeAndReturnProcess($command, $input = null)
     {
         if (is_string($command)) {
             if ($this->verbose) {

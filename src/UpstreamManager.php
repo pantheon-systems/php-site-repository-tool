@@ -14,22 +14,22 @@ class UpstreamManager
      * Applies the upstream changes to the local repository.
      */
     public function applyUpstream(
-        string $siteRepoUrl,
-        string $siteRepoBranch,
-        string $upstreamRepoUrl,
-        string $upstreamRepoBranch,
-        string $strategyOption,
-        string $workdir,
-        string $committerName,
-        string $committerEmail,
-        string $siteUuid,
-        string $binding,
-        string $updateBehavior,
-        bool $bypassSyncCode,
-        bool $ff,
-        bool $clone,
-        bool $push,
-        bool $verbose
+        $siteRepoUrl,
+        $siteRepoBranch,
+        $upstreamRepoUrl,
+        $upstreamRepoBranch,
+        $strategyOption,
+        $workdir,
+        $committerName,
+        $committerEmail,
+        $siteUuid,
+        $binding,
+        $updateBehavior,
+        $bypassSyncCode,
+        $ff,
+        $clone,
+        $push,
+        $verbose
     ) {
         $repository = new Git(
             $committerName,
@@ -134,7 +134,7 @@ class UpstreamManager
      * @return bool
      *   TRUE if all unmerged files are in the allow list, FALSE otherwise.
      */
-    private function allUnmergedFilesInAllowList(array $unmergedFiles): bool
+    private function allUnmergedFilesInAllowList(array $unmergedFiles)
     {
         $allowPattern = '/wp-content\/themes\/.*\/LICENSE\.md/';
 
