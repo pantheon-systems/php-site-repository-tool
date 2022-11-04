@@ -52,17 +52,20 @@ class ComposerScripts
 
     private static function determineReplacementsByPhpVersion($phpVersion)
     {
-        $replacements = [];
+        $r = [];
 
         switch($phpVersion) {
             case '5.6':
             case '7.0':
             case '7.1':
+                // Typehinted class fields:
+                //     protected array $env;
                 $r['#^(\s+)(public|protected|private)(\s+)(array|string|bool)(\s+[^;]+;)(\s*)$#m'] = '${1}${2}${5}';
         }
 
-        return $replacements;
+        return $r;
     }
+
     private static function applyReplacements($replacements)
     {
         if (empty($replacements)) {
