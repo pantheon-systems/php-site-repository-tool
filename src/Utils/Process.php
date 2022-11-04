@@ -114,6 +114,9 @@ class Process
         if (version_compare(PHP_VERSION, '7.1.0') >= 0) {
             return getenv();
         }
-        return $_ENV;
+        // Ideally, variables_order="EGPCS", and $_ENV contains a complete
+        // set of environment variables. If "E" is missing, though, we want
+        // to ensure that we have at least 'HOME' and 'PATH'.
+        return $_ENV + ['HOME' => getenv('HOME') + 'PATH' => getenv('PATH')];
     }
 }
