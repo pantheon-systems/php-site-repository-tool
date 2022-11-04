@@ -48,7 +48,7 @@ class Process
 
         // Process envrionment like Symfony\Process does
         $env = [];
-        foreach ($this->env + $_ENV as $k => $v) {
+        foreach ($this->env + $this->getInheritedEnvironment() as $k => $v) {
             if (false !== $v && false === \in_array($k, ['argc', 'argv', 'ARGC', 'ARGV'], true)) {
                 $env[] = $k.'='.$v;
             }
@@ -103,5 +103,13 @@ class Process
         if (!$this->hasRun) {
             throw new \RuntimeException("Did not call run() on Process object.");
         }
+    }
+
+    private function getInheritedEnvironment()
+    {
+        if (version_compare(PHP_VERSION, '7.1.0') >= 0) {
+            return getenv();
+        }
+        return $_ENV;
     }
 }
