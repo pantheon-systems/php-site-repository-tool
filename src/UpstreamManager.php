@@ -54,7 +54,7 @@ class UpstreamManager
 
         if ($clone) {
             try {
-                $repository->clone($siteRepoUrl, $siteRepoBranch);
+                $repository->cloneRepository($siteRepoUrl, $siteRepoBranch);
                 $result['clone'] = true;
             } catch (NotEmptyFolderException $e) {
                 $result['errormessage'] = sprintf("Workdir '%s' is not empty.", $workdir);

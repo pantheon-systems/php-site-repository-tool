@@ -85,7 +85,7 @@ class Git
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      * @throws \PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException
      */
-    public function clone($repoUrl, $branchName)
+    public function cloneRepository($repoUrl, $branchName)
     {
         // Use 2 here because: "." and "..".
         if (count(scandir($this->workdir)) > 2) {

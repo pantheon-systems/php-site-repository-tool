@@ -35,7 +35,7 @@ class GitTest extends TestCase
      */
     public function testClone()
     {
-        self::$git->clone(self::$upstreamUrl, 'main');
+        self::$git->cloneRepository(self::$upstreamUrl, 'main');
         $this->assertFileExists(self::$git->getWorkdir() . '/.git');
     }
 
