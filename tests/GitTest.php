@@ -86,7 +86,7 @@ class GitTest extends TestCase
      */
     public function testRemove()
     {
-        $output = self::$git->remove('README.md');
+        $output = self::$git->remove(['README.md']);
         $this->assertEmpty($output);
     }
 

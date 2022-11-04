@@ -184,9 +184,9 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    public function remove(...$options)
+    public function remove($files)
     {
-        $this->execute(['rm', ...$options]);
+        $this->execute(array_merge(['rm'], $files));
     }
 
     /**
@@ -318,7 +318,7 @@ class Git
             if ($this->verbose) {
                 printf("RUN: git %s", implode(" ", $command));
             }
-            $process = new Process(['git', ...$command], $this->workdir, $this->env, $input, 180);
+            $process = new Process(array_merge(['git'], $command), $this->workdir, $this->env, $input, 180);
         }
         $process->run();
         return $process;

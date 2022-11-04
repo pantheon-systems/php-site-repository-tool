@@ -91,7 +91,7 @@ class UpstreamManager
             }
 
             foreach ($unmergedFiles as $file) {
-                $repository->remove($file);
+                $repository->remove([$file]);
             }
 
             $commitMessages = [
