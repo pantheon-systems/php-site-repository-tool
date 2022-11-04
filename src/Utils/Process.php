@@ -117,6 +117,6 @@ class Process
         // Ideally, variables_order="EGPCS", and $_ENV contains a complete
         // set of environment variables. If "E" is missing, though, we want
         // to ensure that we have at least 'HOME' and 'PATH'.
-        return $_ENV + ['HOME' => getenv('HOME') + 'PATH' => getenv('PATH')];
+        return $_ENV + ['HOME' => getenv('HOME'), 'PATH' => getenv('PATH')];
     }
 }
