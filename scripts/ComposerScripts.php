@@ -70,6 +70,6 @@ class ComposerScripts
 
     private static function removeTypeHintsFromContents($contents)
     {
-        return preg_replace('#^(\w+)(public|protected|private)(\w+)(array|string|bool)(\w+[^;]+;)#', '${1}${2}${5}', $contents);
+        return preg_replace('#^(\s+)(public|protected|private)(\s+)(array|string|bool)(\s+[^;]+;)(\s*)$#m', '${1}${2}${5}', $contents);
     }
 }
