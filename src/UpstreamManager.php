@@ -134,7 +134,7 @@ class UpstreamManager
      * @return bool
      *   TRUE if all unmerged files are in the allow list, FALSE otherwise.
      */
-    private function allUnmergedFilesInAllowList(array $unmergedFiles)
+    private function allUnmergedFilesInAllowList(array $unmergedFiles): bool
     {
         $allowPattern = '/wp-content\/themes\/.*\/LICENSE\.md/';
 

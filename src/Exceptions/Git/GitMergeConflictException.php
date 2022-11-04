@@ -30,7 +30,7 @@ class GitMergeConflictException extends GitException
      *
      * @return array
      */
-    public function getUnmergedFiles()
+    public function getUnmergedFiles(): array
     {
         return $this->unmergedFiles;
     }

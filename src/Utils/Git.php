@@ -17,13 +17,13 @@ class Git
     /**
      * @var string
      */
-    private $workdir;
+    private string $workdir;
 
     private array $env;
 
-    private $verbose;
+    private bool $verbose;
 
-    private $workdirCreated;
+    private bool $workdirCreated;
 
     /**
      * Git constructor.
@@ -85,7 +85,7 @@ class Git
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      * @throws \PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException
      */
-    public function cloneRepository(string $repoUrl, string $branchName)
+    public function cloneRepository(string $repoUrl, string $branchName): void
     {
         // Use 2 here because: "." and "..".
         if (count(scandir($this->workdir)) > 2) {
@@ -103,7 +103,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    public function remoteAdd(string $name, string $remoteUrl)
+    public function remoteAdd(string $name, string $remoteUrl): void
     {
         $this->execute(['remote', 'add', $name, $remoteUrl]);
     }
@@ -115,7 +115,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    public function fetch(string $remoteName)
+    public function fetch(string $remoteName): void
     {
         $this->execute(['fetch', $remoteName]);
     }
@@ -127,7 +127,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException
      */
-    public function merge(string $branchName, string $remoteName = 'origin', string $strategyOption = '', bool $noFf = false)
+    public function merge(string $branchName, string $remoteName = 'origin', string $strategyOption = '', bool $noFf = false): void
     {
         $options = [];
         if ($strategyOption) {
@@ -159,7 +159,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    public function listUnmergedFiles()
+    public function listUnmergedFiles(): array
     {
         $output = $this->execute(['ls-files', '--unmerged']);
         $lines = explode("\n", $output);
@@ -184,7 +184,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    public function remove(array $files)
+    public function remove(array $files): void
     {
         $this->execute(array_merge(['rm'], $files));
     }
@@ -197,7 +197,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    public function getRemoteMessage(string $branchName, string $remoteName = 'upstream')
+    public function getRemoteMessage(string $branchName, string $remoteName = 'upstream'): string
     {
         $commitHash = trim($this->execute(['rev-parse', sprintf('refs/remotes/%s/%s', $remoteName, $branchName)]));
         return trim($this->execute(['log', '--format="%B"', '-n', '1', $commitHash]), "\n\"");
@@ -213,7 +213,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    public function commit(array $commitMessages, string $author = '')
+    public function commit(array $commitMessages, string $author = ''): void
     {
         $options = [];
         foreach ($commitMessages as $message) {
@@ -232,7 +232,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    public function pushAll()
+    public function pushAll(): void
     {
         $this->execute(['push', '--all']);
     }
@@ -240,7 +240,7 @@ class Git
     /**
      * Return workdir path.
      */
-    public function getWorkdir()
+    public function getWorkdir(): string
     {
         if (!$this->workdirCreated) {
             $this->createWorkdir();
@@ -251,7 +251,7 @@ class Git
     /**
      * Creates workdir.
      */
-    protected function createWorkdir()
+    protected function createWorkdir(): void
     {
         if (!is_dir($this->workdir)) {
             if ($this->verbose) {
@@ -271,7 +271,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    private function execute(array $command)
+    private function execute(array $command): string
     {
         $input = null;
         try {
@@ -307,7 +307,7 @@ class Git
      *
      * @return use PhpSiteRepositoryTool\Utils\Process
      */
-    private function executeAndReturnProcess(array $command)
+    private function executeAndReturnProcess(array $command): Process
     {
         $input = null;
         if ($this->verbose) {

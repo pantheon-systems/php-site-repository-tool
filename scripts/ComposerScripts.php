@@ -57,7 +57,16 @@ class ComposerScripts
         // Note that the fall-through is deliberate
         switch($phpVersion) {
             case '5.6':
+                // Typehinted return value "void"
+                $r['#\): void#'] = ')';
+
+                // Typehinted return value Classname
+                $r['#\): [A-Z][a-zA-Z]+#'] = ')';
+
             case '7.0':
+                // Typehinted return values "array", "string", "bool"
+                $r['#\): (array|string|bool)#'] = ')';
+
                 // Typehinted parameters:
                 //     public function foo(string $bar, bool $baz)
                 $r['#(\s|\()(string|int|bool)(\s+\$[a-zA-Z]+)#'] = '${1}${3}';
