@@ -114,6 +114,11 @@ class Process
         if (version_compare(PHP_VERSION, '7.1.0') >= 0) {
             return getenv();
         }
-        return $_ENV;
+        $env = [];
+        $keys = ['HOME'];
+        foreach ($keys as $key) {
+            $env[$key] = getenv($key);
+        }
+        return $env;
     }
 }

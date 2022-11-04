@@ -166,6 +166,9 @@ jobs:
           git config --global user.email "ci@pantheon.io"
           git config --global user.name "Pantheon CI"
 
+      - name: Show environment
+        run: env
+
       - name: Run tests with phpunit
         run: composer unit
 
