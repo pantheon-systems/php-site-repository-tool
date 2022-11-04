@@ -272,10 +272,11 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    private function execute($command, $input = null)
+    private function execute($command)
     {
+        $input = null;
         try {
-            $process = $this->executeAndReturnProcess($command, $input);
+            $process = $this->executeAndReturnProcess($command);
             if ($this->verbose) {
                 printf("[RET] %s\n", $process->getExitCode());
                 printf("[OUT] %s\n", $process->getOutput());
@@ -307,8 +308,9 @@ class Git
      *
      * @return \Symfony\Component\Process\Process
      */
-    private function executeAndReturnProcess($command, $input = null)
+    private function executeAndReturnProcess($command)
     {
+        $input = null;
         if (is_string($command)) {
             if ($this->verbose) {
                 printf("RUN: %s\n", $command);
