@@ -1752,16 +1752,16 @@
         },
         {
             "name": "g1a/composer-test-scenarios",
-            "version": "3.2.0",
+            "version": "3.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/g1a/composer-test-scenarios.git",
-                "reference": "e7394206d845fd593d325440507fb940bef8cb62"
+                "reference": "3566ed6e525874b54f04f35b4d40a19c809114ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/g1a/composer-test-scenarios/zipball/e7394206d845fd593d325440507fb940bef8cb62",
-                "reference": "e7394206d845fd593d325440507fb940bef8cb62",
+                "url": "https://api.github.com/repos/g1a/composer-test-scenarios/zipball/3566ed6e525874b54f04f35b4d40a19c809114ab",
+                "reference": "3566ed6e525874b54f04f35b4d40a19c809114ab",
                 "shasum": ""
             },
             "require": {
@@ -1802,9 +1802,9 @@
             "description": "Useful scripts for testing multiple sets of Composer dependencies.",
             "support": {
                 "issues": "https://github.com/g1a/composer-test-scenarios/issues",
-                "source": "https://github.com/g1a/composer-test-scenarios/tree/3.2.0"
+                "source": "https://github.com/g1a/composer-test-scenarios/tree/3.2.1"
             },
-            "time": "2020-09-28T20:54:35+00:00"
+            "time": "2022-11-04T16:05:56+00:00"
         },
         {
             "name": "myclabs/deep-copy",

@@ -52,7 +52,7 @@
     },
     "config": {
         "platform": {
-            "php": "7.1.33"
+            "php": "8.0.25"
         },
         "optimize-autoloader": true,
         "sort-packages": true,

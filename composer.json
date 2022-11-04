@@ -54,7 +54,7 @@
         "optimize-autoloader": true,
         "sort-packages": true,
         "platform": {
-            "php": "8.0"
+            "php": "7.1.33"
         },
         "allow-plugins": {
             "g1a/composer-test-scenarios": true
@@ -69,10 +69,10 @@
                     }
                 }
             },
-            "php71": {
+            "php80": {
                 "config": {
                     "platform": {
-                        "php": "7.1.33"
+                        "php": "8.0.25"
                     }
                 }
             }
