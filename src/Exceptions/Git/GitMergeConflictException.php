@@ -11,7 +11,7 @@ use Throwable;
  */
 class GitMergeConflictException extends GitException
 {
-    private array $unmergedFiles;
+    private $unmergedFiles;
 
     /**
      * @inheritdoc
