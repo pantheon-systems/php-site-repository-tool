@@ -6,7 +6,7 @@ use PhpSiteRepositoryTool\Exceptions\Git\GitException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitNoDiffException;
 use PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException;
-use PhpSiteRepositoryTool\Utils\Process;
+use Symfony\Component\Process\Process;
 use Throwable;
 
 /**
@@ -306,7 +306,7 @@ class Git
      * @param array|string $command
      * @param null|string $input
      *
-     * @return use PhpSiteRepositoryTool\Utils\Process
+     * @return Symfony\Component\Process\Process
      */
     private function executeAndReturnProcess($command)
     {
