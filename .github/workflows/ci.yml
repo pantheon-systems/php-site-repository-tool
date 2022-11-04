@@ -19,7 +19,7 @@ jobs:
         run: composer install
       - name: Phar Build
         run: |
-          composer scenario php74
+          composer configure-for-php-version
           composer phar:install-tools
           composer phar:build
       - name: Save site-repository-tool.phar as artifact
@@ -100,40 +100,14 @@ jobs:
           - ubuntu-latest
 
         php-version:
+          - "5.6"
           - "7.1"
           - "7.4"
+          - "8.0"
+          - "8.1"
 
         php-ini-values:
           - assert.exception=1, zend.assertions=1, phar.readonly=false, variables_order="EGPCS"
-
-        scenario:
-          - default
-
-        include:
-          - os: ubuntu-latest
-            php-version: "5.6"
-            scenario: php56
-            php-ini-values: assert.exception=1, zend.assertions=1, opcache.enable=1, opcache.enable_cli=1, opcache.optimization_level=-1, opcache.jit_buffer_size=4096M, opcache.jit=1205, phar.readonly=false, variables_order="EGPCS"
-
-          - os: ubuntu-latest
-            php-version: "7.4"
-            scenario: php74
-            php-ini-values: assert.exception=1, zend.assertions=1, opcache.enable=1, opcache.enable_cli=1, opcache.optimization_level=-1, opcache.jit_buffer_size=4096M, opcache.jit=1205, phar.readonly=false, variables_order="EGPCS"
-
-          - os: ubuntu-latest
-            php-version: "8.0"
-            scenario: php74
-            php-ini-values: assert.exception=1, zend.assertions=1, opcache.enable=1, opcache.enable_cli=1, opcache.optimization_level=-1, opcache.jit_buffer_size=4096M, opcache.jit=1205, phar.readonly=false, variables_order="EGPCS"
-
-          - os: ubuntu-latest
-            php-version: "8.0"
-            scenario: php80
-            php-ini-values: assert.exception=1, zend.assertions=1, opcache.enable=1, opcache.enable_cli=1, opcache.optimization_level=-1, opcache.jit_buffer_size=4096M, opcache.jit=1205, phar.readonly=false, variables_order="EGPCS"
-
-          - os: ubuntu-latest
-            php-version: "8.1"
-            scenario: php80
-            php-ini-values: assert.exception=1, zend.assertions=1, opcache.enable=1, opcache.enable_cli=1, opcache.optimization_level=-1, opcache.jit_buffer_size=4096M, opcache.jit=1205, phar.readonly=false, variables_order="EGPCS"
 
     steps:
       - name: Checkout
@@ -151,17 +125,13 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
 
-      - name: Determine composer cache directory on Windows
-        if: matrix.os == 'windows-latest'
-        run: Add-Content -Path $ENV:GITHUB_ENV -Value "COMPOSER_CACHE_DIR=~\AppData\Local\Composer"
-
       - name: Cache dependencies installed with composer
         uses: actions/cache@v1
         with:
           path: ${{ env.COMPOSER_CACHE_DIR }}
-          key: php${{ matrix.php-version }}-composer-${{ matrix.scenario }}-${{ hashFiles('**/composer.json') }}
+          key: php${{ matrix.php-version }}}-${{ hashFiles('**/composer.json') }}
           restore-keys: |
-            php${{ matrix.php-version }}-composer-${{ matrix.scenario }}-
+            php${{ matrix.php-version }}-
 
       - name: Make sure composer.json is valid
         run: composer validate
@@ -170,7 +140,7 @@ jobs:
         run: composer install
 
       - name: Update dependencies with composer-test-scenarios
-        run: composer scenario ${{ matrix.scenario }}
+        run: composer configure-for-php-version
 
       - name: Setup git on current runner
         run: |
