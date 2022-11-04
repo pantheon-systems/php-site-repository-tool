@@ -99,30 +99,34 @@ jobs:
           - ubuntu-latest
 
         php-version:
-          - "7.4"
           - "8.0"
           - "8.1"
 
         php-ini-values:
           - assert.exception=1, zend.assertions=1, phar.readonly=false
 
-        dependencies:
-          - highest
+        scenario:
+          - default
 
         include:
           - os: ubuntu-latest
             php-version: "5.6"
-            dependencies: highest
+            scenario: php56
             php-ini-values: assert.exception=1, zend.assertions=1, opcache.enable=1, opcache.enable_cli=1, opcache.optimization_level=-1, opcache.jit_buffer_size=4096M, opcache.jit=1205, phar.readonly=false
 
           - os: ubuntu-latest
-            php-version: "7.0"
-            dependencies: highest
+            php-version: "7.1"
+            scenario: php71
+            php-ini-values: assert.exception=1, zend.assertions=1, opcache.enable=1, opcache.enable_cli=1, opcache.optimization_level=-1, opcache.jit_buffer_size=4096M, opcache.jit=1205, phar.readonly=false
+
+          - os: ubuntu-latest
+            php-version: "7.4"
+            scenario: php71
             php-ini-values: assert.exception=1, zend.assertions=1, opcache.enable=1, opcache.enable_cli=1, opcache.optimization_level=-1, opcache.jit_buffer_size=4096M, opcache.jit=1205, phar.readonly=false
 
           - os: ubuntu-latest
             php-version: "8.1"
-            dependencies: highest
+            scenario: default
             php-ini-values: assert.exception=1, zend.assertions=1, opcache.enable=1, opcache.enable_cli=1, opcache.optimization_level=-1, opcache.jit_buffer_size=4096M, opcache.jit=1205, phar.readonly=false
 
     steps:
@@ -149,29 +153,15 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ${{ env.COMPOSER_CACHE_DIR }}
-          key: php${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-${{ hashFiles('**/composer.json') }}
+          key: php${{ matrix.php-version }}-composer-${{ matrix.scenario }}-${{ hashFiles('**/composer.json') }}
           restore-keys: |
-            php${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-
+            php${{ matrix.php-version }}-composer-${{ matrix.scenario }}-
 
-      - name: Make sure composer.json is valid before we start modifyig it
+      - name: Make sure composer.json is valid
         run: composer validate
 
-      - name: Clear platform php configuration in case we need to update phpunit
-        run: composer config --unset platform.php
-
-      - name: Update phpunit if dependencies are locked in case phpunit version in lock file is not compatible
-        if: matrix.dependencies == 'locked'
-        run: |
-          composer install --no-ansi --no-interaction --no-progress
-          composer update --no-ansi --no-interaction --no-progress phpunit/phpunit --with-all-dependencies
-
-      - name: Install lowest dependencies with composer
-        if: matrix.dependencies == 'lowest'
-        run: composer update --no-ansi --no-interaction --no-progress --prefer-lowest
-
-      - name: Install highest dependencies with composer
-        if: matrix.dependencies == 'highest'
-        run: composer config --unset platform.php && composer update --no-ansi --no-interaction --no-progress
+      - name: Install dependencies with composer-test-scenarios
+        run: composer scenario ${{ matrix.scenario }}
 
       - name: Setup git on current runner
         run: |

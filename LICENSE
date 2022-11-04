@@ -1,6 +1,6 @@
 The MIT License (MIT)
 
-Copyright (c) 2018-2021 Kevin Porras
+Copyright (c) 2018-2022 Kevin Porras
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -21,4 +21,28 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 DEPENDENCY LICENSES:
 
-Name  Version  License  
+Name                               Version Licenses
+composer/semver                    3.3.2   MIT
+consolidation/annotated-command    4.6.0   MIT
+consolidation/config               2.1.2   MIT
+consolidation/log                  2.1.1   MIT
+consolidation/output-formatters    4.2.3   MIT
+consolidation/robo                 3.0.10  MIT
+consolidation/self-update          2.0.5   MIT
+dflydev/dot-access-data            v3.0.2  MIT
+grasmash/expander                  2.0.3   MIT
+league/container                   3.4.1   MIT
+psr/container                      1.0.0   MIT
+psr/log                            1.1.4   MIT
+symfony/console                    v4.4.48 MIT
+symfony/event-dispatcher           v4.4.44 MIT
+symfony/event-dispatcher-contracts v1.1.13 MIT
+symfony/filesystem                 v4.4.42 MIT
+symfony/finder                     v4.4.44 MIT
+symfony/polyfill-ctype             v1.26.0 MIT
+symfony/polyfill-mbstring          v1.26.0 MIT
+symfony/polyfill-php73             v1.26.0 MIT
+symfony/polyfill-php80             v1.26.0 MIT
+symfony/process                    v4.4.44 MIT
+symfony/service-contracts          v1.1.13 MIT
+symfony/yaml                       v4.4.45 MIT

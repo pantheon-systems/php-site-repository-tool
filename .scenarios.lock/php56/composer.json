@@ -10,12 +10,12 @@
     ],
     "autoload": {
         "psr-4": {
-            "PhpSiteRepositoryTool\\": "src"
+            "PhpSiteRepositoryTool\\": "../../src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "PhpSiteRepositoryTool\\": "tests/src"
+            "PhpSiteRepositoryTool\\": "../../tests/src"
         }
     },
     "require": {
@@ -51,32 +51,17 @@
         ]
     },
     "config": {
+        "platform": {
+            "php": "5.6.40"
+        },
         "optimize-autoloader": true,
         "sort-packages": true,
-        "platform": {
-            "php": "8.0"
-        },
         "allow-plugins": {
             "g1a/composer-test-scenarios": true
-        }
+        },
+        "vendor-dir": "../../vendor"
     },
     "extra": {
-        "scenarios": {
-            "php56": {
-                "config": {
-                    "platform": {
-                        "php": "5.6.40"
-                    }
-                }
-            },
-            "php71": {
-                "config": {
-                    "platform": {
-                        "php": "7.1.33"
-                    }
-                }
-            }
-        },
         "branch-alias": {
             "dev-main": "1.x-dev"
         }
