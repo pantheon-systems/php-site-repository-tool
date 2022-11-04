@@ -48,7 +48,7 @@ class Process
 
         // Process envrionment like Symfony\Process does
         $env = [];
-        foreach ($this->env + getenv() as $k => $v) {
+        foreach ($this->env + $_ENV as $k => $v) {
             if (false !== $v && false === \in_array($k, ['argc', 'argv', 'ARGC', 'ARGV'], true)) {
                 $env[] = $k.'='.$v;
             }
