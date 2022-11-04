@@ -311,12 +311,12 @@ class Git
     {
         if (is_string($command)) {
             if ($this->verbose) {
-                printf("RUN: %s", $command);
+                printf("RUN: %s\n", $command);
             }
             $process = Process::fromShellCommandline($command, $this->workdir, $this->env);
         } else {
             if ($this->verbose) {
-                printf("RUN: git %s", implode(" ", $command));
+                printf("RUN: git %s\n", implode(" ", $command));
             }
             $process = new Process(array_merge(['git'], $command), $this->workdir, $this->env, $input, 180);
         }
