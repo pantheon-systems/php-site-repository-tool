@@ -54,7 +54,7 @@ class Process
             }
         }
 
-        $process = proc_open($command, $descriptorspec, $pipes, $this->cwd, $this->env);
+        $process = proc_open($command, $descriptorspec, $pipes, $this->cwd, $env);
 
         if (is_resource($process)) {
             // $pipes now looks like this:
