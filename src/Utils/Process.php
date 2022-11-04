@@ -46,6 +46,14 @@ class Process
            2 => ["pipe", "w"]   // stderr is a pipe that the child will write to
         ];
 
+        // Process envrionment like Symfony\Process does
+        $env = [];
+        foreach ($this->env + getenv() as $k => $v) {
+            if (false !== $v && false === \in_array($k, ['argc', 'argv', 'ARGC', 'ARGV'], true)) {
+                $env[] = $k.'='.$v;
+            }
+        }
+
         $process = proc_open($command, $descriptorspec, $pipes, $this->cwd, $this->env);
 
         if (is_resource($process)) {
