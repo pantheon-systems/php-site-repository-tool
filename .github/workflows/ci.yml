@@ -103,7 +103,7 @@ jobs:
           - "7.4"
 
         php-ini-values:
-          - assert.exception=1, zend.assertions=1, phar.readonly=false
+          - assert.exception=1, zend.assertions=1, phar.readonly=false, variables_order="EGPCS"
 
         scenario:
           - default
