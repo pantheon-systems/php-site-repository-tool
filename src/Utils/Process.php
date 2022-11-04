@@ -48,7 +48,11 @@ class Process
 
         // Process envrionment like Symfony\Process does
         $env = [];
-        foreach ($this->env + $this->getInheritedEnvironment() as $k => $v) {
+        $inheritedEnv = $this->getInheritedEnvironment();
+        if (empty($inheritedEnv)) {
+            print "!!!!!!!! Could not get inherited environment!\n";
+        }
+        foreach ($this->env + $inheritedEnv as $k => $v) {
             if (false !== $v && false === \in_array($k, ['argc', 'argv', 'ARGC', 'ARGV'], true)) {
                 $env[] = $k.'='.$v;
             }
