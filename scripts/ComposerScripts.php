@@ -54,13 +54,18 @@ class ComposerScripts
     {
         $r = [];
 
+        // Note that the fall-through is deliberate
         switch($phpVersion) {
             case '5.6':
             case '7.0':
+                // Typehinted parameters:
+                //     public function foo(string $bar, bool $baz)
+                $r['#(\s|\()(string|int|bool)(\s+\$[a-zA-Z]+)#'] = '${1}${3}';
+
             case '7.1':
                 // Typehinted class fields:
                 //     protected array $env;
-                $r['#^(\s+)(public|protected|private)(\s+)(array|string|bool)(\s+[^;]+;)(\s*)$#m'] = '${1}${2}${5}';
+                $r['#^(\s+)(public|protected|private)(\s+)(array|string|int|bool)(\s+[^;]+;)(\s*)$#m'] = '${1}${2}${5}';
         }
 
         return $r;
