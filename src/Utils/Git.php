@@ -311,17 +311,10 @@ class Git
     private function executeAndReturnProcess($command)
     {
         $input = null;
-        if (is_string($command)) {
-            if ($this->verbose) {
-                printf("RUN: %s\n", $command);
-            }
-            $process = Process::fromShellCommandline($command, $this->workdir, $this->env);
-        } else {
-            if ($this->verbose) {
-                printf("RUN: git %s\n", implode(" ", $command));
-            }
-            $process = new Process(array_merge(['git'], $command), $this->workdir, $this->env, $input, 180);
+        if ($this->verbose) {
+            printf("RUN: git %s\n", implode(" ", $command));
         }
+        $process = new Process(array_merge(['git'], $command), $this->workdir, $this->env, $input, 180);
         $process->run();
         return $process;
     }
