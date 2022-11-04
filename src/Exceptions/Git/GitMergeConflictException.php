@@ -11,14 +11,14 @@ use Throwable;
  */
 class GitMergeConflictException extends GitException
 {
-    private $unmergedFiles;
+    private array $unmergedFiles;
 
     /**
      * @inheritdoc
      *
      * @param array $unmergedFiles
      */
-    public function __construct($message = '', $code = 0, $previous = null, $unmergedFiles = [])
+    public function __construct($message = '', $code = 0, Throwable $previous = null, array $unmergedFiles = [])
     {
         parent::__construct($message, $code, $previous);
 

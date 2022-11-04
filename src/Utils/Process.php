@@ -17,7 +17,7 @@ class Process
 
     private $cwd;
 
-    private $env;
+    private array $env;
 
     private $exitCode;
 
@@ -25,7 +25,7 @@ class Process
 
     private $errorOutput;
 
-    public function __construct($command, $cwd = '', $env = [], $input = null, $unused = 0)
+    public function __construct($command, $cwd = '', array $env = [], $input = null, $unused = 0)
     {
         $this->hasRun = false;
         $this->command = $command;

@@ -19,7 +19,7 @@ class Git
      */
     private $workdir;
 
-    private $env;
+    private array $env;
 
     private $verbose;
 
@@ -213,7 +213,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    public function commit($commitMessages, $author = '')
+    public function commit(array $commitMessages, $author = '')
     {
         $options = [];
         foreach ($commitMessages as $message) {
