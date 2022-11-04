@@ -35,7 +35,7 @@ class Git
      *
      * @throws \Pantheon\Terminus\Exceptions\TerminusException
      */
-    public function __construct($commiterName = '', $committerEmail = '', $workdir = '', $verbose = false, $siteUuid = '', $binding = '', $bypassSyncCode = false)
+    public function __construct(string $commiterName = '', string $committerEmail = '', string $workdir = '', bool $verbose = false, string $siteUuid = '', string $binding = '', bool $bypassSyncCode = false)
     {
         $this->workdirCreated = false;
 
@@ -85,7 +85,7 @@ class Git
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      * @throws \PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException
      */
-    public function cloneRepository($repoUrl, $branchName)
+    public function cloneRepository(string $repoUrl, string $branchName)
     {
         // Use 2 here because: "." and "..".
         if (count(scandir($this->workdir)) > 2) {
@@ -103,7 +103,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    public function remoteAdd($name, $remoteUrl)
+    public function remoteAdd(string $name, string $remoteUrl)
     {
         $this->execute(['remote', 'add', $name, $remoteUrl]);
     }
@@ -115,7 +115,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    public function fetch($remoteName)
+    public function fetch(string $remoteName)
     {
         $this->execute(['fetch', $remoteName]);
     }
@@ -127,7 +127,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException
      */
-    public function merge($branchName, $remoteName = 'origin', $strategyOption = '', $noFf = false)
+    public function merge(string $branchName, string $remoteName = 'origin', string $strategyOption = '', bool $noFf = false)
     {
         $options = [];
         if ($strategyOption) {
@@ -184,7 +184,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    public function remove($files)
+    public function remove(array $files)
     {
         $this->execute(array_merge(['rm'], $files));
     }
@@ -197,7 +197,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    public function getRemoteMessage($branchName, $remoteName = 'upstream')
+    public function getRemoteMessage(string $branchName, string $remoteName = 'upstream')
     {
         $commitHash = trim($this->execute(['rev-parse', sprintf('refs/remotes/%s/%s', $remoteName, $branchName)]));
         return trim($this->execute(['log', '--format="%B"', '-n', '1', $commitHash]), "\n\"");
@@ -213,7 +213,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    public function commit(array $commitMessages, $author = '')
+    public function commit(array $commitMessages, string $author = '')
     {
         $options = [];
         foreach ($commitMessages as $message) {
@@ -265,14 +265,13 @@ class Git
     /**
      * Executes the Git command.
      *
-     * @param array|string $command
-     * @param null|string $input
+     * @param array $command
      *
      * @return string
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    private function execute($command)
+    private function execute(array $command)
     {
         $input = null;
         try {
@@ -308,7 +307,7 @@ class Git
      *
      * @return use PhpSiteRepositoryTool\Utils\Process
      */
-    private function executeAndReturnProcess($command)
+    private function executeAndReturnProcess(array $command)
     {
         $input = null;
         if ($this->verbose) {

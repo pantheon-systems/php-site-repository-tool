@@ -14,22 +14,22 @@ class UpstreamManager
      * Applies the upstream changes to the local repository.
      */
     public function applyUpstream(
-        $siteRepoUrl,
-        $siteRepoBranch,
-        $upstreamRepoUrl,
-        $upstreamRepoBranch,
-        $strategyOption,
-        $workdir,
-        $committerName,
-        $committerEmail,
-        $siteUuid,
-        $binding,
-        $updateBehavior,
-        $bypassSyncCode,
-        $ff,
-        $clone,
-        $push,
-        $verbose
+        string $siteRepoUrl,
+        string $siteRepoBranch,
+        string $upstreamRepoUrl,
+        string $upstreamRepoBranch,
+        string $strategyOption,
+        string $workdir,
+        string $committerName,
+        string $committerEmail,
+        string $siteUuid,
+        string $binding,
+        string $updateBehavior,
+        bool $bypassSyncCode,
+        bool $ff,
+        bool $clone,
+        bool $push,
+        bool $verbose
     ) {
         $repository = new Git(
             $committerName,

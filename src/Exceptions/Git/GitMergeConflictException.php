@@ -18,7 +18,7 @@ class GitMergeConflictException extends GitException
      *
      * @param array $unmergedFiles
      */
-    public function __construct($message = '', $code = 0, Throwable $previous = null, array $unmergedFiles = [])
+    public function __construct(string $message = '', int $code = 0, Throwable $previous = null, array $unmergedFiles = [])
     {
         parent::__construct($message, $code, $previous);
 

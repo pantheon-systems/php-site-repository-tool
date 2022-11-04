@@ -14,20 +14,20 @@ class EnvironmentMergeManager
      * Applies the upstream changes to the local repository.
      */
     public function mergeEnvironment(
-        $siteRepoUrl,
-        $siteRepoBranch,
-        $fromBranch,
-        $toBranch,
-        $strategyOption,
-        $workdir,
-        $committerName,
-        $committerEmail,
-        $siteUuid,
-        $binding,
-        $bypassSyncCode,
-        $ff,
-        $push,
-        $verbose
+        string $siteRepoUrl,
+        string $siteRepoBranch,
+        string $fromBranch,
+        string $toBranch,
+        string $strategyOption,
+        string $workdir,
+        string $committerName,
+        string $committerEmail,
+        string $siteUuid,
+        string $binding,
+        bool $bypassSyncCode,
+        bool $ff,
+        bool $push,
+        bool $verbose
     ) {
         $repository = new Git(
             $committerName,
