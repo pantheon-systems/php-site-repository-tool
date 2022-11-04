@@ -23,7 +23,8 @@ class ComposerScripts
         print "> $command\n";
         passthru($command);
 
-        static::removeTypeHints($phpVersion);
+        $replacements = static::determineReplacementsByPhpVersion($phpVersion);
+        static::applyReplacements($replacements);
     }
 
     private static function determineScenario($phpVersion)
@@ -49,9 +50,22 @@ class ComposerScripts
         return 'default';
     }
 
-    private static function removeTypeHints($phpVersion)
+    private static function determineReplacementsByPhpVersion($phpVersion)
     {
-        if (version_compare($phpVersion, '7.2') >= 0) {
+        $replacements = [];
+
+        switch($phpVersion) {
+            case '5.6':
+            case '7.0':
+            case '7.1':
+                $r['#^(\s+)(public|protected|private)(\s+)(array|string|bool)(\s+[^;]+;)(\s*)$#m'] = '${1}${2}${5}';
+        }
+
+        return $replacements;
+    }
+    private static function applyReplacements($replacements)
+    {
+        if (empty($replacements)) {
             return;
         }
 
@@ -62,14 +76,14 @@ class ComposerScripts
             print '| ' . $file->getRelativePathname() . PHP_EOL;
 
             $contents = $file->getContents();
-            $contents = static::removeTypeHintsFromContents($contents);
+            $contents = static::applyReplacementsToContents($replacements, $contents);
 
             file_put_contents($file->getRealPath(), $contents);
         }
     }
 
-    private static function removeTypeHintsFromContents($contents)
+    private static function applyReplacementsToContents($replacements, $contents)
     {
-        return preg_replace('#^(\s+)(public|protected|private)(\s+)(array|string|bool)(\s+[^;]+;)(\s*)$#m', '${1}${2}${5}', $contents);
+        return preg_replace(array_keys($replacements), array_values($replacements), $contents);
     }
 }
