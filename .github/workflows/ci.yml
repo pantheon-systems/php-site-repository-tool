@@ -19,6 +19,7 @@ jobs:
         run: composer install
       - name: Phar Build
         run: |
+          composer scenario php74
           composer phar:install-tools
           composer phar:build
       - name: Save site-repository-tool.phar as artifact
@@ -112,17 +113,27 @@ jobs:
           - os: ubuntu-latest
             php-version: "5.6"
             scenario: php56
-            php-ini-values: assert.exception=1, zend.assertions=1, opcache.enable=1, opcache.enable_cli=1, opcache.optimization_level=-1, opcache.jit_buffer_size=4096M, opcache.jit=1205, phar.readonly=false
+            php-ini-values: assert.exception=1, zend.assertions=1, opcache.enable=1, opcache.enable_cli=1, opcache.optimization_level=-1, opcache.jit_buffer_size=4096M, opcache.jit=1205, phar.readonly=false, variables_order="EGPCS"
+
+          - os: ubuntu-latest
+            php-version: "7.4"
+            scenario: php74
+            php-ini-values: assert.exception=1, zend.assertions=1, opcache.enable=1, opcache.enable_cli=1, opcache.optimization_level=-1, opcache.jit_buffer_size=4096M, opcache.jit=1205, phar.readonly=false, variables_order="EGPCS"
+
+          - os: ubuntu-latest
+            php-version: "8.0"
+            scenario: php74
+            php-ini-values: assert.exception=1, zend.assertions=1, opcache.enable=1, opcache.enable_cli=1, opcache.optimization_level=-1, opcache.jit_buffer_size=4096M, opcache.jit=1205, phar.readonly=false, variables_order="EGPCS"
 
           - os: ubuntu-latest
             php-version: "8.0"
             scenario: php80
-            php-ini-values: assert.exception=1, zend.assertions=1, opcache.enable=1, opcache.enable_cli=1, opcache.optimization_level=-1, opcache.jit_buffer_size=4096M, opcache.jit=1205, phar.readonly=false
+            php-ini-values: assert.exception=1, zend.assertions=1, opcache.enable=1, opcache.enable_cli=1, opcache.optimization_level=-1, opcache.jit_buffer_size=4096M, opcache.jit=1205, phar.readonly=false, variables_order="EGPCS"
 
           - os: ubuntu-latest
             php-version: "8.1"
             scenario: php80
-            php-ini-values: assert.exception=1, zend.assertions=1, opcache.enable=1, opcache.enable_cli=1, opcache.optimization_level=-1, opcache.jit_buffer_size=4096M, opcache.jit=1205, phar.readonly=false
+            php-ini-values: assert.exception=1, zend.assertions=1, opcache.enable=1, opcache.enable_cli=1, opcache.optimization_level=-1, opcache.jit_buffer_size=4096M, opcache.jit=1205, phar.readonly=false, variables_order="EGPCS"
 
     steps:
       - name: Checkout
@@ -168,6 +179,9 @@ jobs:
 
       - name: Show environment
         run: env
+
+      - name: Show installed dependencies
+        run: composer info
 
       - name: Run tests with phpunit
         run: composer unit
