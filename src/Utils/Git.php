@@ -197,7 +197,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    public function getRemoteMessage(string $branchName, string $remoteName = 'upstream')
+    public function getRemoteMessage($branchName, $remoteName = 'upstream')
     {
         $commitHash = trim($this->execute(['rev-parse', sprintf('refs/remotes/%s/%s', $remoteName, $branchName)]));
         return trim($this->execute(['log', '--format="%B"', '-n', '1', $commitHash]), "\n\"");
@@ -213,7 +213,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    public function commit(array $commitMessages, string $author = ''): void
+    public function commit($commitMessages, $author = '')
     {
         $options = [];
         foreach ($commitMessages as $message) {
