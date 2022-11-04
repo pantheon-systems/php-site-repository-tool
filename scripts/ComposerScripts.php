@@ -17,7 +17,9 @@ class ComposerScripts
     public static function configureForPhpVersion(Event $event)
     {
         $scenario = static::determineScenario();
-        passthru("composer scenario $scenario");
+        $command = "composer scenario $scenario";
+        print "> $command\n";
+        passthru($command);
     }
 
     private static function determineScenario()
