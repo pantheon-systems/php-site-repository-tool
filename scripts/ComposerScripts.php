@@ -72,15 +72,11 @@ class ComposerScripts
                 $r['#(\s|\()(string|int|bool)(\s+\$[a-zA-Z]+)#'] = '${1}${3}';
 
             case '7.1':
-                // Typehinted class array fields:
-                //     protected array $env;
-                $r['#^(\s+)(public|protected|private)(\s+)(array)(\s+[^;]+;)(\s*)$#m'] = '${1}${2}${5}';
-
             case '7.2':
             case '7.3':
                 // Typehinted class string, int, or bool fields:
                 //     protected array $env;
-                $r['#^(\s+)(public|protected|private)(\s+)(string|int|bool)(\s+[^;]+;)(\s*)$#m'] = '${1}${2}${5}';
+                $r['#^(\s+)(public|protected|private)(\s+)(array|string|int|bool)(\s+[^;]+;)(\s*)$#m'] = '${1}${2}${5}';
 
         }
 
