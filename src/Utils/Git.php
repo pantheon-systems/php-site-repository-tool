@@ -305,7 +305,7 @@ class Git
      * @param array|string $command
      * @param null|string $input
      *
-     * @return use PhpSiteRepositoryTool\Utils\Process
+     * @return PhpSiteRepositoryTool\Utils\Process
      */
     private function executeAndReturnProcess(array $command): Process
     {
