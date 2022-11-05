@@ -6,6 +6,10 @@
         {
             "name": "Kevin Porras",
             "email": "kevin.porras@pantheon.io"
+        },
+        {
+            "name": "Greg Anderson",
+            "email": "greg@pantheon.io"
         }
     ],
     "autoload": {

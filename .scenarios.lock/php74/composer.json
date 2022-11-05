@@ -6,6 +6,10 @@
         {
             "name": "Kevin Porras",
             "email": "kevin.porras@pantheon.io"
+        },
+        {
+            "name": "Greg Anderson",
+            "email": "greg@pantheon.io"
         }
     ],
     "autoload": {
@@ -14,6 +18,9 @@
         }
     },
     "autoload-dev": {
+        "classmap": [
+            "../../scripts/ComposerScripts.php"
+        ],
         "psr-4": {
             "PhpSiteRepositoryTool\\": "../../tests/src"
         }
@@ -37,6 +44,9 @@
         "cs": "phpcs --standard=PSR2 -n src",
         "cbf": "phpcbf --standard=PSR2 -n src tests",
         "unit": "phpunit --colors=always",
+        "configure-for-php-version": [
+            "\\PhpSiteRepositoryTool\\ComposerScripts::configureForPhpVersion"
+        ],
         "lint": [
             "find src -name '*.php' -print0 | xargs -0 -n1 php -l",
             "find tests/src -name '*.php' -print0 | xargs -0 -n1 php -l"
