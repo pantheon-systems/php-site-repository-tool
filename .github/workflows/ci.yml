@@ -53,38 +53,6 @@ jobs:
       - name: Run linter
         run: composer lint
 
-  backward-compatibility:
-    name: Backward Compatibility
-
-    # Remove the 'if' line below once you have a 1.0.0 release
-    if: ${{ false }}
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Fetch tags
-        run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-
-      - name: Install PHP with extensions
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.1
-          coverage: none
-          extensions: intl
-
-      - name: Install roave/backward-compatibility-check
-        run: |
-          mkdir -p tools
-          composer --working-dir=tools require roave/backward-compatibility-check:^7
-
-      - name: Run roave/backward-compatibility-check
-        run: ./tools/vendor/bin/roave-backward-compatibility-check --from=1.0.0
-
   tests:
     name: Tests
 
