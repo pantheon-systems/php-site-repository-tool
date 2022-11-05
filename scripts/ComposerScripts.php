@@ -37,17 +37,16 @@ class ComposerScripts
             case '7.1':
             case '7.2':
             case '7.3':
-                return 'default';
+                return 'php71';
 
             case '7.4':
                 return 'php74';
 
             case '8.0':
             case '8.1':
-                return 'php80';
+            default:
+                return 'default';
         }
-
-        return 'default';
     }
 
     private static function determineReplacementsByPhpVersion($phpVersion)
