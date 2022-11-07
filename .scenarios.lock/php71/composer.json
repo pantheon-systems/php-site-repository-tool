@@ -4,12 +4,8 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Kevin Porras",
-            "email": "kevin.porras@pantheon.io"
-        },
-        {
-            "name": "Greg Anderson",
-            "email": "greg@pantheon.io"
+            "name": "CMS Ecosystem Squad, Pantheon",
+            "email": "eco@pantheon.io"
         }
     ],
     "autoload": {
