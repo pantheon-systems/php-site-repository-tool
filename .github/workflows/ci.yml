@@ -19,6 +19,7 @@ jobs:
         run: composer install
       - name: Phar Build
         run: |
+          composer configure-for-php-version
           composer phar:install-tools
           composer phar:build
       - name: Save site-repository-tool.phar as artifact
@@ -52,38 +53,6 @@ jobs:
       - name: Run linter
         run: composer lint
 
-  backward-compatibility:
-    name: Backward Compatibility
-
-    # Remove the 'if' line below once you have a 1.0.0 release
-    if: ${{ false }}
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Fetch tags
-        run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-
-      - name: Install PHP with extensions
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.1
-          coverage: none
-          extensions: intl
-
-      - name: Install roave/backward-compatibility-check
-        run: |
-          mkdir -p tools
-          composer --working-dir=tools require roave/backward-compatibility-check:^7
-
-      - name: Run roave/backward-compatibility-check
-        run: ./tools/vendor/bin/roave-backward-compatibility-check --from=1.0.0
-
   tests:
     name: Tests
 
@@ -99,26 +68,17 @@ jobs:
           - ubuntu-latest
 
         php-version:
+          - "5.6"
+          - "7.0"
+          - "7.1"
+          - "7.2"
+          - "7.3"
           - "7.4"
           - "8.0"
           - "8.1"
 
         php-ini-values:
-          - assert.exception=1, zend.assertions=1, phar.readonly=false
-
-        dependencies:
-          - highest
-
-        include:
-          - os: ubuntu-latest
-            php-version: "8.0"
-            dependencies: lowest
-            php-ini-values: assert.exception=1, zend.assertions=1, opcache.enable=1, opcache.enable_cli=1, opcache.optimization_level=-1, opcache.jit_buffer_size=4096M, opcache.jit=1205, phar.readonly=false
-
-          - os: ubuntu-latest
-            php-version: "8.1"
-            dependencies: highest
-            php-ini-values: assert.exception=1, zend.assertions=1, opcache.enable=1, opcache.enable_cli=1, opcache.optimization_level=-1, opcache.jit_buffer_size=4096M, opcache.jit=1205, phar.readonly=false
+          - assert.exception=1, zend.assertions=1, phar.readonly=false, variables_order="EGPCS"
 
     steps:
       - name: Checkout
@@ -136,42 +96,33 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
 
-      - name: Determine composer cache directory on Windows
-        if: matrix.os == 'windows-latest'
-        run: Add-Content -Path $ENV:GITHUB_ENV -Value "COMPOSER_CACHE_DIR=~\AppData\Local\Composer"
-
       - name: Cache dependencies installed with composer
         uses: actions/cache@v1
         with:
           path: ${{ env.COMPOSER_CACHE_DIR }}
-          key: php${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-${{ hashFiles('**/composer.json') }}
+          key: php${{ matrix.php-version }}}-${{ hashFiles('**/composer.json') }}
           restore-keys: |
-            php${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-
+            php${{ matrix.php-version }}-
 
-      - name: Make sure composer.json is valid before we start modifyig it
+      - name: Make sure composer.json is valid
         run: composer validate
 
-      - name: Clear platform php configuration in case we need to update phpunit
-        run: composer config --unset platform.php
+      - name: Install dependencies with Composer, so that composer-test-scenarios is available
+        run: composer install
 
-      - name: Update phpunit if dependencies are locked in case phpunit version in lock file is not compatible
-        if: matrix.dependencies == 'locked'
-        run: |
-          composer install --no-ansi --no-interaction --no-progress
-          composer update --no-ansi --no-interaction --no-progress phpunit/phpunit --with-all-dependencies
-
-      - name: Install lowest dependencies with composer
-        if: matrix.dependencies == 'lowest'
-        run: composer update --no-ansi --no-interaction --no-progress --prefer-lowest
-
-      - name: Install highest dependencies with composer
-        if: matrix.dependencies == 'highest'
-        run: composer config --unset platform.php && composer update --no-ansi --no-interaction --no-progress
+      - name: Update dependencies with composer-test-scenarios
+        run: composer configure-for-php-version
 
       - name: Setup git on current runner
         run: |
           git config --global user.email "ci@pantheon.io"
           git config --global user.name "Pantheon CI"
+
+      - name: Show environment
+        run: env
+
+      - name: Show installed dependencies
+        run: composer info
 
       - name: Run tests with phpunit
         run: composer unit

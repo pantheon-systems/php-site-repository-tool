@@ -48,7 +48,7 @@ class EnvironmentMergeManager
         ];
 
         try {
-            $repository->clone($siteRepoUrl, $siteRepoBranch);
+            $repository->cloneRepository($siteRepoUrl, $siteRepoBranch);
             $result['clone'] = true;
         } catch (NotEmptyFolderException $e) {
             $result['clone'] = false;

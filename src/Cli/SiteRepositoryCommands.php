@@ -28,8 +28,9 @@ class SiteRepositoryCommands extends \Robo\Tasks
      * @option ff use fast-forward (also supported: --no-ff)
      * @option clone clone the upstream repository (also supported: --no-clone)
      * @option push push the changes to the remote repository (also supported: --no-push)
+     * @return array
      */
-    public function applyUpstream(ConsoleIO $io, array $options = [
+    public function applyUpstream(array $options = [
         'site-repo-url' => '',
         'site-repo-branch' => '',
         'upstream-repo-url' => '',
@@ -44,7 +45,8 @@ class SiteRepositoryCommands extends \Robo\Tasks
         'bypass-sync-code' => false,
         'ff' => true,
         'clone' => true,
-        'push' => true
+        'push' => true,
+        'format' => 'json'
     ])
     {
         $upstreamManager = new UpstreamManager();
@@ -67,7 +69,7 @@ class SiteRepositoryCommands extends \Robo\Tasks
             $options['verbose']
         );
 
-        $io->write(json_encode($result));
+        return $result;
     }
 
     /**
@@ -87,8 +89,9 @@ class SiteRepositoryCommands extends \Robo\Tasks
      * @option bypass-sync-code bypass sync code
      * @option ff use fast-forward (also supported: --no-ff)
      * @option push push the changes to the remote repository (also supported: --no-push)
+     * @return array
      */
-    public function mergeEnvironment(ConsoleIO $io, array $options = [
+    public function mergeEnvironment(array $options = [
         'site-repo-url' => '',
         'site-repo-branch' => '',
         'from-branch' => '',
@@ -101,7 +104,8 @@ class SiteRepositoryCommands extends \Robo\Tasks
         'binding' => '',
         'bypass-sync-code' => false,
         'ff' => true,
-        'push' => true
+        'push' => true,
+        'format' => 'json'
     ])
     {
         $environmentMergeManager = new EnvironmentMergeManager();
@@ -122,6 +126,6 @@ class SiteRepositoryCommands extends \Robo\Tasks
             $options['verbose']
         );
 
-        $io->write(json_encode($result));
+        return $result;
     }
 }

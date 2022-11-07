@@ -2,9 +2,9 @@
 
 namespace PhpSiteRepositoryTool;
 
-use PHPUnit\Framework\TestCase;
 use PhpSiteRepositoryTool\Utils\Git;
 use PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException;
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 class GitTest extends TestCase
 {
@@ -20,8 +20,10 @@ class GitTest extends TestCase
     /**
      * Prepare to test our class.
      */
-    public static function setUpBeforeClass(): void
+    public static function set_up_before_class()
     {
+        parent::set_up_before_class();
+
         $workdir = sys_get_temp_dir() . '/php-site-repository-tool-test-' . uniqid();
         mkdir($workdir);
         self::$git = new Git('', '', $workdir, true);
@@ -33,7 +35,7 @@ class GitTest extends TestCase
      */
     public function testClone()
     {
-        self::$git->clone(self::$upstreamUrl, 'main');
+        self::$git->cloneRepository(self::$upstreamUrl, 'main');
         $this->assertFileExists(self::$git->getWorkdir() . '/.git');
     }
 
@@ -84,7 +86,7 @@ class GitTest extends TestCase
      */
     public function testRemove()
     {
-        $output = self::$git->remove('README.md');
+        $output = self::$git->remove(['README.md']);
         $this->assertEmpty($output);
     }
 

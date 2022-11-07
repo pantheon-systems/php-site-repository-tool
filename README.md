@@ -17,6 +17,16 @@ See deployment for notes on how to deploy the project on a live system.
 
 ## Running the tests
 
+Before running the tests locally, you must install the correct dependencies for the version of PHP that you are using:
+
+```
+composer configure-for-php-version
+```
+
+By default, the project is configured for PHP 8.0 / 8.1, so you only need to run `configure-for-php-version` if you wish to test with PHP 7.4 or earlier.
+
+Note that this script will REMOVE TYPEHINTS if you are using a version of PHP prior to 7.4.  It would not be desirable to commit this sort of change, so it is best to avoid testing locally with older versions of PHP. If you do, immediately run `git reset --hard` after running the tests.
+
 The test suite may be run locally by way of some simple composer scripts:
 
 | Test             | Command

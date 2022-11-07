@@ -2,7 +2,7 @@
 
 namespace PhpSiteRepositoryTool;
 
-use PHPUnit\Framework\TestCase;
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 class UpstreamManagerTest extends TestCase
 {

@@ -6,7 +6,7 @@ use PhpSiteRepositoryTool\Exceptions\Git\GitException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitNoDiffException;
 use PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException;
-use Symfony\Component\Process\Process;
+use PhpSiteRepositoryTool\Utils\Process;
 use Throwable;
 
 /**
@@ -85,7 +85,7 @@ class Git
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      * @throws \PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException
      */
-    public function clone(string $repoUrl, string $branchName): void
+    public function cloneRepository(string $repoUrl, string $branchName): void
     {
         // Use 2 here because: "." and "..".
         if (count(scandir($this->workdir)) > 2) {
@@ -103,7 +103,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    public function remoteAdd(string $name, string $remoteUrl)
+    public function remoteAdd(string $name, string $remoteUrl): void
     {
         $this->execute(['remote', 'add', $name, $remoteUrl]);
     }
@@ -115,7 +115,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    public function fetch(string $remoteName)
+    public function fetch(string $remoteName): void
     {
         $this->execute(['fetch', $remoteName]);
     }
@@ -184,9 +184,9 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    public function remove(...$options)
+    public function remove(array $files): void
     {
-        $this->execute(['rm', ...$options]);
+        $this->execute(array_merge(['rm'], $files));
     }
 
     /**
@@ -265,17 +265,17 @@ class Git
     /**
      * Executes the Git command.
      *
-     * @param array|string $command
-     * @param null|string $input
+     * @param array $command
      *
      * @return string
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    private function execute($command, ?string $input = null): string
+    private function execute(array $command): string
     {
+        $input = null;
         try {
-            $process = $this->executeAndReturnProcess($command, $input);
+            $process = $this->executeAndReturnProcess($command);
             if ($this->verbose) {
                 printf("[RET] %s\n", $process->getExitCode());
                 printf("[OUT] %s\n", $process->getOutput());
@@ -305,21 +305,15 @@ class Git
      * @param array|string $command
      * @param null|string $input
      *
-     * @return \Symfony\Component\Process\Process
+     * @return PhpSiteRepositoryTool\Utils\Process
      */
-    private function executeAndReturnProcess($command, ?string $input = null): Process
+    private function executeAndReturnProcess(array $command): Process
     {
-        if (is_string($command)) {
-            if ($this->verbose) {
-                printf("RUN: %s", $command);
-            }
-            $process = Process::fromShellCommandline($command, $this->workdir, $this->env);
-        } else {
-            if ($this->verbose) {
-                printf("RUN: git %s", implode(" ", $command));
-            }
-            $process = new Process(['git', ...$command], $this->workdir, $this->env, $input, 180);
+        $input = null;
+        if ($this->verbose) {
+            printf("RUN: git %s\n", implode(" ", $command));
         }
+        $process = new Process(array_merge(['git'], $command), $this->workdir, $this->env, $input, 180);
         $process->run();
         return $process;
     }
