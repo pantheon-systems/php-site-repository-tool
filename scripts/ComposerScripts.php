@@ -17,6 +17,8 @@ class ComposerScripts
     public static function configureForPhpVersion(Event $event)
     {
         $phpVersion = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
+        $args = $event->getArguments();
+        $phpVersion = isset($args[0]) ? $args[0] : $phpVersion;
 
         $scenario = static::determineScenario($phpVersion);
         $command = "composer scenario $scenario";
