@@ -78,8 +78,10 @@ class EnvironmentMergeManager
         try {
             $repository->commit($commitMessages);
         } catch (GitException $e) {
-            $result['errormessage'] = sprintf("Error committing to git: %s", $e->getMessage());
-            return $result;
+            if ($e->getCode() > 1) {
+                $result['errormessage'] = sprintf("Error committing to git: %s", $e->getMessage());
+                return $result;
+            }
         }
 
          // @todo Investigate why it was set to true initially.
