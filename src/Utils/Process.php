@@ -3,10 +3,10 @@
 namespace PhpSiteRepositoryTool\Utils;
 
 /**
- * Process - a simpler version of Symfony Process
+ * Process - a simpler version of Symfony Process.
  *
  * Symfony Process doesn't work right for us in early versions of PHP.
- * Here's a simpler version that does only what we need: syncronous execution
+ * Here's a simpler version that does only what we need: synchronous execution
  * with a bucket to store return values.
  */
 class Process

@@ -7,11 +7,34 @@ use PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException;
 
+/**
+ * Class EnvironmentMergeManager.
+ *
+ * @package PhpSiteRepositoryTool
+ */
 class EnvironmentMergeManager
 {
-
     /**
      * Applies the upstream changes to the local repository.
+     *
+     * @param string $siteRepoUrl
+     * @param string $siteRepoBranch
+     * @param string $fromBranch
+     * @param string $toBranch
+     * @param string $strategyOption
+     * @param string $workdir
+     * @param string $committerName
+     * @param string $committerEmail
+     * @param string $siteUuid
+     * @param string $binding
+     * @param bool $bypassSyncCode
+     * @param bool $ff
+     * @param bool $push
+     * @param bool $verbose
+     *
+     * @return array
+     *
+     * @throws GitException
      */
     public function mergeEnvironment(
         string $siteRepoUrl,
@@ -28,7 +51,7 @@ class EnvironmentMergeManager
         bool $ff,
         bool $push,
         bool $verbose
-    ) {
+    ): array {
         $repository = new Git(
             $committerName,
             $committerEmail,
@@ -78,8 +101,14 @@ class EnvironmentMergeManager
         try {
             $repository->commit($commitMessages);
         } catch (GitException $e) {
-            $result['errormessage'] = sprintf("Error committing to git: %s", $e->getMessage());
-            return $result;
+            if ($e->getCode() > 1) {
+                // The check for the exit code is added to mitigate git commit operation error for the case when
+                // "nothing to commit, working tree clean" result is returned (which corresponds to exit code value of 1).
+                // In terms of py-based site-repository-tool logic, this is not considered as an error.
+                // @see https://github.com/pantheon-systems/site-repository-tool/blob/master/siterepositorytool/flow.py#L159
+                $result['errormessage'] = sprintf("Error committing to git: %s", $e->getMessage());
+                return $result;
+            }
         }
 
          // @todo Investigate why it was set to true initially.

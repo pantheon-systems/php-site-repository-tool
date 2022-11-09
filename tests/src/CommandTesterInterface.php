@@ -2,6 +2,9 @@
 
 namespace PhpSiteRepositoryTool;
 
+/**
+ * Interface CommandTesterInterface.
+ */
 interface CommandTesterInterface
 {
     const STATUS_OK = 0;

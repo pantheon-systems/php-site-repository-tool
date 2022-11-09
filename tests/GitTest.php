@@ -6,15 +6,21 @@ use PhpSiteRepositoryTool\Utils\Git;
 use PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException;
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
+/**
+ * Class GitTest.
+ */
 class GitTest extends TestCase
 {
-
     use SiteRepositoryToolTesterTrait;
 
-    /** @var \PhpSiteRepositoryTool\Utils\Git[] */
+    /**
+     * @var \PhpSiteRepositoryTool\Utils\Git
+     */
     protected static $git;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     protected static $upstreamUrl;
 
     /**
@@ -32,6 +38,9 @@ class GitTest extends TestCase
 
     /**
      * Test clone function.
+     *
+     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
+     * @throws \PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException
      */
     public function testClone()
     {
@@ -41,6 +50,8 @@ class GitTest extends TestCase
 
     /**
      * Test adding a remote.
+     *
+     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
     public function testRemoteAdd()
     {
@@ -51,24 +62,31 @@ class GitTest extends TestCase
 
     /**
      * Test fetching a remote.
+     *
+     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
     public function testFetch()
     {
         $output = self::$git->fetch('upstream');
-        $this->assertEmpty($output);
+        $this->assertEmpty('', $output);
     }
 
     /**
      * Test merging a branch.
+     *
+     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
+     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException
      */
     public function testCleanMerge()
     {
         $output = self::$git->merge('clean-merge', 'upstream');
-        $this->assertEmpty($output);
+        $this->assertEmpty('', $output);
     }
 
     /**
      * Test merging a branch.
+     *
+     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
     public function testMergeWithConflicts()
     {
@@ -83,19 +101,23 @@ class GitTest extends TestCase
 
     /**
      * Test removing a file.
+     *
+     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
     public function testRemove()
     {
         $output = self::$git->remove(['README.md']);
-        $this->assertEmpty($output);
+        $this->assertStringContainsString("rm 'README.md'", $output);
     }
 
     /**
      * Test getting remote message.
+     *
+     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
     public function testGetRemoteMessage()
     {
-        $message = self::$git->getRemoteMessage('clean-merge', 'upstream');
+        $message = self::$git->getRemoteMessage('clean-merge');
         $this->assertEquals('Add new commit here.', $message);
     }
 }

@@ -2,11 +2,16 @@
 
 namespace PhpSiteRepositoryTool\Cli;
 
-use Robo\Symfony\ConsoleIO;
 use PhpSiteRepositoryTool\UpstreamManager;
 use PhpSiteRepositoryTool\EnvironmentMergeManager;
+use Robo\Tasks;
 
-class SiteRepositoryCommands extends \Robo\Tasks
+/**
+ * Class SiteRepositoryCommands.
+ *
+ * @package PhpSiteRepositoryTool\Cli
+ */
+class SiteRepositoryCommands extends Tasks
 {
     /**
      * Apply upstream command.
@@ -28,7 +33,12 @@ class SiteRepositoryCommands extends \Robo\Tasks
      * @option ff use fast-forward (also supported: --no-ff)
      * @option clone clone the upstream repository (also supported: --no-clone)
      * @option push push the changes to the remote repository (also supported: --no-push)
+     *
+     * @param array $options
+     *
      * @return array
+     *
+     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
     public function applyUpstream(array $options = [
         'site-repo-url' => '',
@@ -47,10 +57,10 @@ class SiteRepositoryCommands extends \Robo\Tasks
         'clone' => true,
         'push' => true,
         'format' => 'json'
-    ])
+    ]): array
     {
         $upstreamManager = new UpstreamManager();
-        $result = $upstreamManager->applyUpstream(
+        return $upstreamManager->applyUpstream(
             $options['site-repo-url'],
             $options['site-repo-branch'],
             $options['upstream-repo-url'],
@@ -68,8 +78,6 @@ class SiteRepositoryCommands extends \Robo\Tasks
             $options['push'],
             $options['verbose']
         );
-
-        return $result;
     }
 
     /**
@@ -89,27 +97,33 @@ class SiteRepositoryCommands extends \Robo\Tasks
      * @option bypass-sync-code bypass sync code
      * @option ff use fast-forward (also supported: --no-ff)
      * @option push push the changes to the remote repository (also supported: --no-push)
+     *
+     * @param array $options
+     *
      * @return array
+     *
+     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    public function mergeEnvironment(array $options = [
-        'site-repo-url' => '',
-        'site-repo-branch' => '',
-        'from-branch' => '',
-        'to-branch' => '',
-        'strategy-option' => '',
-        'work-dir' => '',
-        'committer-name' => '',
-        'committer-email' => '',
-        'site' => '',
-        'binding' => '',
-        'bypass-sync-code' => false,
-        'ff' => true,
-        'push' => true,
-        'format' => 'json'
-    ])
-    {
+    public function mergeEnvironment(
+        array $options = [
+            'site-repo-url' => '',
+            'site-repo-branch' => '',
+            'from-branch' => '',
+            'to-branch' => '',
+            'strategy-option' => '',
+            'work-dir' => '',
+            'committer-name' => '',
+            'committer-email' => '',
+            'site' => '',
+            'binding' => '',
+            'bypass-sync-code' => false,
+            'ff' => true,
+            'push' => true,
+            'format' => 'json'
+        ]
+    ): array {
         $environmentMergeManager = new EnvironmentMergeManager();
-        $result = $environmentMergeManager->mergeEnvironment(
+        return $environmentMergeManager->mergeEnvironment(
             $options['site-repo-url'],
             $options['site-repo-branch'],
             $options['from-branch'],
@@ -125,7 +139,5 @@ class SiteRepositoryCommands extends \Robo\Tasks
             $options['push'],
             $options['verbose']
         );
-
-        return $result;
     }
 }

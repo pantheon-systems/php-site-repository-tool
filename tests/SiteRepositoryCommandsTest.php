@@ -2,14 +2,18 @@
 
 namespace PhpSiteRepositoryTool;
 
-use Symfony\Component\Console\Output\BufferedOutput;
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
+/**
+ * Class SiteRepositoryCommandsTest.
+ */
 class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterface
 {
     use CommandTesterTrait;
 
-    /** @var string[] */
+    /**
+     * @var string[]
+     */
     protected $commandClasses;
 
     /**
@@ -74,7 +78,7 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
         $siteRepoBranch = 'master';
         $upstreamRepoUrl = 'https://'. $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-upstream-fixture.git';
         $upstreamRepoBranch = 'main';
- 
+
         $argv = $this->argv([
             'apply_upstream',
             '--site-repo-url=' . $siteRepoUrl,
@@ -111,7 +115,7 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
         $siteRepoBranch = 'master';
         $upstreamRepoUrl = 'https://'. $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-upstream-fixture.git';
         $upstreamRepoBranch = 'main';
- 
+
         $argv = $this->argv([
             'merge_environment',
             '--site-repo-url=' . $siteRepoUrl,

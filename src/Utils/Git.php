@@ -4,9 +4,7 @@ namespace PhpSiteRepositoryTool\Utils;
 
 use PhpSiteRepositoryTool\Exceptions\Git\GitException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException;
-use PhpSiteRepositoryTool\Exceptions\Git\GitNoDiffException;
 use PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException;
-use PhpSiteRepositoryTool\Utils\Process;
 use Throwable;
 
 /**
@@ -28,14 +26,15 @@ class Git
     /**
      * Git constructor.
      *
+     * @param string $committerName
+     * @param string $committerEmail
      * @param string $workdir
-     *   The path to the repository.
-     * @param bool $skipValidation
-     *   Skip git status validation.
-     *
-     * @throws \Pantheon\Terminus\Exceptions\TerminusException
+     * @param bool $verbose
+     * @param string $siteUuid
+     * @param string $binding
+     * @param bool $bypassSyncCode
      */
-    public function __construct(string $commiterName = '', string $committerEmail = '', string $workdir = '', bool $verbose = false, string $siteUuid = '', string $binding = '', bool $bypassSyncCode = false)
+    public function __construct(string $committerName = '', string $committerEmail = '', string $workdir = '', bool $verbose = false, string $siteUuid = '', string $binding = '', bool $bypassSyncCode = false)
     {
         $this->workdirCreated = false;
 
@@ -48,9 +47,9 @@ class Git
         $this->env = [];
         $this->verbose = $verbose;
 
-        if ($commiterName) {
-            $this->env['GIT_AUTHOR_NAME'] = $commiterName;
-            $this->env['GIT_COMMITTER_NAME'] = $commiterName;
+        if ($committerName) {
+            $this->env['GIT_AUTHOR_NAME'] = $committerName;
+            $this->env['GIT_COMMITTER_NAME'] = $committerName;
         }
 
         if ($committerEmail) {
@@ -113,21 +112,29 @@ class Git
      *
      * @param string $remoteName
      *
-     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
+     * @return string
+     *
+     * @throws GitException
      */
-    public function fetch(string $remoteName): void
+    public function fetch(string $remoteName): string
     {
-        $this->execute(['fetch', $remoteName]);
+        return $this->execute(['fetch', $remoteName]);
     }
 
     /**
      * Performs merge operation.
      *
-     * @param array $options
+     * @param string $branchName
+     * @param string $remoteName
+     * @param string $strategyOption
+     * @param bool $noFf
      *
-     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException
+     * @return string
+     *
+     * @throws GitException
+     * @throws GitMergeConflictException
      */
-    public function merge(string $branchName, string $remoteName = 'origin', string $strategyOption = '', bool $noFf = false): void
+    public function merge(string $branchName, string $remoteName = 'origin', string $strategyOption = '', bool $noFf = false): string
     {
         $options = [];
         if ($strategyOption) {
@@ -147,15 +154,23 @@ class Git
                 }
             }
             if ($conflicts) {
-                throw new GitMergeConflictException(sprintf("Merge conflict detected:\n%s", implode("\n", $conflicts)));
+                throw new GitMergeConflictException(
+                    sprintf("Merge conflict detected:\n%s", implode("\n", $conflicts)),
+                    $process->getExitCode()
+                );
             } else {
-                throw new GitException(sprintf("Merge failed:\n%s", $process->getErrorOutput()));
+                throw new GitException(
+                    sprintf("Merge failed:\n%s", $process->getErrorOutput()),
+                    $process->getExitCode()
+                );
             }
         }
+
+        return $process->getOutput();
     }
 
     /**
-     * List all of the unmerged files.
+     * List all the unmerged files.
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
@@ -180,13 +195,15 @@ class Git
     /**
      * Removes files.
      *
-     * @param array $options
+     * @param array $files
      *
-     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
+     * @return string
+     *
+     * @throws GitException
      */
-    public function remove(array $files): void
+    public function remove(array $files): string
     {
-        $this->execute(array_merge(['rm'], $files));
+        return $this->execute(array_merge(['rm'], $files));
     }
 
     /**
@@ -194,6 +211,8 @@ class Git
      *
      * @param string $branchName
      * @param string $remoteName
+     *
+     * @return string
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
@@ -273,7 +292,6 @@ class Git
      */
     private function execute(array $command): string
     {
-        $input = null;
         try {
             $process = $this->executeAndReturnProcess($command);
             if ($this->verbose) {
@@ -287,12 +305,14 @@ class Git
                         'Git command failed with exit code %d and message %s',
                         $process->getExitCode(),
                         $process->getErrorOutput()
-                    )
+                    ),
+                    $process->getExitCode()
                 );
             }
         } catch (Throwable $t) {
             throw new GitException(
-                sprintf('Failed executing Git command: %s', $t->getMessage())
+                sprintf('Failed executing Git command: %s', $t->getMessage()),
+                isset($process) ? $process->getExitCode() : 255
             );
         }
 
@@ -303,9 +323,8 @@ class Git
      * Executes the Git command and return the process object.
      *
      * @param array|string $command
-     * @param null|string $input
      *
-     * @return PhpSiteRepositoryTool\Utils\Process
+     * @return \PhpSiteRepositoryTool\Utils\Process
      */
     private function executeAndReturnProcess(array $command): Process
     {

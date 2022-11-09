@@ -7,11 +7,36 @@ use PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException;
 
+/**
+ * Class UpstreamManager.
+ *
+ * @package PhpSiteRepositoryTool
+ */
 class UpstreamManager
 {
-
     /**
      * Applies the upstream changes to the local repository.
+     *
+     * @param string $siteRepoUrl
+     * @param string $siteRepoBranch
+     * @param string $upstreamRepoUrl
+     * @param string $upstreamRepoBranch
+     * @param string $strategyOption
+     * @param string $workdir
+     * @param string $committerName
+     * @param string $committerEmail
+     * @param string $siteUuid
+     * @param string $binding
+     * @param string $updateBehavior
+     * @param bool $bypassSyncCode
+     * @param bool $ff
+     * @param bool $clone
+     * @param bool $push
+     * @param bool $verbose
+     *
+     * @return array
+     *
+     * @throws GitException
      */
     public function applyUpstream(
         string $siteRepoUrl,
@@ -30,7 +55,7 @@ class UpstreamManager
         bool $clone,
         bool $push,
         bool $verbose
-    ) {
+    ): array {
         $repository = new Git(
             $committerName,
             $committerEmail,
@@ -49,7 +74,7 @@ class UpstreamManager
             'errormessage' => '',
         ];
 
-        // This will be overriden later if handling a merge conflict.
+        // This will be overridden later if handling a merge conflict.
         $commitAuthor = '';
 
         if ($clone) {
@@ -79,7 +104,12 @@ class UpstreamManager
         ];
 
         try {
-            $repository->merge($upstreamRepoBranch, 'upstream', $strategyOption, !$ff);
+            $repository->merge(
+                $upstreamRepoBranch,
+                'upstream',
+                $strategyOption,
+                !$ff
+            );
         } catch (GitMergeConflictException $e) {
             // WordPress License handling stuff.
             $unmergedFiles = $repository->listUnmergedFiles();
@@ -108,8 +138,14 @@ class UpstreamManager
         try {
             $repository->commit($commitMessages, $commitAuthor);
         } catch (GitException $e) {
-            $result['errormessage'] = sprintf("Error committing to git: %s", $e->getMessage());
-            return $result;
+            if ($e->getCode() > 1) {
+                // The check for the exit code is added to mitigate git commit operation error for the case when
+                // "nothing to commit, working tree clean" result is returned (which corresponds to exit code value of 1).
+                // In terms of py-based site-repository-tool logic, this is not considered as an error.
+                // @see https://github.com/pantheon-systems/site-repository-tool/blob/master/siterepositorytool/flow.py#L85
+                $result['errormessage'] = sprintf("Error committing to git: %s", $e->getMessage());
+                return $result;
+            }
         }
 
         if ($push) {
