@@ -300,7 +300,7 @@ class Git
         } catch (Throwable $t) {
             throw new GitException(
                 sprintf('Failed executing Git command: %s', $t->getMessage()),
-                $process->getExitCode()
+                isset($process) ? $process->getExitCode() : 255
             );
         }
 
