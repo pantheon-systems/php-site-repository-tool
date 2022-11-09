@@ -13,9 +13,15 @@ class GitTest extends TestCase
 {
     use SiteRepositoryToolTesterTrait;
 
-    protected static Git $git;
+    /**
+     * @var \PhpSiteRepositoryTool\Utils\Git
+     */
+    protected static $git;
 
-    protected static string $upstreamUrl;
+    /**
+     * @var string
+     */
+    protected static $upstreamUrl;
 
     /**
      * Prepare to test our class.

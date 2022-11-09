@@ -14,7 +14,7 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
     /**
      * @var string[]
      */
-    protected array $commandClasses;
+    protected $commandClasses;
 
     /**
      * Prepare to test our commandfile
