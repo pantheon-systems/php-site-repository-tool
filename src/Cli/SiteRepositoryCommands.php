@@ -57,7 +57,8 @@ class SiteRepositoryCommands extends Tasks
         'clone' => true,
         'push' => true,
         'format' => 'json'
-    ]): array {
+    ]): array
+    {
         $upstreamManager = new UpstreamManager();
         return $upstreamManager->applyUpstream(
             $options['site-repo-url'],
@@ -103,22 +104,24 @@ class SiteRepositoryCommands extends Tasks
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    public function mergeEnvironment(array $options = [
-        'site-repo-url' => '',
-        'site-repo-branch' => '',
-        'from-branch' => '',
-        'to-branch' => '',
-        'strategy-option' => '',
-        'work-dir' => '',
-        'committer-name' => '',
-        'committer-email' => '',
-        'site' => '',
-        'binding' => '',
-        'bypass-sync-code' => false,
-        'ff' => true,
-        'push' => true,
-        'format' => 'json'
-    ]): array {
+    public function mergeEnvironment(
+        array $options = [
+            'site-repo-url' => '',
+            'site-repo-branch' => '',
+            'from-branch' => '',
+            'to-branch' => '',
+            'strategy-option' => '',
+            'work-dir' => '',
+            'committer-name' => '',
+            'committer-email' => '',
+            'site' => '',
+            'binding' => '',
+            'bypass-sync-code' => false,
+            'ff' => true,
+            'push' => true,
+            'format' => 'json'
+        ]
+    ): array {
         $environmentMergeManager = new EnvironmentMergeManager();
         return $environmentMergeManager->mergeEnvironment(
             $options['site-repo-url'],
