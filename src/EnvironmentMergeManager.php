@@ -51,7 +51,7 @@ class EnvironmentMergeManager
         bool $ff,
         bool $push,
         bool $verbose
-    ) {
+    ): array {
         $repository = new Git(
             $committerName,
             $committerEmail,

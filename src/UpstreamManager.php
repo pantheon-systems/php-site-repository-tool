@@ -55,7 +55,7 @@ class UpstreamManager
         bool $clone,
         bool $push,
         bool $verbose
-    ) {
+    ): array {
         $repository = new Git(
             $committerName,
             $committerEmail,
