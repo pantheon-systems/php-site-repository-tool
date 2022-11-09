@@ -170,7 +170,7 @@ class Git
     }
 
     /**
-     * List all of the unmerged files.
+     * List all the unmerged files.
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
