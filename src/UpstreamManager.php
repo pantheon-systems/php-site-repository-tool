@@ -104,7 +104,12 @@ class UpstreamManager
         ];
 
         try {
-            $repository->merge($upstreamRepoBranch, 'upstream', $strategyOption, !$ff);
+            $repository->merge(
+                $upstreamRepoBranch,
+                'upstream',
+                $strategyOption,
+                !$ff
+            );
         } catch (GitMergeConflictException $e) {
             // WordPress License handling stuff.
             $unmergedFiles = $repository->listUnmergedFiles();
