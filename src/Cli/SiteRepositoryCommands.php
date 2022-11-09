@@ -2,11 +2,16 @@
 
 namespace PhpSiteRepositoryTool\Cli;
 
-use Robo\Symfony\ConsoleIO;
 use PhpSiteRepositoryTool\UpstreamManager;
 use PhpSiteRepositoryTool\EnvironmentMergeManager;
+use Robo\Tasks;
 
-class SiteRepositoryCommands extends \Robo\Tasks
+/**
+ * Class SiteRepositoryCommands.
+ *
+ * @package PhpSiteRepositoryTool\Cli
+ */
+class SiteRepositoryCommands extends Tasks
 {
     /**
      * Apply upstream command.
