@@ -8,14 +8,11 @@ use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 class GitTest extends TestCase
 {
-
     use SiteRepositoryToolTesterTrait;
 
-    /** @var \PhpSiteRepositoryTool\Utils\Git[] */
-    protected static $git;
+    protected static Git $git;
 
-    /** @var string */
-    protected static $upstreamUrl;
+    protected static string $upstreamUrl;
 
     /**
      * Prepare to test our class.
