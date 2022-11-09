@@ -116,9 +116,9 @@ class Git
      *
      * @throws GitException
      */
-    public function fetch(string $remoteName): void
+    public function fetch(string $remoteName): string
     {
-        $this->execute(['fetch', $remoteName]);
+        return $this->execute(['fetch', $remoteName]);
     }
 
     /**
@@ -134,7 +134,7 @@ class Git
      * @throws GitException
      * @throws GitMergeConflictException
      */
-    public function merge(string $branchName, string $remoteName = 'origin', string $strategyOption = '', bool $noFf = false): void
+    public function merge(string $branchName, string $remoteName = 'origin', string $strategyOption = '', bool $noFf = false): string
     {
         $options = [];
         if ($strategyOption) {
@@ -165,6 +165,8 @@ class Git
                 );
             }
         }
+
+        return $process->getOutput();
     }
 
     /**
@@ -199,9 +201,9 @@ class Git
      *
      * @throws GitException
      */
-    public function remove(array $files): void
+    public function remove(array $files): string
     {
-        $this->execute(array_merge(['rm'], $files));
+        return $this->execute(array_merge(['rm'], $files));
     }
 
     /**
