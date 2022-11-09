@@ -60,7 +60,7 @@ class SiteRepositoryCommands extends Tasks
     ])
     {
         $upstreamManager = new UpstreamManager();
-        $result = $upstreamManager->applyUpstream(
+        return $upstreamManager->applyUpstream(
             $options['site-repo-url'],
             $options['site-repo-branch'],
             $options['upstream-repo-url'],
@@ -78,8 +78,6 @@ class SiteRepositoryCommands extends Tasks
             $options['push'],
             $options['verbose']
         );
-
-        return $result;
     }
 
     /**
@@ -124,7 +122,7 @@ class SiteRepositoryCommands extends Tasks
     ])
     {
         $environmentMergeManager = new EnvironmentMergeManager();
-        $result = $environmentMergeManager->mergeEnvironment(
+        return $environmentMergeManager->mergeEnvironment(
             $options['site-repo-url'],
             $options['site-repo-branch'],
             $options['from-branch'],
@@ -140,7 +138,5 @@ class SiteRepositoryCommands extends Tasks
             $options['push'],
             $options['verbose']
         );
-
-        return $result;
     }
 }
