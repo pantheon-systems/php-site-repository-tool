@@ -7,11 +7,34 @@ use PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException;
 
+/**
+ * Class EnvironmentMergeManager.
+ *
+ * @package PhpSiteRepositoryTool
+ */
 class EnvironmentMergeManager
 {
-
     /**
      * Applies the upstream changes to the local repository.
+     *
+     * @param string $siteRepoUrl
+     * @param string $siteRepoBranch
+     * @param string $fromBranch
+     * @param string $toBranch
+     * @param string $strategyOption
+     * @param string $workdir
+     * @param string $committerName
+     * @param string $committerEmail
+     * @param string $siteUuid
+     * @param string $binding
+     * @param bool $bypassSyncCode
+     * @param bool $ff
+     * @param bool $push
+     * @param bool $verbose
+     *
+     * @return array
+     *
+     * @throws GitException
      */
     public function mergeEnvironment(
         string $siteRepoUrl,

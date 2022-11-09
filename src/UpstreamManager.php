@@ -7,11 +7,36 @@ use PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException;
 
+/**
+ * Class UpstreamManager.
+ *
+ * @package PhpSiteRepositoryTool
+ */
 class UpstreamManager
 {
-
     /**
      * Applies the upstream changes to the local repository.
+     *
+     * @param string $siteRepoUrl
+     * @param string $siteRepoBranch
+     * @param string $upstreamRepoUrl
+     * @param string $upstreamRepoBranch
+     * @param string $strategyOption
+     * @param string $workdir
+     * @param string $committerName
+     * @param string $committerEmail
+     * @param string $siteUuid
+     * @param string $binding
+     * @param string $updateBehavior
+     * @param bool $bypassSyncCode
+     * @param bool $ff
+     * @param bool $clone
+     * @param bool $push
+     * @param bool $verbose
+     *
+     * @return array
+     *
+     * @throws GitException
      */
     public function applyUpstream(
         string $siteRepoUrl,

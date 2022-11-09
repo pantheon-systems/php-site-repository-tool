@@ -28,7 +28,12 @@ class SiteRepositoryCommands extends \Robo\Tasks
      * @option ff use fast-forward (also supported: --no-ff)
      * @option clone clone the upstream repository (also supported: --no-clone)
      * @option push push the changes to the remote repository (also supported: --no-push)
+     *
+     * @param array $options
+     *
      * @return array
+     *
+     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
     public function applyUpstream(array $options = [
         'site-repo-url' => '',
@@ -89,7 +94,12 @@ class SiteRepositoryCommands extends \Robo\Tasks
      * @option bypass-sync-code bypass sync code
      * @option ff use fast-forward (also supported: --no-ff)
      * @option push push the changes to the remote repository (also supported: --no-push)
+     *
+     * @param array $options
+     *
      * @return array
+     *
+     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
     public function mergeEnvironment(array $options = [
         'site-repo-url' => '',

@@ -28,12 +28,13 @@ class Git
     /**
      * Git constructor.
      *
+     * @param string $committerName
+     * @param string $committerEmail
      * @param string $workdir
-     *   The path to the repository.
-     * @param bool $skipValidation
-     *   Skip git status validation.
-     *
-     * @throws \Pantheon\Terminus\Exceptions\TerminusException
+     * @param bool $verbose
+     * @param string $siteUuid
+     * @param string $binding
+     * @param bool $bypassSyncCode
      */
     public function __construct(string $commiterName = '', string $committerEmail = '', string $workdir = '', bool $verbose = false, string $siteUuid = '', string $binding = '', bool $bypassSyncCode = false)
     {
@@ -113,7 +114,9 @@ class Git
      *
      * @param string $remoteName
      *
-     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
+     * @return string
+     *
+     * @throws GitException
      */
     public function fetch(string $remoteName): void
     {
@@ -123,9 +126,15 @@ class Git
     /**
      * Performs merge operation.
      *
-     * @param array $options
+     * @param string $branchName
+     * @param string $remoteName
+     * @param string $strategyOption
+     * @param bool $noFf
      *
-     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException
+     * @return string
+     *
+     * @throws GitException
+     * @throws GitMergeConflictException
      */
     public function merge(string $branchName, string $remoteName = 'origin', string $strategyOption = '', bool $noFf = false): void
     {
@@ -186,9 +195,11 @@ class Git
     /**
      * Removes files.
      *
-     * @param array $options
+     * @param array $files
      *
-     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
+     * @return string
+     *
+     * @throws GitException
      */
     public function remove(array $files): void
     {
@@ -200,6 +211,8 @@ class Git
      *
      * @param string $branchName
      * @param string $remoteName
+     *
+     * @return string
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
@@ -311,9 +324,8 @@ class Git
      * Executes the Git command and return the process object.
      *
      * @param array|string $command
-     * @param null|string $input
      *
-     * @return PhpSiteRepositoryTool\Utils\Process
+     * @return \PhpSiteRepositoryTool\Utils\Process
      */
     private function executeAndReturnProcess(array $command): Process
     {
