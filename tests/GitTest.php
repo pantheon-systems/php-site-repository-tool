@@ -32,6 +32,9 @@ class GitTest extends TestCase
 
     /**
      * Test clone function.
+     *
+     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
+     * @throws \PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException
      */
     public function testClone()
     {
@@ -41,6 +44,8 @@ class GitTest extends TestCase
 
     /**
      * Test adding a remote.
+     *
+     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
     public function testRemoteAdd()
     {
@@ -51,6 +56,8 @@ class GitTest extends TestCase
 
     /**
      * Test fetching a remote.
+     *
+     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
     public function testFetch()
     {
@@ -60,6 +67,9 @@ class GitTest extends TestCase
 
     /**
      * Test merging a branch.
+     *
+     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
+     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException
      */
     public function testCleanMerge()
     {
@@ -69,6 +79,8 @@ class GitTest extends TestCase
 
     /**
      * Test merging a branch.
+     *
+     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
     public function testMergeWithConflicts()
     {
@@ -83,6 +95,8 @@ class GitTest extends TestCase
 
     /**
      * Test removing a file.
+     *
+     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
     public function testRemove()
     {
@@ -92,10 +106,12 @@ class GitTest extends TestCase
 
     /**
      * Test getting remote message.
+     *
+     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
     public function testGetRemoteMessage()
     {
-        $message = self::$git->getRemoteMessage('clean-merge', 'upstream');
+        $message = self::$git->getRemoteMessage('clean-merge');
         $this->assertEquals('Add new commit here.', $message);
     }
 }
