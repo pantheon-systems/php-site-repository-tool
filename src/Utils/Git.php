@@ -292,7 +292,6 @@ class Git
      */
     private function execute(array $command): string
     {
-        $input = null;
         try {
             $process = $this->executeAndReturnProcess($command);
             if ($this->verbose) {
