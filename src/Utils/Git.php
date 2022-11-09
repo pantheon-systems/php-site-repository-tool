@@ -34,7 +34,7 @@ class Git
      * @param string $binding
      * @param bool $bypassSyncCode
      */
-    public function __construct(string $commiterName = '', string $committerEmail = '', string $workdir = '', bool $verbose = false, string $siteUuid = '', string $binding = '', bool $bypassSyncCode = false)
+    public function __construct(string $committerName = '', string $committerEmail = '', string $workdir = '', bool $verbose = false, string $siteUuid = '', string $binding = '', bool $bypassSyncCode = false)
     {
         $this->workdirCreated = false;
 
@@ -47,9 +47,9 @@ class Git
         $this->env = [];
         $this->verbose = $verbose;
 
-        if ($commiterName) {
-            $this->env['GIT_AUTHOR_NAME'] = $commiterName;
-            $this->env['GIT_COMMITTER_NAME'] = $commiterName;
+        if ($committerName) {
+            $this->env['GIT_AUTHOR_NAME'] = $committerName;
+            $this->env['GIT_COMMITTER_NAME'] = $committerName;
         }
 
         if ($committerEmail) {
