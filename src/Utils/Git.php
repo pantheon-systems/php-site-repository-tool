@@ -147,7 +147,10 @@ class Git
                 }
             }
             if ($conflicts) {
-                throw new GitMergeConflictException(sprintf("Merge conflict detected:\n%s", implode("\n", $conflicts)));
+                throw new GitMergeConflictException(
+                    sprintf("Merge conflict detected:\n%s", implode("\n", $conflicts)),
+                    $process->getExitCode()
+                );
             } else {
                 throw new GitException(
                     sprintf("Merge failed:\n%s", $process->getErrorOutput()),
