@@ -4,6 +4,9 @@ namespace PhpSiteRepositoryTool;
 
 use Symfony\Component\Console\Output\BufferedOutput;
 
+/**
+ * Trait CommandTesterTrait.
+ */
 trait CommandTesterTrait
 {
     /** @var string */

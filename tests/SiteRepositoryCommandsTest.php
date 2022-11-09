@@ -4,6 +4,9 @@ namespace PhpSiteRepositoryTool;
 
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
+/**
+ * Class SiteRepositoryCommandsTest.
+ */
 class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterface
 {
     use CommandTesterTrait;

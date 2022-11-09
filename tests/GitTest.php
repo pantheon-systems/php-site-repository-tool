@@ -6,6 +6,9 @@ use PhpSiteRepositoryTool\Utils\Git;
 use PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException;
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
+/**
+ * Class GitTest.
+ */
 class GitTest extends TestCase
 {
     use SiteRepositoryToolTesterTrait;
