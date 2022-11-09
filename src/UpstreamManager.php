@@ -74,7 +74,7 @@ class UpstreamManager
             'errormessage' => '',
         ];
 
-        // This will be overriden later if handling a merge conflict.
+        // This will be overridden later if handling a merge conflict.
         $commitAuthor = '';
 
         if ($clone) {
