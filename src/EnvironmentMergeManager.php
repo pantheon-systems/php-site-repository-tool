@@ -102,6 +102,10 @@ class EnvironmentMergeManager
             $repository->commit($commitMessages);
         } catch (GitException $e) {
             if ($e->getCode() > 1) {
+                // The check for the exit code is added to mitigate git commit operation error for the case when
+                // "nothing to commit, working tree clean" result is returned (which corresponds to exit code value of 1).
+                // In terms of py-based site-repository-tool logic, this is not considered as an error.
+                // @see https://github.com/pantheon-systems/site-repository-tool/blob/master/siterepositorytool/flow.py#L159
                 $result['errormessage'] = sprintf("Error committing to git: %s", $e->getMessage());
                 return $result;
             }
