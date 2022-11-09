@@ -149,7 +149,10 @@ class Git
             if ($conflicts) {
                 throw new GitMergeConflictException(sprintf("Merge conflict detected:\n%s", implode("\n", $conflicts)));
             } else {
-                throw new GitException(sprintf("Merge failed:\n%s", $process->getErrorOutput()));
+                throw new GitException(
+                    sprintf("Merge failed:\n%s", $process->getErrorOutput()),
+                    $process->getExitCode()
+                );
             }
         }
     }
@@ -287,12 +290,14 @@ class Git
                         'Git command failed with exit code %d and message %s',
                         $process->getExitCode(),
                         $process->getErrorOutput()
-                    )
+                    ),
+                    $process->getExitCode()
                 );
             }
         } catch (Throwable $t) {
             throw new GitException(
-                sprintf('Failed executing Git command: %s', $t->getMessage())
+                sprintf('Failed executing Git command: %s', $t->getMessage()),
+                $process->getExitCode()
             );
         }
 
