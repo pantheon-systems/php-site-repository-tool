@@ -59,6 +59,7 @@ class SiteRepositoryCommands extends Tasks
         'format' => 'json'
     ]): array
     {
+        print("I am running on branch cms-1073.");
         $upstreamManager = new UpstreamManager();
         return $upstreamManager->applyUpstream(
             $options['site-repo-url'],
