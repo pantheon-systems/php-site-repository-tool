@@ -136,14 +136,16 @@ class Git
      */
     public function merge(string $branchName, string $remoteName = 'origin', string $strategyOption = '', bool $noFf = false): string
     {
-        $options = [];
+        $command = ['merge', sprintf('%s/%s', $remoteName, $branchName), '--no-commit', '--quiet'];
         if ($strategyOption) {
-            $options += ['-X', $strategyOption];
+            $command[] = '-X';
+            $command[] = $strategyOption;
         }
         if ($noFf) {
-            $options += ['--no-ff'];
+            $command[] = '--no-ff';
         }
-        $process = $this->executeAndReturnProcess(array_merge(['merge', '--no-commit', '--quiet'], $options, [sprintf('%s/%s', $remoteName, $branchName)]));
+
+        $process = $this->executeAndReturnProcess($command);
         if ($process->getExitCode()) {
             $output = $process->getOutput();
             $outputLines = explode("\n", $output);
