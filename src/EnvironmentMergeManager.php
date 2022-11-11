@@ -63,9 +63,9 @@ class EnvironmentMergeManager
         );
 
         $result = [
-            'clone' => true,
-            'pull' => true,
-            'push' => true,
+            'clone' => false,
+            'pull' => false,
+            'push' => false,
             'conflicts' => '',
             'errormessage' => '',
         ];
@@ -74,11 +74,9 @@ class EnvironmentMergeManager
             $git->cloneRepository($siteRepoUrl, $siteRepoBranch);
             $result['clone'] = true;
         } catch (NotEmptyFolderException $e) {
-            $result['clone'] = false;
             $result['errormessage'] = sprintf("Workdir '%s' is not empty.", $workdir);
             return $result;
         } catch (GitException $e) {
-            $result['clone'] = false;
             $result['errormessage'] = sprintf("Error cloning site repo: %s", $e->getMessage());
             return $result;
         }
@@ -88,10 +86,8 @@ class EnvironmentMergeManager
         } catch (GitMergeConflictException $e) {
             $result['conflicts'] = $git->listUnmergedFiles();
             $result['errormessage'] = sprintf("Merge conflict: %s", $e->getMessage());
-            $result['pull'] = false;
             return $result;
         }
-
 
         $commitMessages = [
             $git->getRemoteMessage($fromBranch, 'origin'),
@@ -111,8 +107,7 @@ class EnvironmentMergeManager
             }
         }
 
-         // @todo Investigate why it was set to true initially.
-         $result['push'] = false;
+        $result['pull'] = true;
 
         if ($push) {
             try {
