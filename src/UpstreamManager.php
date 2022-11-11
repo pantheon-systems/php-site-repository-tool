@@ -56,7 +56,7 @@ class UpstreamManager
         bool $push,
         bool $verbose
     ): array {
-        $repository = new Git(
+        $git = new Git(
             $committerName,
             $committerEmail,
             $workdir,
@@ -76,7 +76,7 @@ class UpstreamManager
 
         if ($clone) {
             try {
-                $repository->cloneRepository($siteRepoUrl, $siteRepoBranch);
+                $git->cloneRepository($siteRepoUrl, $siteRepoBranch);
                 $result['clone'] = true;
             } catch (NotEmptyFolderException $e) {
                 $result['errormessage'] = sprintf("Workdir '%s' is not empty.", $workdir);
@@ -88,21 +88,20 @@ class UpstreamManager
         }
 
         try {
-            $repository->remoteAdd('upstream', $upstreamRepoUrl);
-            $repository->fetch('upstream');
+            $git->remoteAdd('upstream', $upstreamRepoUrl);
+            $git->fetch('upstream');
         } catch (GitException $e) {
             $result['errormessage'] = sprintf("Could not fetch upstream. Check that your upstream's git repository is accessible and that Pantheon has any required access tokens: %s", $e->getMessage());
             return $result;
         }
 
         $commitMessages = [
-            $repository->getRemoteMessage($upstreamRepoBranch),
+            $git->getRemoteMessage($upstreamRepoBranch),
             sprintf('Was: Merged %s into %s.', $upstreamRepoBranch, $siteRepoBranch),
         ];
-
         $commitAuthor = '';
         try {
-            $repository->merge(
+            $git->merge(
                 $upstreamRepoBranch,
                 'upstream',
                 $strategyOption,
@@ -110,7 +109,7 @@ class UpstreamManager
             );
         } catch (GitMergeConflictException $e) {
             // WordPress License handling stuff.
-            $unmergedFiles = $repository->listUnmergedFiles();
+            $unmergedFiles = $git->listUnmergedFiles();
             if (!$this->allUnmergedFilesInAllowList($unmergedFiles)) {
                 $result['conflicts'] = $unmergedFiles;
                 $result['errormessage'] = sprintf("Merge conflict: %s", $e->getMessage());
@@ -118,11 +117,11 @@ class UpstreamManager
             }
 
             foreach ($unmergedFiles as $file) {
-                $repository->remove([$file]);
+                $git->remove([$file]);
             }
 
             $commitMessages = [
-                $repository->getRemoteMessage($upstreamRepoBranch),
+                $git->getRemoteMessage($upstreamRepoBranch),
                 'System automatically resolved merge conflict, for more information see:',
                 'https://pantheon.io/docs/start-states/wordpress#20220524-1',
             ];
@@ -130,7 +129,7 @@ class UpstreamManager
         }
 
         try {
-            $repository->commit($commitMessages, $commitAuthor);
+            $git->commit($commitMessages, $commitAuthor);
         } catch (GitException $e) {
             if ($e->getCode() > 1) {
                 // The check for the exit code is added to mitigate git commit operation error for the case when
@@ -146,7 +145,7 @@ class UpstreamManager
 
         if ($push) {
             try {
-                $repository->pushAll();
+                $git->pushAll();
                 $result['push'] = true;
             } catch (GitException $e) {
                 $result['errormessage'] = sprintf("Error during git push: %s", $e->getMessage());
