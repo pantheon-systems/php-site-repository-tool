@@ -168,17 +168,17 @@ class UpstreamManager
      */
     private function allUnmergedFilesInAllowList(array $unmergedFiles): bool
     {
-        $allowPattern = '/wp-content\/themes\/.*\/LICENSE\.md/';
-
         if (empty($unmergedFiles)) {
             return false;
         }
 
+        $allowPattern = '/wp-content\/themes\/.*\/LICENSE\.md/';
         foreach ($unmergedFiles as $file) {
             if (!preg_match($allowPattern, $file)) {
                 return false;
             }
         }
+
         return true;
     }
 }
