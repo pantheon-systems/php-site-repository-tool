@@ -330,11 +330,10 @@ class Git
      */
     private function executeAndReturnProcess(array $command): Process
     {
-        $input = null;
         if ($this->verbose) {
             printf("RUN: git %s\n", implode(" ", $command));
         }
-        $process = new Process(array_merge(['git'], $command), $this->workdir, $this->env, $input, 180);
+        $process = new Process(array_merge(['git'], $command), $this->workdir, $this->env);
         $process->run();
         return $process;
     }

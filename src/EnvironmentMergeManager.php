@@ -52,7 +52,7 @@ class EnvironmentMergeManager
         bool $push,
         bool $verbose
     ): array {
-        $repository = new Git(
+        $git = new Git(
             $committerName,
             $committerEmail,
             $workdir,
@@ -63,43 +63,39 @@ class EnvironmentMergeManager
         );
 
         $result = [
-            'clone' => true,
-            'pull' => true,
-            'push' => true,
+            'clone' => false,
+            'pull' => false,
+            'push' => false,
             'conflicts' => '',
             'errormessage' => '',
         ];
 
         try {
-            $repository->cloneRepository($siteRepoUrl, $siteRepoBranch);
+            $git->cloneRepository($siteRepoUrl, $siteRepoBranch);
             $result['clone'] = true;
         } catch (NotEmptyFolderException $e) {
-            $result['clone'] = false;
             $result['errormessage'] = sprintf("Workdir '%s' is not empty.", $workdir);
             return $result;
         } catch (GitException $e) {
-            $result['clone'] = false;
             $result['errormessage'] = sprintf("Error cloning site repo: %s", $e->getMessage());
             return $result;
         }
 
         try {
-            $repository->merge($fromBranch, 'origin', $strategyOption, !$ff);
+            $git->merge($fromBranch, 'origin', $strategyOption, !$ff);
         } catch (GitMergeConflictException $e) {
-            $result['conflicts'] = $repository->listUnmergedFiles();
+            $result['conflicts'] = $git->listUnmergedFiles();
             $result['errormessage'] = sprintf("Merge conflict: %s", $e->getMessage());
-            $result['pull'] = false;
             return $result;
         }
 
-
         $commitMessages = [
-            $repository->getRemoteMessage($fromBranch, 'origin'),
+            $git->getRemoteMessage($fromBranch, 'origin'),
             sprintf("Merged '%s' into '%s'", $fromBranch, $toBranch),
         ];
 
         try {
-            $repository->commit($commitMessages);
+            $git->commit($commitMessages);
         } catch (GitException $e) {
             if ($e->getCode() > 1) {
                 // The check for the exit code is added to mitigate git commit operation error for the case when
@@ -111,12 +107,11 @@ class EnvironmentMergeManager
             }
         }
 
-         // @todo Investigate why it was set to true initially.
-         $result['push'] = false;
+        $result['pull'] = true;
 
         if ($push) {
             try {
-                $repository->pushAll();
+                $git->pushAll();
                 $result['push'] = true;
             } catch (GitException $e) {
                 $result['errormessage'] = sprintf("Error during git push: %s", $e->getMessage());

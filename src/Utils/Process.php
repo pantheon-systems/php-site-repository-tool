@@ -25,7 +25,7 @@ class Process
 
     private $errorOutput;
 
-    public function __construct($command, $cwd = '', array $env = [], $input = null, $unused = 0)
+    public function __construct($command, $cwd = '', array $env = [])
     {
         $this->hasRun = false;
         $this->command = $command;
