@@ -68,14 +68,11 @@ class UpstreamManager
 
         $result = [
             'clone' => false,
-            'pull' => true,
-            'push' => true,
+            'pull' => false,
+            'push' => false,
             'conflicts' => '',
             'errormessage' => '',
         ];
-
-        // This will be overridden later if handling a merge conflict.
-        $commitAuthor = '';
 
         if ($clone) {
             try {
@@ -103,6 +100,7 @@ class UpstreamManager
             sprintf('Was: Merged %s into %s.', $upstreamRepoBranch, $siteRepoBranch),
         ];
 
+        $commitAuthor = '';
         try {
             $repository->merge(
                 $upstreamRepoBranch,
@@ -116,7 +114,6 @@ class UpstreamManager
             if (!$this->allUnmergedFilesInAllowList($unmergedFiles)) {
                 $result['conflicts'] = $unmergedFiles;
                 $result['errormessage'] = sprintf("Merge conflict: %s", $e->getMessage());
-                $result['pull'] = false;
                 return $result;
             }
 
@@ -132,9 +129,6 @@ class UpstreamManager
             $commitAuthor = 'Pantheon Automation <bot@getpantheon.com>';
         }
 
-        // @todo Investigate why it was set to true initially.
-        $result['push'] = false;
-
         try {
             $repository->commit($commitMessages, $commitAuthor);
         } catch (GitException $e) {
@@ -147,6 +141,8 @@ class UpstreamManager
                 return $result;
             }
         }
+
+        $result['pull'] = true;
 
         if ($push) {
             try {
