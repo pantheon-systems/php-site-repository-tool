@@ -52,7 +52,7 @@ class EnvironmentMergeManager
         bool $push,
         bool $verbose
     ): array {
-        $repository = new Git(
+        $git = new Git(
             $committerName,
             $committerEmail,
             $workdir,
@@ -71,7 +71,7 @@ class EnvironmentMergeManager
         ];
 
         try {
-            $repository->cloneRepository($siteRepoUrl, $siteRepoBranch);
+            $git->cloneRepository($siteRepoUrl, $siteRepoBranch);
             $result['clone'] = true;
         } catch (NotEmptyFolderException $e) {
             $result['clone'] = false;
@@ -84,9 +84,9 @@ class EnvironmentMergeManager
         }
 
         try {
-            $repository->merge($fromBranch, 'origin', $strategyOption, !$ff);
+            $git->merge($fromBranch, 'origin', $strategyOption, !$ff);
         } catch (GitMergeConflictException $e) {
-            $result['conflicts'] = $repository->listUnmergedFiles();
+            $result['conflicts'] = $git->listUnmergedFiles();
             $result['errormessage'] = sprintf("Merge conflict: %s", $e->getMessage());
             $result['pull'] = false;
             return $result;
@@ -94,12 +94,12 @@ class EnvironmentMergeManager
 
 
         $commitMessages = [
-            $repository->getRemoteMessage($fromBranch, 'origin'),
+            $git->getRemoteMessage($fromBranch, 'origin'),
             sprintf("Merged '%s' into '%s'", $fromBranch, $toBranch),
         ];
 
         try {
-            $repository->commit($commitMessages);
+            $git->commit($commitMessages);
         } catch (GitException $e) {
             if ($e->getCode() > 1) {
                 // The check for the exit code is added to mitigate git commit operation error for the case when
@@ -116,7 +116,7 @@ class EnvironmentMergeManager
 
         if ($push) {
             try {
-                $repository->pushAll();
+                $git->pushAll();
                 $result['push'] = true;
             } catch (GitException $e) {
                 $result['errormessage'] = sprintf("Error during git push: %s", $e->getMessage());
