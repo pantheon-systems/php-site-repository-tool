@@ -319,14 +319,12 @@ class Git
                         'Git command failed with exit code %d and message %s',
                         $process->getExitCode(),
                         $process->getErrorOutput()
-                    ),
-                    $process->getExitCode()
+                    )
                 );
             }
         } catch (Throwable $t) {
             throw new GitException(
-                sprintf('Failed executing Git command: %s', $t->getMessage()),
-                isset($process) ? $process->getExitCode() : 255
+                sprintf('Failed executing Git command: %s', $t->getMessage())
             );
         }
 
