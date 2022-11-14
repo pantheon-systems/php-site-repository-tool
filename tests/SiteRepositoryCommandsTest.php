@@ -54,12 +54,9 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
      */
     public function testCommandsExistence($expectedOutput, $expectedStatus, $variable_args)
     {
-        // Set this to the path to a fixture configuration file if you'd like to use one.
-        $configurationFile = false;
-
         // Create our argv array and run the command
         $argv = $this->argv(func_get_args());
-        list($actualOutput, $statusCode) = $this->execute($argv, $this->commandClasses, $configurationFile);
+        list($actualOutput, $statusCode) = $this->execute($argv, $this->commandClasses);
 
         // Confirm that our output and status code match expectations
         $this->assertStringContainsString($expectedOutput, $actualOutput);
@@ -91,7 +88,7 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
             '--no-push',
             '--verbose',
         ], 0);
-        list($actualOutput, $statusCode) = $this->execute($argv, $this->commandClasses, false);
+        list($actualOutput, $statusCode) = $this->execute($argv, $this->commandClasses);
         $jsonOutput = json_decode($actualOutput, true);
         $this->assertEquals(self::STATUS_OK, $statusCode);
         $this->assertEquals([
@@ -113,8 +110,6 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
 
         $siteRepoUrl = 'https://' . $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-site-fixture.git';
         $siteRepoBranch = 'master';
-        $upstreamRepoUrl = 'https://'. $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-upstream-fixture.git';
-        $upstreamRepoBranch = 'main';
 
         $argv = $this->argv([
             'merge_environment',
@@ -127,7 +122,7 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
             '--no-push',
             '--verbose',
         ], 0);
-        list($actualOutput, $statusCode) = $this->execute($argv, $this->commandClasses, false);
+        list($actualOutput, $statusCode) = $this->execute($argv, $this->commandClasses);
         $jsonOutput = json_decode($actualOutput, true);
         $this->assertEquals(self::STATUS_OK, $statusCode);
         $this->assertEquals([

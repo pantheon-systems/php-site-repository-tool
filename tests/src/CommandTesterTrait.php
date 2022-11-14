@@ -46,16 +46,13 @@ trait CommandTesterTrait
     /**
      * Simulated front controller
      */
-    protected function execute($argv, $commandClasses, $configurationFile = false)
+    protected function execute($argv, $commandClasses)
     {
         // Define a global output object to capture the test results
         $output = new BufferedOutput();
 
         // We can only call `Runner::execute()` once; then we need to tear down.
         $runner = new \Robo\Runner($commandClasses);
-        if ($configurationFile) {
-            $runner->setConfigurationFilename($configurationFile);
-        }
         $statusCode = $runner->execute($argv, $this->appName, $this->appVersion, $output);
 
         // Destroy our container so that we can call $runner->execute() again for the next test.
