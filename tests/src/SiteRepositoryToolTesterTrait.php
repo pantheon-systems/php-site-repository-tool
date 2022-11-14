@@ -7,9 +7,10 @@ namespace PhpSiteRepositoryTool;
  */
 trait SiteRepositoryToolTesterTrait
 {
-
     /**
      * Call a method that is regularly not publicly accessible (i.e. protected or private).
+     *
+     * @throws \ReflectionException
      */
     protected static function callMethod($obj, $name, array $args)
     {
