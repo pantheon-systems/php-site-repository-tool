@@ -310,18 +310,19 @@ class Git
                 printf("[OUT] %s\n", $process->getOutput());
                 printf("[ERR] %s\n", $process->getErrorOutput());
             }
-            if (0 !== $process->getExitCode()) {
-                throw new GitException(
-                    sprintf(
-                        'Git command failed with exit code %d and message %s',
-                        $process->getExitCode(),
-                        $process->getErrorOutput()
-                    )
-                );
-            }
         } catch (Throwable $t) {
             throw new GitException(
                 sprintf('Failed executing Git command: %s', $t->getMessage())
+            );
+        }
+
+        if (0 !== $process->getExitCode()) {
+            throw new GitException(
+                sprintf(
+                    'Git command failed with exit code %d and message %s',
+                    $process->getExitCode(),
+                    $process->getErrorOutput()
+                )
             );
         }
 
