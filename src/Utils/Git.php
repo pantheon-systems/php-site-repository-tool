@@ -146,29 +146,26 @@ class Git
         }
 
         $process = $this->executeAndReturnProcess($command);
-        if ($process->getExitCode()) {
-            $output = $process->getOutput();
-            $outputLines = explode("\n", $output);
-            $conflicts = [];
-            foreach ($outputLines as $line) {
-                if (strpos($line, 'CONFLICT') === 0) {
-                    $conflicts[] = $line;
-                }
-            }
-            if ($conflicts) {
-                throw new GitMergeConflictException(
-                    sprintf("Merge conflict detected:\n%s", implode("\n", $conflicts)),
-                    $process->getExitCode()
-                );
-            } else {
-                throw new GitException(
-                    sprintf("Merge failed:\n%s", $process->getErrorOutput()),
-                    $process->getExitCode()
-                );
-            }
+        if (0 === $process->getExitCode()) {
+            return $process->getOutput();
         }
 
-        return $process->getOutput();
+        $outputLines = explode("\n", $process->getOutput());
+        $conflicts = [];
+        foreach ($outputLines as $line) {
+            if (strpos($line, 'CONFLICT') === 0) {
+                $conflicts[] = $line;
+            }
+        }
+        if ($conflicts) {
+            throw new GitMergeConflictException(
+                sprintf("Merge conflict detected:\n%s", implode("\n", $conflicts))
+            );
+        }
+
+        throw new GitException(
+            sprintf("Merge failed:\n%s", $process->getErrorOutput())
+        );
     }
 
     /**
