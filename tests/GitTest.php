@@ -141,4 +141,38 @@ class GitTest extends TestCase
         $message = self::$git->getRemoteMessage('clean-merge');
         $this->assertEquals('Add new commit here.', $message);
     }
+
+    /**
+     * @test
+     *
+     * @throws Exceptions\Git\GitException
+     */
+    public function testIsLatestChangesMatchesRemote()
+    {
+        $branch = 'unmerged-changes-in-upstream';
+
+        $paths = ['upstream-configuration/scripts/*'];
+        $result = self::$git->isLatestChangesMatchesRemote($paths, 'upstream', $branch);
+        $this->assertEquals(true, $result);
+
+        $paths = ['upstream-configuration/off-switches/file-not-exists.txt'];
+        $result = self::$git->isLatestChangesMatchesRemote($paths, 'upstream', $branch);
+        $this->assertEquals(true, $result);
+
+        $paths = ['upstream-configuration/off-switches'];
+        $result = self::$git->isLatestChangesMatchesRemote($paths, 'upstream', $branch);
+        $this->assertEquals(false, $result);
+
+        $paths = ['upstream-configuration/off-switches/*'];
+        $result = self::$git->isLatestChangesMatchesRemote($paths, 'upstream', $branch);
+        $this->assertEquals(false, $result);
+
+        $paths = ['upstream-configuration/off-switches/001.txt'];
+        $result = self::$git->isLatestChangesMatchesRemote($paths, 'upstream', $branch);
+        $this->assertEquals(false, $result);
+
+        $paths = ['upstream-configuration/off-switches/001*'];
+        $result = self::$git->isLatestChangesMatchesRemote($paths, 'upstream', $branch);
+        $this->assertEquals(false, $result);
+    }
 }
