@@ -268,6 +268,35 @@ class Git
     }
 
     /**
+     * Returns true if local most recent changes (commit hashes) matches the ones in the <remote>/<branch> for
+     * the given paths.
+     *
+     * @param array $paths
+     * @param string $remote
+     * @param string $branch
+     *
+     * @return bool
+     *
+     * @throws GitException
+     */
+    public function isLatestChangesMatchesRemote(array $paths, string $remote, string $branch): bool
+    {
+        foreach ($paths as $path) {
+            $upstream_commit_hash = $this->execute(
+                ['rev-list', '-n', '1', sprintf('--remotes=*%s/%s', $remote, $branch), '--', $path]
+            );
+
+            $local_commit_hash = $this->execute(['rev-list', '-n', '1', 'HEAD', '--', $path]);
+
+            if ($local_commit_hash !== $upstream_commit_hash) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Return workdir path.
      */
     public function getWorkdir(): string
