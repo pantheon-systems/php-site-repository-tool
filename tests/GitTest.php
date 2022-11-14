@@ -108,6 +108,7 @@ class GitTest extends TestCase
     {
         $output = self::$git->remove(['README.md']);
         $this->assertStringContainsString("rm 'README.md'", $output);
+        self::$git->execute(['reset', '--hard', 'HEAD']);
     }
 
     /**

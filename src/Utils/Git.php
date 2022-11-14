@@ -304,7 +304,7 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    private function execute(array $command): string
+    public function execute(array $command): string
     {
         try {
             $process = $this->executeAndReturnProcess($command);
