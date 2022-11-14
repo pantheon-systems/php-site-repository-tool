@@ -23,7 +23,7 @@ DEPENDENCY LICENSES:
 
 Name                               Version Licenses
 composer/semver                    3.3.2   MIT
-consolidation/annotated-command    4.6.0   MIT
+consolidation/annotated-command    4.6.1   MIT
 consolidation/config               2.1.2   MIT
 consolidation/log                  2.1.1   MIT
 consolidation/output-formatters    4.2.3   MIT
@@ -40,10 +40,10 @@ symfony/event-dispatcher           v5.4.9  MIT
 symfony/event-dispatcher-contracts v2.5.2  MIT
 symfony/filesystem                 v5.4.13 MIT
 symfony/finder                     v5.4.11 MIT
-symfony/polyfill-ctype             v1.26.0 MIT
-symfony/polyfill-intl-grapheme     v1.26.0 MIT
-symfony/polyfill-intl-normalizer   v1.26.0 MIT
-symfony/polyfill-mbstring          v1.26.0 MIT
+symfony/polyfill-ctype             v1.27.0 MIT
+symfony/polyfill-intl-grapheme     v1.27.0 MIT
+symfony/polyfill-intl-normalizer   v1.27.0 MIT
+symfony/polyfill-mbstring          v1.27.0 MIT
 symfony/process                    v5.4.11 MIT
 symfony/service-contracts          v1.1.2  MIT
 symfony/string                     v5.4.15 MIT
