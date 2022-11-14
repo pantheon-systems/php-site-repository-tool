@@ -249,6 +249,18 @@ class Git
     }
 
     /**
+     * Returns TRUE is there is anything to commit.
+     *
+     * @return bool
+     *
+     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
+     */
+    public function isAnythingToCommit(): bool
+    {
+        return '' !== $this->execute(['status', '--porcelain']);
+    }
+
+    /**
      * Performs push of everything.
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
