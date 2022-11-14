@@ -68,7 +68,7 @@ class GitTest extends TestCase
     public function testFetch()
     {
         $output = self::$git->fetch('upstream');
-        $this->assertEmpty('', $output);
+        $this->assertEmpty($output);
     }
 
     /**
@@ -80,7 +80,7 @@ class GitTest extends TestCase
     public function testCleanMerge()
     {
         $output = self::$git->merge('clean-merge', 'upstream');
-        $this->assertEmpty('', $output);
+        $this->assertEmpty($output);
     }
 
     /**
