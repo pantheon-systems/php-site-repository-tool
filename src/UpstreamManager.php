@@ -78,6 +78,7 @@ class UpstreamManager
             try {
                 $git->cloneRepository($siteRepoUrl, $siteRepoBranch);
                 $result['clone'] = true;
+                $result['logs'][] = 'Repository has been cloned';
             } catch (NotEmptyFolderException $e) {
                 $result['errormessage'] = sprintf("Workdir '%s' is not empty.", $workdir);
                 return $result;
@@ -89,7 +90,9 @@ class UpstreamManager
 
         try {
             $git->remoteAdd('upstream', $upstreamRepoUrl);
+            $result['logs'][] = 'Upstream remote has been added';
             $git->fetch('upstream');
+            $result['logs'][] = 'Updates have been fetched';
         } catch (GitException $e) {
             $result['errormessage'] = sprintf("Could not fetch upstream. Check that your upstream's git repository is accessible and that Pantheon has any required access tokens: %s", $e->getMessage());
             return $result;
@@ -99,6 +102,7 @@ class UpstreamManager
             if (!$git->isLatestChangeMatchesRemote($this->getOffSwitchPaths(), 'upstream', 'main')) {
                 // An unmerged off-switch file change found, immediately return the result with the success flag.
                 $result['pull'] = true;
+                $result['logs'][] = 'An unmerged off-switch update found';
                 return $result;
             }
         }
@@ -115,6 +119,7 @@ class UpstreamManager
                 $strategyOption,
                 !$ff
             );
+            $result['logs'][] = 'Updates have been merged';
         } catch (GitMergeConflictException $e) {
             // WordPress License handling stuff.
             $unmergedFiles = $git->listUnmergedFiles();
@@ -139,6 +144,7 @@ class UpstreamManager
         try {
             if ($git->isAnythingToCommit()) {
                 $git->commit($commitMessages, $commitAuthor);
+                $result['logs'][] = 'Updates have been committed';
             }
         } catch (GitException $e) {
             $result['errormessage'] = sprintf("Error committing to git: %s", $e->getMessage());
@@ -151,6 +157,7 @@ class UpstreamManager
             try {
                 $git->pushAll();
                 $result['push'] = true;
+                $result['operations'][] = 'Updates have been pushed';
             } catch (GitException $e) {
                 $result['errormessage'] = sprintf("Error during git push: %s", $e->getMessage());
                 return $result;
