@@ -88,6 +88,10 @@ class Git
      */
     public function cloneRepository(string $repoUrl, string $branchName): void
     {
+        if (!is_dir($this->workdir)) {
+            $this->createWorkdir();
+        }
+
         // Use 2 here because: "." and "..".
         if (count(scandir($this->workdir)) > 2) {
             // Not empty dir, throw exception.
@@ -322,7 +326,12 @@ class Git
         if ($this->verbose) {
             printf("RUN: mkdir '%s'.\n", $this->workdir);
         }
-        $this->isWorkdirExists = mkdir($this->workdir, 0755);
+
+        if (!mkdir($this->workdir, 0755)) {
+            throw new DirNotCreatedException(
+                sprintf('Failed creating directory "%s"', $this->workdir)
+            );
+        }
     }
 
     /**
