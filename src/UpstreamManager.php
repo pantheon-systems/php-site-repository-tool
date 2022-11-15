@@ -15,6 +15,11 @@ use PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException;
 class UpstreamManager
 {
     /**
+     * @var string
+     */
+    private const REMOTE = 'upstream';
+
+    /**
      * Applies the upstream changes to the local repository.
      *
      * @param string $siteRepoUrl
@@ -89,9 +94,9 @@ class UpstreamManager
         }
 
         try {
-            $git->remoteAdd('upstream', $upstreamRepoUrl);
+            $git->remoteAdd(self::REMOTE, $upstreamRepoUrl);
             $result['logs'][] = 'Upstream remote has been added';
-            $git->fetch('upstream');
+            $git->fetch(self::REMOTE);
             $result['logs'][] = 'Updates have been fetched';
         } catch (GitException $e) {
             $result['errormessage'] = sprintf("Could not fetch upstream. Check that your upstream's git repository is accessible and that Pantheon has any required access tokens: %s", $e->getMessage());
@@ -99,7 +104,7 @@ class UpstreamManager
         }
 
         if ('procedural' === $updateBehavior) {
-            if (!$git->isLatestChangeMatchesRemote($this->getOffSwitchPaths(), 'upstream', 'main')) {
+            if (!$git->isLatestChangeMatchesRemote($this->getOffSwitchPaths(), self::REMOTE, 'main')) {
                 // An unmerged off-switch file change found, immediately return the result with the success flag.
                 $result['pull'] = true;
                 $result['logs'][] = 'An unmerged off-switch update found';
@@ -115,7 +120,7 @@ class UpstreamManager
         try {
             $git->merge(
                 $upstreamRepoBranch,
-                'upstream',
+                self::REMOTE,
                 $strategyOption,
                 !$ff
             );
