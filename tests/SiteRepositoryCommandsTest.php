@@ -150,8 +150,8 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
             '--no-push',
             '--verbose',
         ], 0);
-        list($actualOutput, $statusCode) = $this->execute($argv, $this->commandClasses);
-        $jsonOutput = json_decode($actualOutput, true);
+        list($output, $statusCode) = $this->execute($argv, $this->commandClasses);
+        $result = json_decode($output, true);
         $this->assertEquals(self::STATUS_OK, $statusCode);
         $this->assertEquals([
             'clone' => true,
@@ -164,7 +164,7 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
             ],
             'conflicts' => '',
             'errormessage' => '',
-        ], $jsonOutput);
+        ], $result);
     }
 
     /**
