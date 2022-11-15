@@ -21,7 +21,7 @@ class Git
 
     private bool $verbose;
 
-    private bool $workdirCreated;
+    private bool $isWorkdirExists;
 
     /**
      * Git constructor.
@@ -44,6 +44,7 @@ class Git
         bool   $bypassSyncCode
     ) {
         $this->workdir = $workdir;
+        $this->isWorkdirExists = is_dir($workdir);
 
         $this->env = [];
         $this->verbose = $verbose;
@@ -302,7 +303,7 @@ class Git
      */
     public function getWorkdir(): string
     {
-        if (!$this->workdirCreated) {
+        if (!$this->isWorkdirExists) {
             $this->createWorkdir();
         }
         return $this->workdir;
@@ -313,13 +314,15 @@ class Git
      */
     protected function createWorkdir(): void
     {
-        if (!is_dir($this->workdir)) {
-            if ($this->verbose) {
-                printf("RUN: mkdir '%s'.\n", $this->workdir);
-            }
-            mkdir($this->workdir, 0755);
+        if (is_dir($this->workdir)) {
+            $this->isWorkdirExists = true;
+            return;
         }
-        $this->workdirCreated = true;
+
+        if ($this->verbose) {
+            printf("RUN: mkdir '%s'.\n", $this->workdir);
+        }
+        $this->isWorkdirExists = mkdir($this->workdir, 0755);
     }
 
     /**
