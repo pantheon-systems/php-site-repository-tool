@@ -68,29 +68,7 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
      */
     public function testApplyUpstream()
     {
-        $workdir = sys_get_temp_dir() . '/php-site-repository-tool-test-' . uniqid();
-        mkdir($workdir);
-
-        $siteRepoUrl = 'https://' . $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-site-fixture.git';
-        $siteRepoBranch = 'master';
-        $upstreamRepoUrl = 'https://'. $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-upstream-fixture.git';
-        $upstreamRepoBranch = 'main';
-
-        $argv = $this->argv([
-            'apply_upstream',
-            '--site-repo-url=' . $siteRepoUrl,
-            '--site-repo-branch=' . $siteRepoBranch,
-            '--upstream-repo-url=' . $upstreamRepoUrl,
-            '--upstream-repo-branch=' . $upstreamRepoBranch,
-            '--work-dir=' . $workdir,
-            '--update-behavior=heirloom',
-            // Do not push to avoid altering the fixture repository.
-            '--no-push',
-            '--verbose',
-        ], 0);
-        list($actualOutput, $statusCode) = $this->execute($argv, $this->commandClasses);
-        $jsonOutput = json_decode($actualOutput, true);
-        $this->assertEquals(self::STATUS_OK, $statusCode);
+        $result = $this->executeApplyUpstreamCommand('main');
         $this->assertEquals([
             'clone' => true,
             'pull' => true,
@@ -104,7 +82,7 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
             ],
             'conflicts' => '',
             'errormessage' => '',
-        ], $jsonOutput);
+        ], $result);
     }
 
     /**
@@ -112,29 +90,7 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
      */
     public function testApplyUpstreamBehaviorProceduralOffSwitch()
     {
-        $workdir = sys_get_temp_dir() . '/php-site-repository-tool-test-' . uniqid();
-        mkdir($workdir);
-
-        $siteRepoUrl = 'https://' . $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-site-fixture.git';
-        $siteRepoBranch = 'master';
-        $upstreamRepoUrl = 'https://'. $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-upstream-fixture.git';
-        $upstreamRepoBranch = 'unmerged-changes-in-upstream';
-
-        $argv = $this->argv([
-            'apply_upstream',
-            '--site-repo-url=' . $siteRepoUrl,
-            '--site-repo-branch=' . $siteRepoBranch,
-            '--upstream-repo-url=' . $upstreamRepoUrl,
-            '--upstream-repo-branch=' . $upstreamRepoBranch,
-            '--work-dir=' . $workdir,
-            '--update-behavior=procedural',
-            // Do not push to avoid altering the fixture repository.
-            '--no-push',
-            '--verbose',
-        ], 0);
-        list($actualOutput, $statusCode) = $this->execute($argv, $this->commandClasses);
-        $jsonOutput = json_decode($actualOutput, true);
-        $this->assertEquals(self::STATUS_OK, $statusCode);
+        $result = $this->executeApplyUpstreamCommand('unmerged-changes-in-upstream', 'procedural');
         $this->assertEquals([
             'clone' => true,
             'pull' => true,
@@ -147,7 +103,7 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
             ],
             'conflicts' => '',
             'errormessage' => '',
-        ], $jsonOutput);
+        ], $result);
     }
 
     /**
@@ -155,29 +111,7 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
      */
     public function testApplyUpstreamBehaviorProceduralNoOffSwitch()
     {
-        $workdir = sys_get_temp_dir() . '/php-site-repository-tool-test-' . uniqid();
-        mkdir($workdir);
-
-        $siteRepoUrl = 'https://' . $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-site-fixture.git';
-        $siteRepoBranch = 'master';
-        $upstreamRepoUrl = 'https://'. $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-upstream-fixture.git';
-        $upstreamRepoBranch = 'main';
-
-        $argv = $this->argv([
-            'apply_upstream',
-            '--site-repo-url=' . $siteRepoUrl,
-            '--site-repo-branch=' . $siteRepoBranch,
-            '--upstream-repo-url=' . $upstreamRepoUrl,
-            '--upstream-repo-branch=' . $upstreamRepoBranch,
-            '--work-dir=' . $workdir,
-            '--update-behavior=procedural',
-            // Do not push to avoid altering the fixture repository.
-            '--no-push',
-            '--verbose',
-        ], 0);
-        list($actualOutput, $statusCode) = $this->execute($argv, $this->commandClasses);
-        $jsonOutput = json_decode($actualOutput, true);
-        $this->assertEquals(self::STATUS_OK, $statusCode);
+        $result = $this->executeApplyUpstreamCommand('main', 'procedural');
         $this->assertEquals([
             'clone' => true,
             'pull' => true,
@@ -191,7 +125,7 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
             ],
             'conflicts' => '',
             'errormessage' => '',
-        ], $jsonOutput);
+        ], $result);
     }
 
     /**
@@ -231,5 +165,41 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
             'conflicts' => '',
             'errormessage' => '',
         ], $jsonOutput);
+    }
+
+    /**
+     * Executes the command and return the result.
+     *
+     * @param string $upstreamRepoBranch
+     * @param string $updateBehavior
+     *
+     * @return mixed
+     */
+    private function executeApplyUpstreamCommand($upstreamRepoBranch, $updateBehavior = 'heirloom') {
+        $workdir = sys_get_temp_dir() . '/php-site-repository-tool-test-' . uniqid();
+        mkdir($workdir);
+
+        $siteRepoUrl = 'https://' . $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-site-fixture.git';
+        $siteRepoBranch = 'master';
+        $upstreamRepoUrl = 'https://'. $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-upstream-fixture.git';
+
+        $argv = $this->argv([
+            'apply_upstream',
+            '--site-repo-url=' . $siteRepoUrl,
+            '--site-repo-branch=' . $siteRepoBranch,
+            '--upstream-repo-url=' . $upstreamRepoUrl,
+            '--upstream-repo-branch=' . $upstreamRepoBranch,
+            '--work-dir=' . $workdir,
+            '--update-behavior=' . $updateBehavior,
+            // Do not push to avoid altering the fixture repository.
+            '--no-push',
+            '--verbose',
+        ], 0);
+
+        list($output, $statusCode) = $this->execute($argv, $this->commandClasses);
+        $result = json_decode($output, true);
+        $this->assertEquals(self::STATUS_OK, $statusCode);
+
+        return $result;
     }
 }
