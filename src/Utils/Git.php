@@ -34,14 +34,15 @@ class Git
      * @param string $binding
      * @param bool $bypassSyncCode
      */
-    public function __construct(string $committerName = '', string $committerEmail = '', string $workdir = '', bool $verbose = false, string $siteUuid = '', string $binding = '', bool $bypassSyncCode = false)
-    {
-        $this->workdirCreated = false;
-
-        if ($workdir and is_dir($workdir)) {
-            $this->workdirCreated = true;
-        }
-
+    public function __construct(
+        string $committerName,
+        string $committerEmail,
+        string $workdir,
+        bool   $verbose,
+        string $siteUuid,
+        string $binding,
+        bool   $bypassSyncCode
+    ) {
         $this->workdir = $workdir;
 
         $this->env = [];

@@ -33,7 +33,7 @@ class GitTest extends TestCase
 
         $workdir = sys_get_temp_dir() . '/php-site-repository-tool-test-' . uniqid();
         mkdir($workdir);
-        self::$git = new Git('', '', $workdir, true);
+        self::$git = new Git('', '', $workdir, true, '', '', false);
         self::$upstreamUrl = 'https://' . getenv('GITHUB_TOKEN') . '@github.com/pantheon-fixtures/php-srt-upstream-fixture.git';
     }
 
