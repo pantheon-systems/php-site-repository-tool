@@ -101,6 +101,44 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
     }
 
     /**
+     * Test apply upstream command with --update-behavior="procedural" option.
+     */
+    public function testApplyUpstreamBehaviorProcedural()
+    {
+        $workdir = sys_get_temp_dir() . '/php-site-repository-tool-test-' . uniqid();
+        mkdir($workdir);
+
+        $siteRepoUrl = 'https://' . $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-site-fixture.git';
+        $siteRepoBranch = 'master';
+        $upstreamRepoUrl = 'https://'. $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-upstream-fixture.git';
+        $upstreamRepoBranch = 'unmerged-changes-in-upstream';
+
+        $argv = $this->argv([
+            'apply_upstream',
+            '--site-repo-url=' . $siteRepoUrl,
+            '--site-repo-branch=' . $siteRepoBranch,
+            '--upstream-repo-url=' . $upstreamRepoUrl,
+            '--upstream-repo-branch=' . $upstreamRepoBranch,
+            '--work-dir=' . $workdir,
+            '--update-behavior=procedural',
+            // Do not push to avoid altering the fixture repository.
+            '--no-push',
+            '--verbose',
+        ], 0);
+        list($actualOutput, $statusCode) = $this->execute($argv, $this->commandClasses);
+        $jsonOutput = json_decode($actualOutput, true);
+        $this->assertEquals(self::STATUS_OK, $statusCode);
+        $this->assertEquals([
+            'clone' => true,
+            'pull' => true,
+            'push' => false,
+            'logs' => '',
+            'conflicts' => '',
+            'errormessage' => '',
+        ], $jsonOutput);
+    }
+
+    /**
      * Test merge_environment command.
      */
     public function testMergeEnvironment()
