@@ -279,7 +279,7 @@ class Git
      *
      * @throws GitException
      */
-    public function isLatestChangesMatchesRemote(array $paths, string $remote, string $branch): bool
+    public function isLatestChangeMatchesRemote(array $paths, string $remote, string $branch): bool
     {
         foreach ($paths as $path) {
             $upstream_commit_hash = $this->execute(
