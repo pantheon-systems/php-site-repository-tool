@@ -26,6 +26,7 @@ class GitTest extends TestCase
     /**
      * Prepare to test our class.
      */
+    // phpcs:ignore
     public static function set_up_before_class()
     {
         parent::set_up_before_class();

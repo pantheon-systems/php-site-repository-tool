@@ -38,7 +38,7 @@
             "chmod +x tools/box"
         ],
         "phar:build": "env PATH=tools:$PATH box compile",
-        "cs": "phpcs --standard=PSR2 -n src",
+        "cs": "phpcs --standard=PSR2 -n src tests",
         "cbf": "phpcbf --standard=PSR2 -n src tests",
         "unit": "phpunit --colors=always",
         "configure-for-php-version": [

@@ -19,6 +19,7 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
     /**
      * Prepare to test our commandfile
      */
+    // phpcs:ignore
     public function set_up()
     {
         parent::set_up();
