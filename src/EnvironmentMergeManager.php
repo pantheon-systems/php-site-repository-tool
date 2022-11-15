@@ -47,10 +47,10 @@ class EnvironmentMergeManager
         string $committerEmail,
         string $siteUuid,
         string $binding,
-        bool $bypassSyncCode,
-        bool $ff,
-        bool $push,
-        bool $verbose
+        bool   $bypassSyncCode,
+        bool   $ff,
+        bool   $push,
+        bool   $verbose
     ): array {
         $git = new Git(
             $committerName,

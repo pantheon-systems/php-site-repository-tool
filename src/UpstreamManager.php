@@ -50,11 +50,11 @@ class UpstreamManager
         string $siteUuid,
         string $binding,
         string $updateBehavior,
-        bool $bypassSyncCode,
-        bool $ff,
-        bool $clone,
-        bool $push,
-        bool $verbose
+        bool   $bypassSyncCode,
+        bool   $ff,
+        bool   $clone,
+        bool   $push,
+        bool   $verbose
     ): array {
         $git = new Git(
             $committerName,

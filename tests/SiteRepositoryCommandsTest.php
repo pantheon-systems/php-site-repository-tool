@@ -24,7 +24,7 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
         parent::set_up();
 
         // Store the command classes we are going to test
-        $this->commandClasses = [ \PhpSiteRepositoryTool\Cli\SiteRepositoryCommands::class ];
+        $this->commandClasses = [\PhpSiteRepositoryTool\Cli\SiteRepositoryCommands::class];
         $this->setupCommandTester('TestFixtureApp', '1.0.1');
     }
 
@@ -175,13 +175,14 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
      *
      * @return mixed
      */
-    private function executeApplyUpstreamCommand($upstreamRepoBranch, $updateBehavior = 'heirloom') {
+    private function executeApplyUpstreamCommand($upstreamRepoBranch, $updateBehavior = 'heirloom')
+    {
         $workdir = sys_get_temp_dir() . '/php-site-repository-tool-test-' . uniqid();
         mkdir($workdir);
 
         $siteRepoUrl = 'https://' . $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-site-fixture.git';
         $siteRepoBranch = 'master';
-        $upstreamRepoUrl = 'https://'. $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-upstream-fixture.git';
+        $upstreamRepoUrl = 'https://' . $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-upstream-fixture.git';
 
         $argv = $this->argv([
             'apply_upstream',

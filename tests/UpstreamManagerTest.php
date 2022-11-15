@@ -22,25 +22,25 @@ class UpstreamManagerTest extends TestCase
         return [
             [
                 [
-                'wp-content/themes/2020/LICENSE.md',
-                'wp-content/themes/2021/LICENSE.md',
-                'wp-content/themes/2022/LICENSE.md',
+                    'wp-content/themes/2020/LICENSE.md',
+                    'wp-content/themes/2021/LICENSE.md',
+                    'wp-content/themes/2022/LICENSE.md',
                 ],
                 true
             ],
             [
                 [
-                'wp-content/themes/2020/LICENSE.md',
-                'wp-content/themes/2021/README.md',
-                'wp-content/themes/2022/LICENSE.md',
+                    'wp-content/themes/2020/LICENSE.md',
+                    'wp-content/themes/2021/README.md',
+                    'wp-content/themes/2022/LICENSE.md',
                 ],
                 false
             ],
             [
                 [
-                'wp-content/themes/2020/README.md',
-                'wp-content/themes/2021/README.md',
-                'wp-content/themes/2022/README.md',
+                    'wp-content/themes/2020/README.md',
+                    'wp-content/themes/2021/README.md',
+                    'wp-content/themes/2022/README.md',
                 ],
                 false
             ],
