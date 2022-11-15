@@ -108,9 +108,9 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
     }
 
     /**
-     * Test apply upstream command with --update-behavior="procedural" option.
+     * Test apply upstream command with --update-behavior="procedural" option and an unmerged off-switch update.
      */
-    public function testApplyUpstreamBehaviorProcedural()
+    public function testApplyUpstreamBehaviorProceduralOffSwitch()
     {
         $workdir = sys_get_temp_dir() . '/php-site-repository-tool-test-' . uniqid();
         mkdir($workdir);
@@ -144,6 +144,50 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
                 'Upstream remote has been added',
                 'Updates have been fetched',
                 'An unmerged off-switch update found',
+            ],
+            'conflicts' => '',
+            'errormessage' => '',
+        ], $jsonOutput);
+    }
+
+    /**
+     * Test apply upstream command with --update-behavior="procedural" option.
+     */
+    public function testApplyUpstreamBehaviorProceduralNoOffSwitch()
+    {
+        $workdir = sys_get_temp_dir() . '/php-site-repository-tool-test-' . uniqid();
+        mkdir($workdir);
+
+        $siteRepoUrl = 'https://' . $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-site-fixture.git';
+        $siteRepoBranch = 'master';
+        $upstreamRepoUrl = 'https://'. $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-upstream-fixture.git';
+        $upstreamRepoBranch = 'main';
+
+        $argv = $this->argv([
+            'apply_upstream',
+            '--site-repo-url=' . $siteRepoUrl,
+            '--site-repo-branch=' . $siteRepoBranch,
+            '--upstream-repo-url=' . $upstreamRepoUrl,
+            '--upstream-repo-branch=' . $upstreamRepoBranch,
+            '--work-dir=' . $workdir,
+            '--update-behavior=procedural',
+            // Do not push to avoid altering the fixture repository.
+            '--no-push',
+            '--verbose',
+        ], 0);
+        list($actualOutput, $statusCode) = $this->execute($argv, $this->commandClasses);
+        $jsonOutput = json_decode($actualOutput, true);
+        $this->assertEquals(self::STATUS_OK, $statusCode);
+        $this->assertEquals([
+            'clone' => true,
+            'pull' => true,
+            'push' => false,
+            'logs' => [
+                'Repository has been cloned',
+                'Upstream remote has been added',
+                'Updates have been fetched',
+                'Updates have been merged',
+                'Updates have been committed',
             ],
             'conflicts' => '',
             'errormessage' => '',
