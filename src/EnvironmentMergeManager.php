@@ -66,13 +66,17 @@ class EnvironmentMergeManager
             'clone' => false,
             'pull' => false,
             'push' => false,
+            'logs' => [],
             'conflicts' => '',
             'errormessage' => '',
         ];
 
+        $remote = 'origin';
+
         try {
             $git->cloneRepository($siteRepoUrl, $siteRepoBranch);
             $result['clone'] = true;
+            $result['logs'][] = 'Repository has been cloned';
         } catch (NotEmptyFolderException $e) {
             $result['errormessage'] = sprintf("Workdir '%s' is not empty.", $workdir);
             return $result;
@@ -82,7 +86,8 @@ class EnvironmentMergeManager
         }
 
         try {
-            $git->merge($fromBranch, 'origin', $strategyOption, !$ff);
+            $git->merge($fromBranch, $remote, $strategyOption, !$ff);
+            $result['logs'][] = 'Updates have been merged';
         } catch (GitMergeConflictException $e) {
             $result['conflicts'] = $git->listUnmergedFiles();
             $result['errormessage'] = sprintf("Merge conflict: %s", $e->getMessage());
@@ -90,13 +95,14 @@ class EnvironmentMergeManager
         }
 
         $commitMessages = [
-            $git->getRemoteMessage($fromBranch, 'origin'),
+            $git->getRemoteMessage($fromBranch, $remote),
             sprintf("Merged '%s' into '%s'", $fromBranch, $toBranch),
         ];
 
         try {
             if ($git->isAnythingToCommit()) {
                 $git->commit($commitMessages);
+                $result['logs'][] = 'Updates have been committed';
             }
         } catch (GitException $e) {
             $result['errormessage'] = sprintf("Error committing to git: %s", $e->getMessage());
@@ -109,6 +115,7 @@ class EnvironmentMergeManager
             try {
                 $git->pushAll();
                 $result['push'] = true;
+                $result['operations'][] = 'Updates have been pushed';
             } catch (GitException $e) {
                 $result['errormessage'] = sprintf("Error during git push: %s", $e->getMessage());
                 return $result;
