@@ -104,7 +104,7 @@ class UpstreamManager
         }
 
         if ('procedural' === $updateBehavior) {
-            if (!$git->isLatestChangeMatchesRemote($this->getOffSwitchPaths(), self::REMOTE, 'main')) {
+            if (!$git->isLatestChangeMatchesRemote($this->getOffSwitchPaths(), self::REMOTE, $upstreamRepoBranch)) {
                 // An unmerged off-switch file change found, immediately return the result with the success flag.
                 $result['pull'] = true;
                 $result['logs'][] = 'An unmerged off-switch update found';
