@@ -40,8 +40,9 @@ class GitTest extends TestCase
     /**
      * Test clone function.
      *
+     * @throws \PhpSiteRepositoryTool\Exceptions\DirNotCreatedException
+     * @throws \PhpSiteRepositoryTool\Exceptions\DirNotEmptyException
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
-     * @throws \PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException
      */
     public function testClone()
     {
@@ -53,6 +54,7 @@ class GitTest extends TestCase
      * Test adding a remote.
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
+     * @throws \ReflectionException
      */
     public function testRemoteAdd()
     {
@@ -115,6 +117,7 @@ class GitTest extends TestCase
     /**
      * @test
      *
+     * @throws \PhpSiteRepositoryTool\Exceptions\DirNotCreatedException
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
     public function testIsAnythingToCommit()

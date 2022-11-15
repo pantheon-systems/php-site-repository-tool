@@ -5,10 +5,10 @@ namespace PhpSiteRepositoryTool\Exceptions;
 use Exception;
 
 /**
- * Class NotEmptyFolderException.
+ * Class DirNotEmptyException.
  *
  * @package PhpSiteRepositoryTool\Exceptions
  */
-class NotEmptyFolderException extends Exception
+class DirNotEmptyException extends Exception
 {
 }

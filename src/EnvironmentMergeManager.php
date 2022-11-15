@@ -3,7 +3,7 @@
 namespace PhpSiteRepositoryTool;
 
 use PhpSiteRepositoryTool\Utils\Git;
-use PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException;
+use PhpSiteRepositoryTool\Exceptions\DirNotEmptyException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException;
 
@@ -34,7 +34,8 @@ class EnvironmentMergeManager
      *
      * @return array
      *
-     * @throws GitException
+     * @throws \PhpSiteRepositoryTool\Exceptions\DirNotCreatedException
+     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
     public function mergeEnvironment(
         string $siteRepoUrl,
@@ -77,7 +78,7 @@ class EnvironmentMergeManager
             $git->cloneRepository($siteRepoUrl, $siteRepoBranch);
             $result['clone'] = true;
             $result['logs'][] = 'Repository has been cloned';
-        } catch (NotEmptyFolderException $e) {
+        } catch (DirNotEmptyException $e) {
             $result['errormessage'] = sprintf("Workdir '%s' is not empty.", $workdir);
             return $result;
         } catch (GitException $e) {

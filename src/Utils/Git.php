@@ -2,9 +2,10 @@
 
 namespace PhpSiteRepositoryTool\Utils;
 
+use PhpSiteRepositoryTool\Exceptions\DirNotCreatedException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException;
-use PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException;
+use PhpSiteRepositoryTool\Exceptions\DirNotEmptyException;
 use Throwable;
 
 /**
@@ -83,8 +84,9 @@ class Git
      * @param string $repoUrl
      * @param string $branchName
      *
+     * @throws \PhpSiteRepositoryTool\Exceptions\DirNotCreatedException
+     * @throws \PhpSiteRepositoryTool\Exceptions\DirNotEmptyException
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
-     * @throws \PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException
      */
     public function cloneRepository(string $repoUrl, string $branchName): void
     {
@@ -95,8 +97,9 @@ class Git
         // Use 2 here because: "." and "..".
         if (count(scandir($this->workdir)) > 2) {
             // Not empty dir, throw exception.
-            throw new NotEmptyFolderException(sprintf("The folder '%s' is not empty.", $this->workdir));
+            throw new DirNotEmptyException(sprintf("The folder '%s' is not empty.", $this->workdir));
         }
+
         $this->execute(['clone', '-b', $branchName, $repoUrl, $this->workdir]);
     }
 
@@ -304,6 +307,8 @@ class Git
 
     /**
      * Return workdir path.
+     *
+     * @throws \PhpSiteRepositoryTool\Exceptions\DirNotCreatedException
      */
     public function getWorkdir(): string
     {
@@ -315,6 +320,8 @@ class Git
 
     /**
      * Creates workdir.
+     *
+     * @throws \PhpSiteRepositoryTool\Exceptions\DirNotCreatedException
      */
     protected function createWorkdir(): void
     {
