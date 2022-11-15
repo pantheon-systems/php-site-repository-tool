@@ -70,6 +70,7 @@ class UpstreamManager
             'clone' => false,
             'pull' => false,
             'push' => false,
+            'logs' => [],
             'conflicts' => '',
             'errormessage' => '',
         ];
