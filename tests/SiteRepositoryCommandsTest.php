@@ -40,7 +40,7 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
                 'list',
             ],
             [
-                'Apply upstream command',
+                'Merge Environment command',
                 self::STATUS_OK,
                 'list',
             ],
