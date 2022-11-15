@@ -160,7 +160,7 @@ class UpstreamManager
             try {
                 $git->pushAll();
                 $result['push'] = true;
-                $result['operations'][] = 'Updates have been pushed';
+                $result['logs'][] = 'Updates have been pushed';
             } catch (GitException $e) {
                 $result['errormessage'] = sprintf("Error during git push: %s", $e->getMessage());
                 return $result;
