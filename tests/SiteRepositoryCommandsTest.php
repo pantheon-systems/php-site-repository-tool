@@ -179,6 +179,11 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
             'clone' => true,
             'pull' => true,
             'push' => false,
+            'logs' => [
+                'Repository has been cloned',
+                'Updates have been merged',
+                'Updates have been committed',
+            ],
             'conflicts' => '',
             'errormessage' => '',
         ], $jsonOutput);
