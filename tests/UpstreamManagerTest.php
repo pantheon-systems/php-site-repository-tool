@@ -9,7 +9,6 @@ use Yoast\PHPUnitPolyfills\TestCases\TestCase;
  */
 class UpstreamManagerTest extends TestCase
 {
-
     use SiteRepositoryToolTesterTrait;
 
     /**
