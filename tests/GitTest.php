@@ -170,5 +170,13 @@ class GitTest extends TestCase
         $paths = ['upstream-configuration/off-switches/*'];
         $result = self::$git->isLatestChangeMatchesRemote($paths, 'upstream', $branch);
         $this->assertEquals(false, $result);
+
+        $paths = ['upstream-configuration/off-switches/001.txt'];
+        $result = self::$git->isLatestChangeMatchesRemote($paths, 'upstream', $branch);
+        $this->assertEquals(false, $result);
+
+        $paths = ['upstream-configuration/off-switches/001*'];
+        $result = self::$git->isLatestChangeMatchesRemote($paths, 'upstream', $branch);
+        $this->assertEquals(false, $result);
     }
 }
