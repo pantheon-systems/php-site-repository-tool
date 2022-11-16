@@ -60,8 +60,12 @@ class SiteRepositoryCommands extends Tasks
         'format' => 'json'
     ]): array
     {
+        if ($options['verbose']) {
+            printf("options: '%s'\n", var_export($options, true));
+        }
+
         $upstreamManager = new UpstreamManager();
-        return $upstreamManager->applyUpstream(
+        $result = $upstreamManager->applyUpstream(
             $options['site-repo-url'],
             $options['site-repo-branch'],
             $options['upstream-repo-url'],
@@ -79,6 +83,12 @@ class SiteRepositoryCommands extends Tasks
             $options['push'],
             $options['verbose']
         );
+
+        if ($options['verbose']) {
+            printf("apply_updates command result:\n");
+        }
+
+        return $result;
     }
 
     /**
@@ -124,8 +134,12 @@ class SiteRepositoryCommands extends Tasks
             'format' => 'json'
         ]
     ): array {
+        if ($options['verbose']) {
+            printf("options: '%s'\n", var_export($options, true));
+        }
+
         $environmentMergeManager = new EnvironmentMergeManager();
-        return $environmentMergeManager->mergeEnvironment(
+        $result = $environmentMergeManager->mergeEnvironment(
             $options['site-repo-url'],
             $options['site-repo-branch'],
             $options['from-branch'],
@@ -141,5 +155,11 @@ class SiteRepositoryCommands extends Tasks
             $options['push'],
             $options['verbose']
         );
+
+        if ($options['verbose']) {
+            printf("merge_environment command result:\n");
+        }
+
+        return $result;
     }
 }
