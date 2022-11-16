@@ -38,6 +38,7 @@ class SiteRepositoryCommands extends Tasks
      *
      * @return array
      *
+     * @throws \PhpSiteRepositoryTool\Exceptions\DirNotCreatedException
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
     public function applyUpstream(array $options = [
@@ -102,6 +103,7 @@ class SiteRepositoryCommands extends Tasks
      *
      * @return array
      *
+     * @throws \PhpSiteRepositoryTool\Exceptions\DirNotCreatedException
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
     public function mergeEnvironment(
