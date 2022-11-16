@@ -226,8 +226,12 @@ class Git
      */
     public function getRemoteMessage(string $branchName, string $remoteName = 'upstream'): string
     {
-        $commitHash = trim($this->execute(['rev-parse', sprintf('refs/remotes/%s/%s', $remoteName, $branchName)]));
-        return trim($this->execute(['log', '--format=%B', '-n', '1', $commitHash]));
+        $commitHash = $this->execute([
+            'rev-parse',
+            sprintf('refs/remotes/%s/%s', $remoteName, $branchName)
+        ]);
+
+        return $this->execute(['log', '--format=%B', '-n', '1', $commitHash]);
     }
 
     /**
@@ -370,7 +374,7 @@ class Git
             );
         }
 
-        return $process->getOutput();
+        return trim($process->getOutput());
     }
 
     /**
