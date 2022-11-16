@@ -145,4 +145,22 @@ class GitTest extends TestCase
         $message = self::$git->getRemoteMessage('clean-merge');
         $this->assertEquals('Add new commit here.', $message);
     }
+
+    /**
+     * @test
+     *
+     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
+     */
+    public function testIsLatestChangeMatchesRemote()
+    {
+        $branch = 'unmerged-changes-in-upstream';
+
+        $paths = ['upstream-configuration/scripts/*'];
+        $result = self::$git->isLatestChangeMatchesRemote($paths, 'upstream', $branch);
+        $this->assertEquals(true, $result);
+
+        $paths = ['upstream-configuration/off-switches/file-not-exists.txt'];
+        $result = self::$git->isLatestChangeMatchesRemote($paths, 'upstream', $branch);
+        $this->assertEquals(true, $result);
+    }
 }
