@@ -387,10 +387,22 @@ class Git
     private function executeAndReturnProcess(array $command): Process
     {
         if ($this->verbose) {
-            printf("RUN: git %s\n", implode(" ", $command));
+            printf("command: 'git %s'", implode(' ', $command));
         }
+
         $process = new Process(array_merge(['git'], $command), $this->workdir, $this->env);
         $process->run();
+
+        if ($this->verbose) {
+            printf(" (%s)\n", $process->getExitCode());
+            if ('' !== $process->getOutput()) {
+                printf("output: '%s'\n", trim($process->getOutput()));
+            }
+            if (0 !== $process->getExitCode() && $process->getErrorOutput()) {
+                printf("error: '%s'\n", $process->getErrorOutput());
+            }
+        }
+
         return $process;
     }
 }
