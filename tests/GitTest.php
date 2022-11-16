@@ -162,5 +162,13 @@ class GitTest extends TestCase
         $paths = ['upstream-configuration/off-switches/file-not-exists.txt'];
         $result = self::$git->isLatestChangeMatchesRemote($paths, 'upstream', $branch);
         $this->assertEquals(true, $result);
+
+        $paths = ['upstream-configuration/off-switches'];
+        $result = self::$git->isLatestChangeMatchesRemote($paths, 'upstream', $branch);
+        $this->assertEquals(false, $result);
+
+        $paths = ['upstream-configuration/off-switches/*'];
+        $result = self::$git->isLatestChangeMatchesRemote($paths, 'upstream', $branch);
+        $this->assertEquals(false, $result);
     }
 }
