@@ -227,7 +227,7 @@ class Git
     public function getRemoteMessage(string $branchName, string $remoteName = 'upstream'): string
     {
         $commitHash = trim($this->execute(['rev-parse', sprintf('refs/remotes/%s/%s', $remoteName, $branchName)]));
-        return trim($this->execute(['log', '--format="%B"', '-n', '1', $commitHash]), "\n\"");
+        return trim($this->execute(['log', '--format=%B', '-n', '1', $commitHash]));
     }
 
     /**
@@ -354,11 +354,6 @@ class Git
     {
         try {
             $process = $this->executeAndReturnProcess($command);
-            if ($this->verbose) {
-                printf("[RET] %s\n", $process->getExitCode());
-                printf("[OUT] %s\n", $process->getOutput());
-                printf("[ERR] %s\n", $process->getErrorOutput());
-            }
         } catch (Throwable $t) {
             throw new GitException(
                 sprintf('Failed executing Git command: %s', $t->getMessage())
