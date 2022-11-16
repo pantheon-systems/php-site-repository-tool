@@ -34,9 +34,18 @@ The test suite may be run locally by way of some simple composer scripts:
 | Run all tests    | `composer test`
 | PHPUnit tests    | `composer unit`
 | PHP linter       | `composer lint`
-| Code style       | `composer cs`     
+| Code style       | `composer cs`
 | Fix style errors | `composer cbf`
 
+## Local development
+
+There is a helper script located in `/scripts/sh/apply_updates.sh` to run the `apply_update` command as follows:
+```
+export SITE_REPO_CLONE_URL=ssh://codeserver.dev.******@*****:2222/~/repository.git
+export UPSTREAM_REPO_URL=https://github.com/pantheon-upstreams/drupal-composer-managed
+export UPSTREAM_REPO_BRANCH=main
+bash ./scripts/sh/apply_updates.sh
+```
 
 ## Deployment
 
