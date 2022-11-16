@@ -334,7 +334,7 @@ class Git
             printf("RUN: mkdir '%s'.\n", $this->workdir);
         }
 
-        if (!mkdir($this->workdir, 0755)) {
+        if (!mkdir($this->workdir, 0755, true)) {
             throw new DirNotCreatedException(
                 sprintf('Failed creating directory "%s"', $this->workdir)
             );
