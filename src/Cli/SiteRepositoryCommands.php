@@ -69,8 +69,7 @@ class SiteRepositoryCommands extends Tasks implements LoggerAwareInterface
             $this->logger->info(sprintf('options: %s', json_encode($options)));
         }
 
-        $upstreamManager = new UpstreamManager();
-        $upstreamManager->setLogger($this->logger);
+        $upstreamManager = new UpstreamManager($this->logger);
 
         return $upstreamManager->applyUpstream(
             $options['site-repo-url'],
@@ -140,8 +139,7 @@ class SiteRepositoryCommands extends Tasks implements LoggerAwareInterface
             $this->logger->info(sprintf('options: %s', json_encode($options)));
         }
 
-        $environmentMergeManager = new EnvironmentMergeManager();
-        $environmentMergeManager->setLogger($this->logger);
+        $environmentMergeManager = new EnvironmentMergeManager($this->logger);
 
         return $environmentMergeManager->mergeEnvironment(
             $options['site-repo-url'],

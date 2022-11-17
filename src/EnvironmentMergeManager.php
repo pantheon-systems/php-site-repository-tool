@@ -8,6 +8,7 @@ use PhpSiteRepositoryTool\Exceptions\Git\GitException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class EnvironmentMergeManager.
@@ -17,6 +18,16 @@ use Psr\Log\LoggerAwareTrait;
 class EnvironmentMergeManager implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
+
+    /**
+     * Constructor.
+     *
+     * @param \Psr\Log\LoggerInterface $logger
+     */
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->setLogger($logger);
+    }
 
     /**
      * Applies the upstream changes to the local repository.
@@ -59,6 +70,7 @@ class EnvironmentMergeManager implements LoggerAwareInterface
         bool   $verbose
     ): array {
         $git = new Git(
+            $this->logger,
             $committerName,
             $committerEmail,
             $workdir,
@@ -67,7 +79,6 @@ class EnvironmentMergeManager implements LoggerAwareInterface
             $binding,
             $bypassSyncCode
         );
-        $git->setLogger($this->logger);
 
         $result = [
             'clone' => false,

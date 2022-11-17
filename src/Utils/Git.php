@@ -8,6 +8,7 @@ use PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException;
 use PhpSiteRepositoryTool\Exceptions\DirNotEmptyException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use Throwable;
 
 /**
@@ -31,6 +32,7 @@ class Git implements LoggerAwareInterface
     /**
      * Git constructor.
      *
+     * @param \Psr\Log\LoggerInterface $logger
      * @param string $committerName
      * @param string $committerEmail
      * @param string $workdir
@@ -40,6 +42,7 @@ class Git implements LoggerAwareInterface
      * @param bool $bypassSyncCode
      */
     public function __construct(
+        LoggerInterface $logger,
         string $committerName,
         string $committerEmail,
         string $workdir,
@@ -48,6 +51,7 @@ class Git implements LoggerAwareInterface
         string $binding,
         bool   $bypassSyncCode
     ) {
+        $this->setLogger($logger);
         $this->workdir = $workdir;
         $this->isWorkdirExists = is_dir($workdir);
 
