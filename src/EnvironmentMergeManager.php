@@ -14,7 +14,7 @@ use Psr\Log\LoggerAwareTrait;
  *
  * @package PhpSiteRepositoryTool
  */
-class EnvironmentMergeManager  implements LoggerAwareInterface
+class EnvironmentMergeManager implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
