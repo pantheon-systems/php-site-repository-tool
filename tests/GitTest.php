@@ -4,6 +4,7 @@ namespace PhpSiteRepositoryTool;
 
 use PhpSiteRepositoryTool\Utils\Git;
 use PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException;
+use Psr\Log\NullLogger;
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 /**
@@ -34,6 +35,8 @@ class GitTest extends TestCase
         $workdir = sys_get_temp_dir() . '/php-site-repository-tool-test-' . uniqid();
         mkdir($workdir);
         self::$git = new Git('', '', $workdir, true, '', '', false);
+        $logger = new NullLogger();
+        self::$git->setLogger($logger);
         self::$upstreamUrl = 'https://' . getenv('GITHUB_TOKEN') . '@github.com/pantheon-fixtures/php-srt-upstream-fixture.git';
     }
 
@@ -43,6 +46,7 @@ class GitTest extends TestCase
      * @throws \PhpSiteRepositoryTool\Exceptions\DirNotCreatedException
      * @throws \PhpSiteRepositoryTool\Exceptions\DirNotEmptyException
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
+     * @throws \PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException
      */
     public function testClone()
     {

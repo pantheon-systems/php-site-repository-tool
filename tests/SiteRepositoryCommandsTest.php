@@ -149,7 +149,6 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
             '--work-dir=' . $workdir,
             // Do not push to avoid altering the fixture repository.
             '--no-push',
-            '--verbose',
         ], 0);
         list($output, $statusCode) = $this->execute($argv, $this->commandClasses);
         $result = json_decode($output, true);
@@ -195,11 +194,19 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
             '--update-behavior=' . $updateBehavior,
             // Do not push to avoid altering the fixture repository.
             '--no-push',
-            '--verbose',
         ], 0);
 
         list($output, $statusCode) = $this->execute($argv, $this->commandClasses);
         $result = json_decode($output, true);
+        if (json_last_error()) {
+            $this->fail(
+                sprintf(
+                    'Failed decoding JSON output: code %d. Output "%s"',
+                    json_last_error(),
+                    $output
+                )
+            );
+        }
         $this->assertEquals(self::STATUS_OK, $statusCode);
 
         return $result;

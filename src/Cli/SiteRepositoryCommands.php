@@ -140,6 +140,8 @@ class SiteRepositoryCommands extends Tasks implements LoggerAwareInterface
         }
 
         $environmentMergeManager = new EnvironmentMergeManager();
+        $environmentMergeManager->setLogger($this->logger);
+
         return $environmentMergeManager->mergeEnvironment(
             $options['site-repo-url'],
             $options['site-repo-branch'],
