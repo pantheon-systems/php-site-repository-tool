@@ -4,6 +4,8 @@ namespace PhpSiteRepositoryTool\Cli;
 
 use PhpSiteRepositoryTool\UpstreamManager;
 use PhpSiteRepositoryTool\EnvironmentMergeManager;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Robo\Tasks;
 
 /**
@@ -11,8 +13,10 @@ use Robo\Tasks;
  *
  * @package PhpSiteRepositoryTool\Cli
  */
-class SiteRepositoryCommands extends Tasks
+class SiteRepositoryCommands extends Tasks implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * Apply upstream command.
      *
@@ -40,6 +44,7 @@ class SiteRepositoryCommands extends Tasks
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\DirNotCreatedException
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
+     * @throws \PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException
      */
     public function applyUpstream(array $options = [
         'site-repo-url' => '',
@@ -61,11 +66,13 @@ class SiteRepositoryCommands extends Tasks
     ]): array
     {
         if ($options['verbose']) {
-            printf("options: '%s'\n", var_export($options, true));
+            $this->logger->info(sprintf('options: %s', var_export($options, true)));
         }
 
         $upstreamManager = new UpstreamManager();
-        $result = $upstreamManager->applyUpstream(
+        $upstreamManager->setLogger($this->logger);
+
+        return $upstreamManager->applyUpstream(
             $options['site-repo-url'],
             $options['site-repo-branch'],
             $options['upstream-repo-url'],
@@ -83,12 +90,6 @@ class SiteRepositoryCommands extends Tasks
             $options['push'],
             $options['verbose']
         );
-
-        if ($options['verbose']) {
-            printf("apply_updates command result:\n");
-        }
-
-        return $result;
     }
 
     /**
@@ -135,11 +136,11 @@ class SiteRepositoryCommands extends Tasks
         ]
     ): array {
         if ($options['verbose']) {
-            printf("options: '%s'\n", var_export($options, true));
+            $this->logger->info(sprintf('options: %s', var_export($options, true)));
         }
 
         $environmentMergeManager = new EnvironmentMergeManager();
-        $result = $environmentMergeManager->mergeEnvironment(
+        return $environmentMergeManager->mergeEnvironment(
             $options['site-repo-url'],
             $options['site-repo-branch'],
             $options['from-branch'],
@@ -155,11 +156,5 @@ class SiteRepositoryCommands extends Tasks
             $options['push'],
             $options['verbose']
         );
-
-        if ($options['verbose']) {
-            printf("merge_environment command result:\n");
-        }
-
-        return $result;
     }
 }
