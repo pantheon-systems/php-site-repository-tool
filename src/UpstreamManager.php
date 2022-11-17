@@ -207,7 +207,7 @@ class UpstreamManager
     private function getOffSwitchPaths(): array
     {
         return [
-            'upstream-configuration/off-switches/*',
+            'upstream-configuration/off-switches/drupal-10-update.txt',
         ];
     }
 }
