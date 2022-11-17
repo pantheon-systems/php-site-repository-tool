@@ -67,6 +67,7 @@ class EnvironmentMergeManager  implements LoggerAwareInterface
             $binding,
             $bypassSyncCode
         );
+        $git->setLogger($this->logger);
 
         $result = [
             'clone' => false,
