@@ -224,7 +224,7 @@ class UpstreamManager implements LoggerAwareInterface
     private function getOffSwitchPaths(): array
     {
         return [
-            'upstream-configuration/off-switches/drupal-10-update.txt',
+            'upstream-configuration/update-control/merge-switch.txt',
         ];
     }
 }
