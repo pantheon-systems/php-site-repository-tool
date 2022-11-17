@@ -6,14 +6,18 @@ use PhpSiteRepositoryTool\Utils\Git;
 use PhpSiteRepositoryTool\Exceptions\DirNotEmptyException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 
 /**
  * Class UpstreamManager.
  *
  * @package PhpSiteRepositoryTool
  */
-class UpstreamManager
+class UpstreamManager implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * Applies the upstream changes to the local repository.
      *
@@ -38,6 +42,7 @@ class UpstreamManager
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\DirNotCreatedException
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
+     * @throws \PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException
      */
     public function applyUpstream(
         string $siteRepoUrl,
