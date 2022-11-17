@@ -116,6 +116,7 @@ class SiteRepositoryCommands extends Tasks implements LoggerAwareInterface
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\DirNotCreatedException
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
+     * @throws \PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException
      */
     public function mergeEnvironment(
         array $options = [
