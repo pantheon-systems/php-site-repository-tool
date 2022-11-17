@@ -6,13 +6,17 @@ use PhpSiteRepositoryTool\Exceptions\DirNotCreatedException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException;
 use PhpSiteRepositoryTool\Exceptions\DirNotEmptyException;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Throwable;
 
 /**
  * Class Git.
  */
-class Git
+class Git implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * @var string
      */
@@ -383,19 +387,19 @@ class Git
     private function executeAndReturnProcess(array $command): Process
     {
         if ($this->verbose) {
-            printf("command: 'git %s'", implode(' ', $command));
+            $this->logger->info(sprintf("executing command... 'git %s'", implode(' ', $command)));
         }
 
         $process = new Process(array_merge(['git'], $command), $this->workdir, $this->env);
         $process->run();
 
         if ($this->verbose) {
-            printf(" (%s)\n", $process->getExitCode());
+            $this->logger->info(sprintf('...exit code (%s)', $process->getExitCode()));
             if ('' !== $process->getOutput()) {
-                printf("output: '%s'\n", trim($process->getOutput()));
+                $this->logger->info(sprintf("...output: '%s'", trim($process->getOutput())));
             }
             if (0 !== $process->getExitCode() && $process->getErrorOutput()) {
-                printf("error: '%s'\n", $process->getErrorOutput());
+                $this->logger->warning(sprintf("error: '%s'", $process->getErrorOutput()));
             }
         }
 
