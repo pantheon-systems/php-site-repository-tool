@@ -6,14 +6,18 @@ use PhpSiteRepositoryTool\Utils\Git;
 use PhpSiteRepositoryTool\Exceptions\DirNotEmptyException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 
 /**
  * Class EnvironmentMergeManager.
  *
  * @package PhpSiteRepositoryTool
  */
-class EnvironmentMergeManager
+class EnvironmentMergeManager  implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * Applies the upstream changes to the local repository.
      *
@@ -36,6 +40,7 @@ class EnvironmentMergeManager
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\DirNotCreatedException
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
+     * @throws \PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException
      */
     public function mergeEnvironment(
         string $siteRepoUrl,
