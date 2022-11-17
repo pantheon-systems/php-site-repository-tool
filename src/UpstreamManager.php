@@ -3,17 +3,32 @@
 namespace PhpSiteRepositoryTool;
 
 use PhpSiteRepositoryTool\Utils\Git;
-use PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException;
+use PhpSiteRepositoryTool\Exceptions\DirNotEmptyException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class UpstreamManager.
  *
  * @package PhpSiteRepositoryTool
  */
-class UpstreamManager
+class UpstreamManager implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
+    /**
+     * Constructor.
+     *
+     * @param \Psr\Log\LoggerInterface $logger
+     */
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->setLogger($logger);
+    }
+
     /**
      * Applies the upstream changes to the local repository.
      *
@@ -36,7 +51,9 @@ class UpstreamManager
      *
      * @return array
      *
-     * @throws GitException
+     * @throws \PhpSiteRepositoryTool\Exceptions\DirNotCreatedException
+     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
+     * @throws \PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException
      */
     public function applyUpstream(
         string $siteRepoUrl,
@@ -50,13 +67,14 @@ class UpstreamManager
         string $siteUuid,
         string $binding,
         string $updateBehavior,
-        bool $bypassSyncCode,
-        bool $ff,
-        bool $clone,
-        bool $push,
-        bool $verbose
+        bool   $bypassSyncCode,
+        bool   $ff,
+        bool   $clone,
+        bool   $push,
+        bool   $verbose
     ): array {
         $git = new Git(
+            $this->logger,
             $committerName,
             $committerEmail,
             $workdir,
@@ -70,15 +88,19 @@ class UpstreamManager
             'clone' => false,
             'pull' => false,
             'push' => false,
+            'logs' => [],
             'conflicts' => '',
             'errormessage' => '',
         ];
+
+        $remote = 'upstream';
 
         if ($clone) {
             try {
                 $git->cloneRepository($siteRepoUrl, $siteRepoBranch);
                 $result['clone'] = true;
-            } catch (NotEmptyFolderException $e) {
+                $result['logs'][] = 'Repository has been cloned';
+            } catch (DirNotEmptyException $e) {
                 $result['errormessage'] = sprintf("Workdir '%s' is not empty.", $workdir);
                 return $result;
             } catch (GitException $e) {
@@ -88,11 +110,22 @@ class UpstreamManager
         }
 
         try {
-            $git->remoteAdd('upstream', $upstreamRepoUrl);
-            $git->fetch('upstream');
+            $git->remoteAdd($remote, $upstreamRepoUrl);
+            $result['logs'][] = 'Upstream remote has been added';
+            $git->fetch($remote);
+            $result['logs'][] = 'Updates have been fetched';
         } catch (GitException $e) {
             $result['errormessage'] = sprintf("Could not fetch upstream. Check that your upstream's git repository is accessible and that Pantheon has any required access tokens: %s", $e->getMessage());
             return $result;
+        }
+
+        if ('procedural' === $updateBehavior) {
+            if (!$git->isLatestChangeMatchesRemote($this->getOffSwitchPaths(), $remote, $upstreamRepoBranch)) {
+                // An unmerged off-switch file change found, immediately return the result with the success flag.
+                $result['pull'] = true;
+                $result['logs'][] = 'An unmerged off-switch update found';
+                return $result;
+            }
         }
 
         $commitMessages = [
@@ -103,10 +136,11 @@ class UpstreamManager
         try {
             $git->merge(
                 $upstreamRepoBranch,
-                'upstream',
+                $remote,
                 $strategyOption,
                 !$ff
             );
+            $result['logs'][] = 'Updates have been merged';
         } catch (GitMergeConflictException $e) {
             // WordPress License handling stuff.
             $unmergedFiles = $git->listUnmergedFiles();
@@ -129,16 +163,13 @@ class UpstreamManager
         }
 
         try {
-            $git->commit($commitMessages, $commitAuthor);
-        } catch (GitException $e) {
-            if ($e->getCode() > 1) {
-                // The check for the exit code is added to mitigate git commit operation error for the case when
-                // "nothing to commit, working tree clean" result is returned (which corresponds to exit code value of 1).
-                // In terms of py-based site-repository-tool logic, this is not considered as an error.
-                // @see https://github.com/pantheon-systems/site-repository-tool/blob/master/siterepositorytool/flow.py#L85
-                $result['errormessage'] = sprintf("Error committing to git: %s", $e->getMessage());
-                return $result;
+            if ($git->isAnythingToCommit()) {
+                $git->commit($commitMessages, $commitAuthor);
+                $result['logs'][] = 'Updates have been committed';
             }
+        } catch (GitException $e) {
+            $result['errormessage'] = sprintf("Error committing to git: %s", $e->getMessage());
+            return $result;
         }
 
         $result['pull'] = true;
@@ -147,6 +178,7 @@ class UpstreamManager
             try {
                 $git->pushAll();
                 $result['push'] = true;
+                $result['logs'][] = 'Updates have been pushed';
             } catch (GitException $e) {
                 $result['errormessage'] = sprintf("Error during git push: %s", $e->getMessage());
                 return $result;
@@ -179,5 +211,20 @@ class UpstreamManager
         }
 
         return true;
+    }
+
+    /**
+     * Return list of "Off Switch" path patterns.
+     *
+     * An "Off Switch" file serves as a flag to prevent the dashboard from automatically displaying an update,
+     * because it modifies composer.json and will likely cause merge conflicts.
+     *
+     * @return string[]
+     */
+    private function getOffSwitchPaths(): array
+    {
+        return [
+            'upstream-configuration/off-switches/drupal-10-update.txt',
+        ];
     }
 }

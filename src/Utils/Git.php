@@ -2,16 +2,22 @@
 
 namespace PhpSiteRepositoryTool\Utils;
 
+use PhpSiteRepositoryTool\Exceptions\DirNotCreatedException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException;
-use PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException;
+use PhpSiteRepositoryTool\Exceptions\DirNotEmptyException;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use Throwable;
 
 /**
  * Class Git.
  */
-class Git
+class Git implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * @var string
      */
@@ -21,11 +27,12 @@ class Git
 
     private bool $verbose;
 
-    private bool $workdirCreated;
+    private bool $isWorkdirExists;
 
     /**
      * Git constructor.
      *
+     * @param \Psr\Log\LoggerInterface $logger
      * @param string $committerName
      * @param string $committerEmail
      * @param string $workdir
@@ -34,15 +41,19 @@ class Git
      * @param string $binding
      * @param bool $bypassSyncCode
      */
-    public function __construct(string $committerName = '', string $committerEmail = '', string $workdir = '', bool $verbose = false, string $siteUuid = '', string $binding = '', bool $bypassSyncCode = false)
-    {
-        $this->workdirCreated = false;
-
-        if ($workdir and is_dir($workdir)) {
-            $this->workdirCreated = true;
-        }
-
+    public function __construct(
+        LoggerInterface $logger,
+        string $committerName,
+        string $committerEmail,
+        string $workdir,
+        bool   $verbose,
+        string $siteUuid,
+        string $binding,
+        bool   $bypassSyncCode
+    ) {
+        $this->setLogger($logger);
         $this->workdir = $workdir;
+        $this->isWorkdirExists = is_dir($workdir);
 
         $this->env = [];
         $this->verbose = $verbose;
@@ -81,16 +92,22 @@ class Git
      * @param string $repoUrl
      * @param string $branchName
      *
+     * @throws \PhpSiteRepositoryTool\Exceptions\DirNotCreatedException
+     * @throws \PhpSiteRepositoryTool\Exceptions\DirNotEmptyException
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
-     * @throws \PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException
      */
     public function cloneRepository(string $repoUrl, string $branchName): void
     {
+        if (!is_dir($this->workdir)) {
+            $this->createWorkdir();
+        }
+
         // Use 2 here because: "." and "..".
         if (count(scandir($this->workdir)) > 2) {
             // Not empty dir, throw exception.
-            throw new NotEmptyFolderException(sprintf("The folder '%s' is not empty.", $this->workdir));
+            throw new DirNotEmptyException(sprintf("The folder '%s' is not empty.", $this->workdir));
         }
+
         $this->execute(['clone', '-b', $branchName, $repoUrl, $this->workdir]);
     }
 
@@ -146,29 +163,26 @@ class Git
         }
 
         $process = $this->executeAndReturnProcess($command);
-        if ($process->getExitCode()) {
-            $output = $process->getOutput();
-            $outputLines = explode("\n", $output);
-            $conflicts = [];
-            foreach ($outputLines as $line) {
-                if (strpos($line, 'CONFLICT') === 0) {
-                    $conflicts[] = $line;
-                }
-            }
-            if ($conflicts) {
-                throw new GitMergeConflictException(
-                    sprintf("Merge conflict detected:\n%s", implode("\n", $conflicts)),
-                    $process->getExitCode()
-                );
-            } else {
-                throw new GitException(
-                    sprintf("Merge failed:\n%s", $process->getErrorOutput()),
-                    $process->getExitCode()
-                );
-            }
+        if (0 === $process->getExitCode()) {
+            return $process->getOutput();
         }
 
-        return $process->getOutput();
+        $outputLines = explode("\n", $process->getOutput());
+        $conflicts = [];
+        foreach ($outputLines as $line) {
+            if (strpos($line, 'CONFLICT') === 0) {
+                $conflicts[] = $line;
+            }
+        }
+        if ($conflicts) {
+            throw new GitMergeConflictException(
+                sprintf("Merge conflict detected:\n%s", implode("\n", $conflicts))
+            );
+        }
+
+        throw new GitException(
+            sprintf("Merge failed:\n%s", $process->getErrorOutput())
+        );
     }
 
     /**
@@ -220,8 +234,12 @@ class Git
      */
     public function getRemoteMessage(string $branchName, string $remoteName = 'upstream'): string
     {
-        $commitHash = trim($this->execute(['rev-parse', sprintf('refs/remotes/%s/%s', $remoteName, $branchName)]));
-        return trim($this->execute(['log', '--format="%B"', '-n', '1', $commitHash]), "\n\"");
+        $commitHash = $this->execute([
+            'rev-parse',
+            sprintf('refs/remotes/%s/%s', $remoteName, $branchName)
+        ]);
+
+        return $this->execute(['log', '--format=%B', '-n', '1', $commitHash]);
     }
 
     /**
@@ -249,6 +267,18 @@ class Git
     }
 
     /**
+     * Returns TRUE is there is anything to commit.
+     *
+     * @return bool
+     *
+     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
+     */
+    public function isAnythingToCommit(): bool
+    {
+        return '' !== $this->execute(['status', '--porcelain']);
+    }
+
+    /**
      * Performs push of everything.
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
@@ -259,11 +289,42 @@ class Git
     }
 
     /**
+     * Returns true if local most recent changes (commit hashes) matches the ones in the <remote>/<branch> for
+     * the given paths.
+     *
+     * @param array $paths
+     * @param string $remote
+     * @param string $branch
+     *
+     * @return bool
+     *
+     * @throws GitException
+     */
+    public function isLatestChangeMatchesRemote(array $paths, string $remote, string $branch): bool
+    {
+        foreach ($paths as $path) {
+            $upstream_commit_hash = $this->execute(
+                ['rev-list', '-n', '1', sprintf('--remotes=*%s/%s', $remote, $branch), '--', $path]
+            );
+
+            $local_commit_hash = $this->execute(['rev-list', '-n', '1', 'HEAD', '--', $path]);
+
+            if ($local_commit_hash !== $upstream_commit_hash) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Return workdir path.
+     *
+     * @throws \PhpSiteRepositoryTool\Exceptions\DirNotCreatedException
      */
     public function getWorkdir(): string
     {
-        if (!$this->workdirCreated) {
+        if (!$this->isWorkdirExists) {
             $this->createWorkdir();
         }
         return $this->workdir;
@@ -271,16 +332,21 @@ class Git
 
     /**
      * Creates workdir.
+     *
+     * @throws \PhpSiteRepositoryTool\Exceptions\DirNotCreatedException
      */
     protected function createWorkdir(): void
     {
-        if (!is_dir($this->workdir)) {
-            if ($this->verbose) {
-                printf("RUN: mkdir '%s'.\n", $this->workdir);
-            }
-            mkdir($this->workdir, 0755);
+        if (is_dir($this->workdir)) {
+            $this->isWorkdirExists = true;
+            return;
         }
-        $this->workdirCreated = true;
+
+        if (!mkdir($this->workdir, 0755, true)) {
+            throw new DirNotCreatedException(
+                sprintf('Failed creating directory "%s"', $this->workdir)
+            );
+        }
     }
 
     /**
@@ -292,33 +358,27 @@ class Git
      *
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
      */
-    private function execute(array $command): string
+    public function execute(array $command): string
     {
         try {
             $process = $this->executeAndReturnProcess($command);
-            if ($this->verbose) {
-                printf("[RET] %s\n", $process->getExitCode());
-                printf("[OUT] %s\n", $process->getOutput());
-                printf("[ERR] %s\n", $process->getErrorOutput());
-            }
-            if (0 !== $process->getExitCode()) {
-                throw new GitException(
-                    sprintf(
-                        'Git command failed with exit code %d and message %s',
-                        $process->getExitCode(),
-                        $process->getErrorOutput()
-                    ),
-                    $process->getExitCode()
-                );
-            }
         } catch (Throwable $t) {
             throw new GitException(
-                sprintf('Failed executing Git command: %s', $t->getMessage()),
-                isset($process) ? $process->getExitCode() : 255
+                sprintf('Failed executing Git command: %s', $t->getMessage())
             );
         }
 
-        return $process->getOutput();
+        if (0 !== $process->getExitCode()) {
+            throw new GitException(
+                sprintf(
+                    'Git command failed with exit code %d and message %s',
+                    $process->getExitCode(),
+                    $process->getErrorOutput()
+                )
+            );
+        }
+
+        return trim($process->getOutput());
     }
 
     /**
@@ -331,10 +391,22 @@ class Git
     private function executeAndReturnProcess(array $command): Process
     {
         if ($this->verbose) {
-            printf("RUN: git %s\n", implode(" ", $command));
+            $this->logger->info(sprintf("executing command... 'git %s'", implode(' ', $command)));
         }
+
         $process = new Process(array_merge(['git'], $command), $this->workdir, $this->env);
         $process->run();
+
+        if ($this->verbose) {
+            $this->logger->info(sprintf('...exit code (%s)', $process->getExitCode()));
+            if ('' !== $process->getOutput()) {
+                $this->logger->info(sprintf("...output: '%s'", trim($process->getOutput())));
+            }
+            if (0 !== $process->getExitCode() && $process->getErrorOutput()) {
+                $this->logger->warning(sprintf("error: '%s'", $process->getErrorOutput()));
+            }
+        }
+
         return $process;
     }
 }

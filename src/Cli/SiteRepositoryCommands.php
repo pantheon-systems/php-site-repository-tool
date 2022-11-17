@@ -4,6 +4,8 @@ namespace PhpSiteRepositoryTool\Cli;
 
 use PhpSiteRepositoryTool\UpstreamManager;
 use PhpSiteRepositoryTool\EnvironmentMergeManager;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Robo\Tasks;
 
 /**
@@ -11,8 +13,10 @@ use Robo\Tasks;
  *
  * @package PhpSiteRepositoryTool\Cli
  */
-class SiteRepositoryCommands extends Tasks
+class SiteRepositoryCommands extends Tasks implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * Apply upstream command.
      *
@@ -38,7 +42,9 @@ class SiteRepositoryCommands extends Tasks
      *
      * @return array
      *
+     * @throws \PhpSiteRepositoryTool\Exceptions\DirNotCreatedException
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
+     * @throws \PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException
      */
     public function applyUpstream(array $options = [
         'site-repo-url' => '',
@@ -59,7 +65,12 @@ class SiteRepositoryCommands extends Tasks
         'format' => 'json'
     ]): array
     {
-        $upstreamManager = new UpstreamManager();
+        if ($options['verbose']) {
+            $this->logger->info(sprintf('options: %s', json_encode($options)));
+        }
+
+        $upstreamManager = new UpstreamManager($this->logger);
+
         return $upstreamManager->applyUpstream(
             $options['site-repo-url'],
             $options['site-repo-branch'],
@@ -102,7 +113,9 @@ class SiteRepositoryCommands extends Tasks
      *
      * @return array
      *
+     * @throws \PhpSiteRepositoryTool\Exceptions\DirNotCreatedException
      * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
+     * @throws \PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException
      */
     public function mergeEnvironment(
         array $options = [
@@ -122,7 +135,12 @@ class SiteRepositoryCommands extends Tasks
             'format' => 'json'
         ]
     ): array {
-        $environmentMergeManager = new EnvironmentMergeManager();
+        if ($options['verbose']) {
+            $this->logger->info(sprintf('options: %s', json_encode($options)));
+        }
+
+        $environmentMergeManager = new EnvironmentMergeManager($this->logger);
+
         return $environmentMergeManager->mergeEnvironment(
             $options['site-repo-url'],
             $options['site-repo-branch'],

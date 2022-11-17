@@ -19,12 +19,13 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
     /**
      * Prepare to test our commandfile
      */
+    // phpcs:ignore
     public function set_up()
     {
         parent::set_up();
 
         // Store the command classes we are going to test
-        $this->commandClasses = [ \PhpSiteRepositoryTool\Cli\SiteRepositoryCommands::class ];
+        $this->commandClasses = [\PhpSiteRepositoryTool\Cli\SiteRepositoryCommands::class];
         $this->setupCommandTester('TestFixtureApp', '1.0.1');
     }
 
@@ -40,7 +41,7 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
                 'list',
             ],
             [
-                'Apply upstream command',
+                'Merge Environment command',
                 self::STATUS_OK,
                 'list',
             ],
@@ -54,12 +55,9 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
      */
     public function testCommandsExistence($expectedOutput, $expectedStatus, $variable_args)
     {
-        // Set this to the path to a fixture configuration file if you'd like to use one.
-        $configurationFile = false;
-
         // Create our argv array and run the command
         $argv = $this->argv(func_get_args());
-        list($actualOutput, $statusCode) = $this->execute($argv, $this->commandClasses, $configurationFile);
+        list($actualOutput, $statusCode) = $this->execute($argv, $this->commandClasses);
 
         // Confirm that our output and status code match expectations
         $this->assertStringContainsString($expectedOutput, $actualOutput);
@@ -71,36 +69,64 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
      */
     public function testApplyUpstream()
     {
-        $workdir = sys_get_temp_dir() . '/php-site-repository-tool-test-' . uniqid();
-        mkdir($workdir);
-
-        $siteRepoUrl = 'https://' . $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-site-fixture.git';
-        $siteRepoBranch = 'master';
-        $upstreamRepoUrl = 'https://'. $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-upstream-fixture.git';
-        $upstreamRepoBranch = 'main';
-
-        $argv = $this->argv([
-            'apply_upstream',
-            '--site-repo-url=' . $siteRepoUrl,
-            '--site-repo-branch=' . $siteRepoBranch,
-            '--upstream-repo-url=' . $upstreamRepoUrl,
-            '--upstream-repo-branch=' . $upstreamRepoBranch,
-            '--work-dir=' . $workdir,
-            '--update-behavior=heirloom',
-            // Do not push to avoid altering the fixture repository.
-            '--no-push',
-            '--verbose',
-        ], 0);
-        list($actualOutput, $statusCode) = $this->execute($argv, $this->commandClasses, false);
-        $jsonOutput = json_decode($actualOutput, true);
-        $this->assertEquals(self::STATUS_OK, $statusCode);
+        $result = $this->executeApplyUpstreamCommand('main');
         $this->assertEquals([
             'clone' => true,
             'pull' => true,
             'push' => false,
+            'logs' => [
+                'Repository has been cloned',
+                'Upstream remote has been added',
+                'Updates have been fetched',
+                'Updates have been merged',
+                'Updates have been committed',
+            ],
             'conflicts' => '',
             'errormessage' => '',
-        ], $jsonOutput);
+        ], $result);
+    }
+
+    /**
+     * Test apply upstream command with --update-behavior="procedural" option and an unmerged off-switch update.
+     */
+    public function testApplyUpstreamBehaviorProceduralOffSwitch()
+    {
+        $result = $this->executeApplyUpstreamCommand('unmerged-changes-in-upstream', 'procedural');
+        $this->assertEquals([
+            'clone' => true,
+            'pull' => true,
+            'push' => false,
+            'logs' => [
+                'Repository has been cloned',
+                'Upstream remote has been added',
+                'Updates have been fetched',
+                'An unmerged off-switch update found',
+            ],
+            'conflicts' => '',
+            'errormessage' => '',
+        ], $result);
+    }
+
+    /**
+     * Test apply upstream command with --update-behavior="procedural" option.
+     */
+    public function testApplyUpstreamBehaviorProceduralNoOffSwitch()
+    {
+        $result = $this->executeApplyUpstreamCommand('main', 'procedural');
+        $this->assertEquals([
+            'clone' => true,
+            'pull' => true,
+            'push' => false,
+            'logs' => [
+                'Repository has been cloned',
+                'Upstream remote has been added',
+                'Updates have been fetched',
+                'Updates have been merged',
+                'Updates have been committed',
+            ],
+            'conflicts' => '',
+            'errormessage' => '',
+        ], $result);
     }
 
     /**
@@ -113,8 +139,6 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
 
         $siteRepoUrl = 'https://' . $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-site-fixture.git';
         $siteRepoBranch = 'master';
-        $upstreamRepoUrl = 'https://'. $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-upstream-fixture.git';
-        $upstreamRepoBranch = 'main';
 
         $argv = $this->argv([
             'merge_environment',
@@ -125,17 +149,66 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
             '--work-dir=' . $workdir,
             // Do not push to avoid altering the fixture repository.
             '--no-push',
-            '--verbose',
         ], 0);
-        list($actualOutput, $statusCode) = $this->execute($argv, $this->commandClasses, false);
-        $jsonOutput = json_decode($actualOutput, true);
+        list($output, $statusCode) = $this->execute($argv, $this->commandClasses);
+        $result = json_decode($output, true);
         $this->assertEquals(self::STATUS_OK, $statusCode);
         $this->assertEquals([
             'clone' => true,
             'pull' => true,
             'push' => false,
+            'logs' => [
+                'Repository has been cloned',
+                'Updates have been merged',
+                'Updates have been committed',
+            ],
             'conflicts' => '',
             'errormessage' => '',
-        ], $jsonOutput);
+        ], $result);
+    }
+
+    /**
+     * Executes the command and return the result.
+     *
+     * @param string $upstreamRepoBranch
+     * @param string $updateBehavior
+     *
+     * @return mixed
+     */
+    private function executeApplyUpstreamCommand($upstreamRepoBranch, $updateBehavior = 'heirloom')
+    {
+        $workdir = sys_get_temp_dir() . '/php-site-repository-tool-test-' . uniqid();
+        mkdir($workdir);
+
+        $siteRepoUrl = 'https://' . $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-site-fixture.git';
+        $siteRepoBranch = 'master';
+        $upstreamRepoUrl = 'https://' . $this->getGithubToken() . '@github.com/pantheon-fixtures/php-srt-upstream-fixture.git';
+
+        $argv = $this->argv([
+            'apply_upstream',
+            '--site-repo-url=' . $siteRepoUrl,
+            '--site-repo-branch=' . $siteRepoBranch,
+            '--upstream-repo-url=' . $upstreamRepoUrl,
+            '--upstream-repo-branch=' . $upstreamRepoBranch,
+            '--work-dir=' . $workdir,
+            '--update-behavior=' . $updateBehavior,
+            // Do not push to avoid altering the fixture repository.
+            '--no-push',
+        ], 0);
+
+        list($output, $statusCode) = $this->execute($argv, $this->commandClasses);
+        $result = json_decode($output, true);
+        if (json_last_error()) {
+            $this->fail(
+                sprintf(
+                    'Failed decoding JSON output: code %d. Output "%s"',
+                    json_last_error(),
+                    $output
+                )
+            );
+        }
+        $this->assertEquals(self::STATUS_OK, $statusCode);
+
+        return $result;
     }
 }

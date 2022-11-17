@@ -2,6 +2,7 @@
 
 namespace PhpSiteRepositoryTool;
 
+use Psr\Log\NullLogger;
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 /**
@@ -9,7 +10,6 @@ use Yoast\PHPUnitPolyfills\TestCases\TestCase;
  */
 class UpstreamManagerTest extends TestCase
 {
-
     use SiteRepositoryToolTesterTrait;
 
     /**
@@ -23,25 +23,25 @@ class UpstreamManagerTest extends TestCase
         return [
             [
                 [
-                'wp-content/themes/2020/LICENSE.md',
-                'wp-content/themes/2021/LICENSE.md',
-                'wp-content/themes/2022/LICENSE.md',
+                    'wp-content/themes/2020/LICENSE.md',
+                    'wp-content/themes/2021/LICENSE.md',
+                    'wp-content/themes/2022/LICENSE.md',
                 ],
                 true
             ],
             [
                 [
-                'wp-content/themes/2020/LICENSE.md',
-                'wp-content/themes/2021/README.md',
-                'wp-content/themes/2022/LICENSE.md',
+                    'wp-content/themes/2020/LICENSE.md',
+                    'wp-content/themes/2021/README.md',
+                    'wp-content/themes/2022/LICENSE.md',
                 ],
                 false
             ],
             [
                 [
-                'wp-content/themes/2020/README.md',
-                'wp-content/themes/2021/README.md',
-                'wp-content/themes/2022/README.md',
+                    'wp-content/themes/2020/README.md',
+                    'wp-content/themes/2021/README.md',
+                    'wp-content/themes/2022/README.md',
                 ],
                 false
             ],
@@ -55,7 +55,7 @@ class UpstreamManagerTest extends TestCase
      */
     public function testAllUnmergedFilesInAllowList($value, $expected)
     {
-        $upstreamManager = new UpstreamManager();
+        $upstreamManager = new UpstreamManager(new NullLogger());
         $return = $this->callMethod($upstreamManager, 'allUnmergedFilesInAllowList', [$value]);
         $this->assertEquals($expected, $return);
     }

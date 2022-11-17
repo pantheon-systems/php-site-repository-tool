@@ -3,17 +3,32 @@
 namespace PhpSiteRepositoryTool;
 
 use PhpSiteRepositoryTool\Utils\Git;
-use PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException;
+use PhpSiteRepositoryTool\Exceptions\DirNotEmptyException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitException;
 use PhpSiteRepositoryTool\Exceptions\Git\GitMergeConflictException;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class EnvironmentMergeManager.
  *
  * @package PhpSiteRepositoryTool
  */
-class EnvironmentMergeManager
+class EnvironmentMergeManager implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
+    /**
+     * Constructor.
+     *
+     * @param \Psr\Log\LoggerInterface $logger
+     */
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->setLogger($logger);
+    }
+
     /**
      * Applies the upstream changes to the local repository.
      *
@@ -34,7 +49,9 @@ class EnvironmentMergeManager
      *
      * @return array
      *
-     * @throws GitException
+     * @throws \PhpSiteRepositoryTool\Exceptions\DirNotCreatedException
+     * @throws \PhpSiteRepositoryTool\Exceptions\Git\GitException
+     * @throws \PhpSiteRepositoryTool\Exceptions\NotEmptyFolderException
      */
     public function mergeEnvironment(
         string $siteRepoUrl,
@@ -47,12 +64,13 @@ class EnvironmentMergeManager
         string $committerEmail,
         string $siteUuid,
         string $binding,
-        bool $bypassSyncCode,
-        bool $ff,
-        bool $push,
-        bool $verbose
+        bool   $bypassSyncCode,
+        bool   $ff,
+        bool   $push,
+        bool   $verbose
     ): array {
         $git = new Git(
+            $this->logger,
             $committerName,
             $committerEmail,
             $workdir,
@@ -66,14 +84,18 @@ class EnvironmentMergeManager
             'clone' => false,
             'pull' => false,
             'push' => false,
+            'logs' => [],
             'conflicts' => '',
             'errormessage' => '',
         ];
 
+        $remote = 'origin';
+
         try {
             $git->cloneRepository($siteRepoUrl, $siteRepoBranch);
             $result['clone'] = true;
-        } catch (NotEmptyFolderException $e) {
+            $result['logs'][] = 'Repository has been cloned';
+        } catch (DirNotEmptyException $e) {
             $result['errormessage'] = sprintf("Workdir '%s' is not empty.", $workdir);
             return $result;
         } catch (GitException $e) {
@@ -82,7 +104,8 @@ class EnvironmentMergeManager
         }
 
         try {
-            $git->merge($fromBranch, 'origin', $strategyOption, !$ff);
+            $git->merge($fromBranch, $remote, $strategyOption, !$ff);
+            $result['logs'][] = 'Updates have been merged';
         } catch (GitMergeConflictException $e) {
             $result['conflicts'] = $git->listUnmergedFiles();
             $result['errormessage'] = sprintf("Merge conflict: %s", $e->getMessage());
@@ -90,21 +113,18 @@ class EnvironmentMergeManager
         }
 
         $commitMessages = [
-            $git->getRemoteMessage($fromBranch, 'origin'),
+            $git->getRemoteMessage($fromBranch, $remote),
             sprintf("Merged '%s' into '%s'", $fromBranch, $toBranch),
         ];
 
         try {
-            $git->commit($commitMessages);
-        } catch (GitException $e) {
-            if ($e->getCode() > 1) {
-                // The check for the exit code is added to mitigate git commit operation error for the case when
-                // "nothing to commit, working tree clean" result is returned (which corresponds to exit code value of 1).
-                // In terms of py-based site-repository-tool logic, this is not considered as an error.
-                // @see https://github.com/pantheon-systems/site-repository-tool/blob/master/siterepositorytool/flow.py#L159
-                $result['errormessage'] = sprintf("Error committing to git: %s", $e->getMessage());
-                return $result;
+            if ($git->isAnythingToCommit()) {
+                $git->commit($commitMessages);
+                $result['logs'][] = 'Updates have been committed';
             }
+        } catch (GitException $e) {
+            $result['errormessage'] = sprintf("Error committing to git: %s", $e->getMessage());
+            return $result;
         }
 
         $result['pull'] = true;
@@ -113,6 +133,7 @@ class EnvironmentMergeManager
             try {
                 $git->pushAll();
                 $result['push'] = true;
+                $result['logs'][] = 'Updates have been pushed';
             } catch (GitException $e) {
                 $result['errormessage'] = sprintf("Error during git push: %s", $e->getMessage());
                 return $result;

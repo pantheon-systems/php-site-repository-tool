@@ -41,9 +41,9 @@ class Process
         $command = implode(' ', array_map('escapeshellarg', $this->command));
 
         $descriptorspec = [
-           0 => ["pipe", "r"],  // stdin is a pipe that the child will read from
-           1 => ["pipe", "w"],  // stdout is a pipe that the child will write to
-           2 => ["pipe", "w"]   // stderr is a pipe that the child will write to
+            0 => ["pipe", "r"],  // stdin is a pipe that the child will read from
+            1 => ["pipe", "w"],  // stdout is a pipe that the child will write to
+            2 => ["pipe", "w"]   // stderr is a pipe that the child will write to
         ];
 
         // Process envrionment like Symfony\Process does
@@ -51,7 +51,7 @@ class Process
         $inheritedEnv = $this->getInheritedEnvironment();
         foreach ($this->env + $inheritedEnv as $k => $v) {
             if (false !== $v && false === \in_array($k, ['argc', 'argv', 'ARGC', 'ARGV'], true)) {
-                $env[] = $k.'='.$v;
+                $env[] = $k . '=' . $v;
             }
         }
 

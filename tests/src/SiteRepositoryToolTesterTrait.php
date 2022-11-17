@@ -2,16 +2,15 @@
 
 namespace PhpSiteRepositoryTool;
 
-use Symfony\Component\Console\Output\BufferedOutput;
-
 /**
  * Trait SiteRepositoryToolTesterTrait.
  */
 trait SiteRepositoryToolTesterTrait
 {
-
     /**
      * Call a method that is regularly not publicly accessible (i.e. protected or private).
+     *
+     * @throws \ReflectionException
      */
     protected static function callMethod($obj, $name, array $args)
     {
