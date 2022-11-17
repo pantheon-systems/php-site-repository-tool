@@ -66,7 +66,7 @@ class SiteRepositoryCommands extends Tasks implements LoggerAwareInterface
     ]): array
     {
         if ($options['verbose']) {
-            $this->logger->info(sprintf('options: %s', var_export($options, true)));
+            $this->logger->info(sprintf('options: %s', json_encode($options)));
         }
 
         $upstreamManager = new UpstreamManager();
@@ -137,7 +137,7 @@ class SiteRepositoryCommands extends Tasks implements LoggerAwareInterface
         ]
     ): array {
         if ($options['verbose']) {
-            $this->logger->info(sprintf('options: %s', var_export($options, true)));
+            $this->logger->info(sprintf('options: %s', json_encode($options)));
         }
 
         $environmentMergeManager = new EnvironmentMergeManager();
