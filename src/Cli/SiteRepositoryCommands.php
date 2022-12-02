@@ -28,8 +28,8 @@ class SiteRepositoryCommands extends Tasks implements LoggerAwareInterface
      * @option upstream-repo-branch upstream repository branch
      * @option strategy-option strategy top use for this command
      * @option work-dir working directory
-     * @option committer-name committer name
-     * @option committer-email committer email
+     * @option commiter-name committer name
+     * @option commiter-email committer email
      * @option site site uuid
      * @option binding binding uuid
      * @option update-behavior Either heirloom or procedural
@@ -53,8 +53,8 @@ class SiteRepositoryCommands extends Tasks implements LoggerAwareInterface
         'upstream-repo-branch' => '',
         'strategy-option' => '',
         'work-dir' => '',
-        'committer-name' => '',
-        'committer-email' => '',
+        'commiter-name' => '',
+        'commiter-email' => '',
         'site' => '',
         'binding' => '',
         'update-behavior' => 'heirloom',
@@ -78,8 +78,8 @@ class SiteRepositoryCommands extends Tasks implements LoggerAwareInterface
             $options['upstream-repo-branch'],
             $options['strategy-option'],
             $options['work-dir'],
-            $options['committer-name'],
-            $options['committer-email'],
+            $options['commiter-name'],
+            $options['commiter-email'],
             $options['site'],
             $options['binding'],
             $options['update-behavior'],
@@ -101,8 +101,8 @@ class SiteRepositoryCommands extends Tasks implements LoggerAwareInterface
      * @option to-branch branch to merge to
      * @option strategy-option strategy top use for this command
      * @option work-dir working directory
-     * @option committer-name committer name
-     * @option committer-email committer email
+     * @option commiter-name committer name
+     * @option commiter-email committer email
      * @option site site uuid
      * @option binding binding uuid
      * @option bypass-sync-code bypass sync code
@@ -125,8 +125,8 @@ class SiteRepositoryCommands extends Tasks implements LoggerAwareInterface
             'to-branch' => '',
             'strategy-option' => '',
             'work-dir' => '',
-            'committer-name' => '',
-            'committer-email' => '',
+            'commiter-name' => '',
+            'commiter-email' => '',
             'site' => '',
             'binding' => '',
             'bypass-sync-code' => false,
@@ -148,8 +148,8 @@ class SiteRepositoryCommands extends Tasks implements LoggerAwareInterface
             $options['to-branch'],
             $options['strategy-option'],
             $options['work-dir'],
-            $options['committer-name'],
-            $options['committer-email'],
+            $options['commiter-name'],
+            $options['commiter-email'],
             $options['site'],
             $options['binding'],
             $options['bypass-sync-code'],
