@@ -87,49 +87,6 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
     }
 
     /**
-     * Test apply upstream command with --update-behavior="procedural" option and an unmerged off-switch update.
-     */
-    public function testApplyUpstreamBehaviorProceduralOffSwitch()
-    {
-        $result = $this->executeApplyUpstreamCommand('unmerged-changes-in-upstream', 'procedural');
-        $this->assertEquals([
-            'clone' => true,
-            'pull' => true,
-            'push' => false,
-            'logs' => [
-                'Repository has been cloned',
-                'Upstream remote has been added',
-                'Updates have been fetched',
-                'An unmerged off-switch update found',
-            ],
-            'conflicts' => '',
-            'errormessage' => '',
-        ], $result);
-    }
-
-    /**
-     * Test apply upstream command with --update-behavior="procedural" option.
-     */
-    public function testApplyUpstreamBehaviorProceduralNoOffSwitch()
-    {
-        $result = $this->executeApplyUpstreamCommand('main', 'procedural');
-        $this->assertEquals([
-            'clone' => true,
-            'pull' => true,
-            'push' => false,
-            'logs' => [
-                'Repository has been cloned',
-                'Upstream remote has been added',
-                'Updates have been fetched',
-                'Updates have been merged',
-                'Updates have been committed',
-            ],
-            'conflicts' => '',
-            'errormessage' => '',
-        ], $result);
-    }
-
-    /**
      * Test merge_environment command.
      */
     public function testMergeEnvironment()
