@@ -119,15 +119,6 @@ class UpstreamManager implements LoggerAwareInterface
             return $result;
         }
 
-        if ('procedural' === $updateBehavior) {
-            if (!$git->isLatestChangeMatchesRemote($this->getOffSwitchPaths(), $remote, $upstreamRepoBranch)) {
-                // An unmerged off-switch file change found, immediately return the result with the success flag.
-                $result['pull'] = true;
-                $result['logs'][] = 'An unmerged off-switch update found';
-                return $result;
-            }
-        }
-
         $commitMessages = [
             $git->getRemoteMessage($upstreamRepoBranch),
             sprintf('Was: Merged %s into %s.', $upstreamRepoBranch, $siteRepoBranch),
@@ -211,20 +202,5 @@ class UpstreamManager implements LoggerAwareInterface
         }
 
         return true;
-    }
-
-    /**
-     * Return list of "Off Switch" path patterns.
-     *
-     * An "Off Switch" file serves as a flag to prevent the dashboard from automatically displaying an update,
-     * because it modifies composer.json and will likely cause merge conflicts.
-     *
-     * @return string[]
-     */
-    private function getOffSwitchPaths(): array
-    {
-        return [
-            'upstream-configuration/update-control/merge-switch.txt',
-        ];
     }
 }
