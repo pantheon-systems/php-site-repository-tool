@@ -32,7 +32,7 @@ class SiteRepositoryCommands extends Tasks implements LoggerAwareInterface
      * @option commiter-email committer email
      * @option site site uuid
      * @option binding binding uuid
-     * @option update-behavior Either heirloom or procedural
+     * @option update-behavior upstream update behavior setting
      * @option bypass-sync-code bypass sync code
      * @option ff use fast-forward (also supported: --no-ff)
      * @option clone clone the upstream repository (also supported: --no-clone)
@@ -57,7 +57,7 @@ class SiteRepositoryCommands extends Tasks implements LoggerAwareInterface
         'commiter-email' => '',
         'site' => '',
         'binding' => '',
-        'update-behavior' => 'heirloom',
+        'update-behavior' => '',
         'bypass-sync-code' => false,
         'ff' => true,
         'clone' => true,
