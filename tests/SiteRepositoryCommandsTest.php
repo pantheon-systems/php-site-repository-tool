@@ -128,11 +128,10 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
      * Executes the command and return the result.
      *
      * @param string $upstreamRepoBranch
-     * @param string $updateBehavior
      *
      * @return mixed
      */
-    private function executeApplyUpstreamCommand($upstreamRepoBranch, $updateBehavior = 'heirloom')
+    private function executeApplyUpstreamCommand($upstreamRepoBranch)
     {
         $workdir = sys_get_temp_dir() . '/php-site-repository-tool-test-' . uniqid();
         mkdir($workdir);
@@ -148,7 +147,6 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
             '--upstream-repo-url=' . $upstreamRepoUrl,
             '--upstream-repo-branch=' . $upstreamRepoBranch,
             '--work-dir=' . $workdir,
-            '--update-behavior=' . $updateBehavior,
             // Do not push to avoid altering the fixture repository.
             '--no-push',
         ], 0);
