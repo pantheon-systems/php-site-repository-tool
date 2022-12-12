@@ -292,6 +292,8 @@ class Git implements LoggerAwareInterface
      * Returns true if local most recent changes (commit hashes) matches the ones in the <remote>/<branch> for
      * the given paths.
      *
+     * Use for detecting an unmerged off-switch file change.
+     *
      * @param array $paths
      * @param string $remote
      * @param string $branch

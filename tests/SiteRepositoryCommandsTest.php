@@ -87,49 +87,6 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
     }
 
     /**
-     * Test apply upstream command with --update-behavior="procedural" option and an unmerged off-switch update.
-     */
-    public function testApplyUpstreamBehaviorProceduralOffSwitch()
-    {
-        $result = $this->executeApplyUpstreamCommand('unmerged-changes-in-upstream', 'procedural');
-        $this->assertEquals([
-            'clone' => true,
-            'pull' => true,
-            'push' => false,
-            'logs' => [
-                'Repository has been cloned',
-                'Upstream remote has been added',
-                'Updates have been fetched',
-                'An unmerged off-switch update found',
-            ],
-            'conflicts' => '',
-            'errormessage' => '',
-        ], $result);
-    }
-
-    /**
-     * Test apply upstream command with --update-behavior="procedural" option.
-     */
-    public function testApplyUpstreamBehaviorProceduralNoOffSwitch()
-    {
-        $result = $this->executeApplyUpstreamCommand('main', 'procedural');
-        $this->assertEquals([
-            'clone' => true,
-            'pull' => true,
-            'push' => false,
-            'logs' => [
-                'Repository has been cloned',
-                'Upstream remote has been added',
-                'Updates have been fetched',
-                'Updates have been merged',
-                'Updates have been committed',
-            ],
-            'conflicts' => '',
-            'errormessage' => '',
-        ], $result);
-    }
-
-    /**
      * Test merge_environment command.
      */
     public function testMergeEnvironment()
@@ -171,11 +128,10 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
      * Executes the command and return the result.
      *
      * @param string $upstreamRepoBranch
-     * @param string $updateBehavior
      *
      * @return mixed
      */
-    private function executeApplyUpstreamCommand($upstreamRepoBranch, $updateBehavior = 'heirloom')
+    private function executeApplyUpstreamCommand($upstreamRepoBranch)
     {
         $workdir = sys_get_temp_dir() . '/php-site-repository-tool-test-' . uniqid();
         mkdir($workdir);
@@ -191,7 +147,6 @@ class SiteRepositoryCommandsTest extends TestCase implements CommandTesterInterf
             '--upstream-repo-url=' . $upstreamRepoUrl,
             '--upstream-repo-branch=' . $upstreamRepoBranch,
             '--work-dir=' . $workdir,
-            '--update-behavior=' . $updateBehavior,
             // Do not push to avoid altering the fixture repository.
             '--no-push',
         ], 0);
