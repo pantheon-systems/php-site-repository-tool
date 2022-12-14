@@ -76,6 +76,7 @@ jobs:
           - "7.4"
           - "8.0"
           - "8.1"
+          - "8.2"
 
         php-ini-values:
           - assert.exception=1, zend.assertions=1, phar.readonly=false, variables_order="EGPCS"
